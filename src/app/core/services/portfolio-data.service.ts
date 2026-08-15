@@ -1,7 +1,7 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings } from '../models/portfolio.model';
 
-const STORAGE_PREFIX = 'ak_portfolio_v3_';
+const STORAGE_PREFIX = 'ak_portfolio_v4_';
 
 const DEFAULT_SECTION_VISIBILITY: SectionVisibilitySettings = {
   showHero: true,
@@ -361,7 +361,7 @@ export class PortfolioDataService {
   public contactInfo = signal<ContactInfo>(this.load('contact_info', DEFAULT_CONTACT_INFO));
   public typography = signal<TypographySettings>(this.load('typography', DEFAULT_TYPOGRAPHY));
   public accentColor = signal<string>(this.load('accent_color', '#1A56F0'));
-  public activeTemplate = signal<PortfolioTemplateMode>(this.load('active_template', 'marttin'));
+  public activeTemplate = signal<PortfolioTemplateMode>(this.load('active_template', 'bento'));
   public sectionVisibility = signal<SectionVisibilitySettings>(this.load('section_visibility', DEFAULT_SECTION_VISIBILITY));
 
   constructor() {
@@ -582,6 +582,7 @@ export class PortfolioDataService {
     this.contactLinks.set(DEFAULT_CONTACTS);
     this.contactInfo.set(DEFAULT_CONTACT_INFO);
     this.typography.set(DEFAULT_TYPOGRAPHY);
+    this.activeTemplate.set('bento');
     this.setAccentColor('#1A56F0');
 
     try {
