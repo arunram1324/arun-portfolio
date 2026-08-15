@@ -1,0 +1,81 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.vt-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  transition: background 0.25s var(--ease);
+}
+
+.vt-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 16px 24px 0;
+  flex-shrink: 0;
+  background: var(--bg);
+  transition: background 0.25s var(--ease);
+
+  @media (max-width: 767px) {
+    padding: 12px 16px 0;
+  }
+}
+
+.vt-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--fb);
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--muted);
+  transition: background 0.18s, color 0.18s;
+  @include tap-friendly;
+
+  &:hover {
+    background: var(--accent-subtle);
+    color: var(--accent);
+  }
+
+  &.on {
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px var(--accent);
+  }
+}
+
+.vt-stage-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  app-voice-stage, app-chat-stage {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    min-height: 0;
+  }
+}

@@ -1,0 +1,59 @@
+<!-- ================= 1. FRAMER MARTTIN TEMPLATE ================= -->
+@if (portfolioData.activeTemplate() === 'marttin') {
+  <app-marttin-template></app-marttin-template>
+} @else {
+
+  <!-- ================= 2. BENTO OS MULTI-PANEL APP TEMPLATE ================= -->
+  @if (!navService.hasStarted()) {
+    <!-- Initial Hero Landing Screen -->
+    <app-landing></app-landing>
+  } @else {
+    <!-- Main Portfolio Application Layout -->
+    <div class="app-shell">
+      <!-- Mobile Drawer Backdrop Overlay -->
+      <div 
+        class="overlay" 
+        [class.show]="navService.isMobileDrawerOpen()" 
+        (click)="onOverlayClick()"
+        aria-hidden="true">
+      </div>
+
+      <!-- Left Sidebar Navigation (Collapsible & Responsive) -->
+      <app-sidebar></app-sidebar>
+
+      <!-- Main View Area -->
+      <main class="main-shell">
+        <app-topbar></app-topbar>
+
+        <div class="views-wrapper">
+          @switch (navService.activePage()) {
+            @case ('vt') {
+              <app-virtual-twin class="view-active"></app-virtual-twin>
+            }
+            @case ('intro') {
+              <app-self-intro class="view-active"></app-self-intro>
+            }
+            @case ('exp') {
+              <app-work-experience class="view-active"></app-work-experience>
+            }
+            @case ('proj') {
+              <app-projects class="view-active"></app-projects>
+            }
+            @case ('tools') {
+              <app-tools class="view-active"></app-tools>
+            }
+            @case ('skills') {
+              <app-skills class="view-active"></app-skills>
+            }
+            @case ('contact') {
+              <app-contact class="view-active"></app-contact>
+            }
+          }
+        </div>
+      </main>
+
+      <!-- Bottom Navigation Bar for Mobile -->
+      <app-bottom-nav></app-bottom-nav>
+    </div>
+  }
+}

@@ -1,0 +1,65 @@
+<div class="vt-voice-panel">
+  <!-- Ambient background glow -->
+  <div 
+    class="vt-glow" 
+    [class.listening]="isBlobListening()" 
+    [class.speaking]="isBlobSpeaking()">
+  </div>
+
+  <!-- Central Blob Stage -->
+  <div class="vt-blob-stage">
+    <div class="v-ring" [class.active]="isBlobListening()"></div>
+    <div class="v-ring" [class.active]="isBlobListening()"></div>
+    <div class="v-ring" [class.active]="isBlobListening()"></div>
+
+    <div 
+      id="voiceBlob" 
+      class="voice-blob"
+      [class.listening]="isBlobListening()"
+      [class.speaking]="isBlobSpeaking()"
+      (click)="toggleSession()">
+    </div>
+
+    <button 
+      id="masterBtn" 
+      class="master-btn" 
+      [class.live]="speechRec.isListening()"
+      (click)="toggleSession()"
+      [attr.aria-label]="speechRec.isListening() ? 'Stop voice conversation' : 'Start voice conversation'">
+      {{ speechRec.isListening() ? '⏹️' : '🎤' }}
+    </button>
+  </div>
+
+  <!-- Status & Transcript Area -->
+  <div class="vt-status-area">
+    <!-- Pulsing state badge -->
+    <div 
+      class="vt-badge" 
+      [class.show]="speechRec.isListening()"
+      [class.speaking]="isBlobSpeaking()">
+      <span class="vt-bdot"></span>
+      <span>{{ badgeText() }}</span>
+    </div>
+
+    <!-- Subtitle status -->
+    <div class="voice-status" [class.speaking]="isBlobSpeaking()">
+      {{ statusText() }}
+    </div>
+
+    <!-- Live Transcript Card -->
+    <div class="vt-transcript-card">
+      <div class="voice-transcript" [class.active]="speechRec.isListening()">
+        {{ speechRec.transcript() }}
+      </div>
+    </div>
+
+    <!-- Quick question prompt chips -->
+    <div class="vt-hints">
+      @for (hint of hintPrompts; track hint.text) {
+        <button type="button" class="vt-hint" (click)="onHintTap(hint.text)">
+          {{ hint.label }}
+        </button>
+      }
+    </div>
+  </div>
+</div>

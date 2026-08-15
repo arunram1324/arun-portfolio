@@ -1,0 +1,80 @@
+<div class="vt-chat-panel">
+  <!-- Initial State when no messages yet (Restored Original Clean UI) -->
+  @if (vtService.messages().length === 0 && !vtService.isTyping() && !vtService.isStreaming()) {
+    <div class="vt-init">
+      <p class="vt-sub">
+        I'm Arun K R — a UX/UI & Product Designer passionately crafting enterprise FinTech, ERP, and design systems for over 3+ years.
+      </p>
+      <h2 class="vt-hl">What would you like to know about my work?</h2>
+    </div>
+  }
+
+  <!-- Messages scrollable area -->
+  <div class="vt-msgs" #messagesContainer>
+    @for (msg of vtService.messages(); track msg.id) {
+      <div class="msg" [class.u]="msg.sender === 'user'" [class.ai]="msg.sender === 'ai'">
+        <div class="m-av">{{ msg.sender === 'user' ? 'U' : 'A' }}</div>
+        <div class="m-body">
+          <div class="bub">{{ msg.text }}</div>
+          <div class="m-time">{{ msg.timestamp }}</div>
+        </div>
+      </div>
+    }
+
+    <!-- Thinking indicator -->
+    @if (vtService.isTyping()) {
+      <div class="msg ai" aria-label="Arun is thinking">
+        <div class="m-av">A</div>
+        <div class="m-body">
+          <div class="typ-bub">
+            <div class="td"></div>
+            <div class="td"></div>
+            <div class="td"></div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Streaming AI Response -->
+    @if (vtService.isStreaming()) {
+      <div class="msg ai">
+        <div class="m-av">A</div>
+        <div class="m-body">
+          <div class="bub">
+            {{ vtService.streamingChunk() }}<span class="cur">●</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Chat Input Bar -->
+  <div class="vt-zone">
+    <div class="vt-bar">
+      <textarea 
+        #inputField
+        class="vt-inp" 
+        placeholder="Ask Arun's AI assistant anything..." 
+        rows="1"
+        [(ngModel)]="inputText"
+        (keydown)="onKeyDown($event)"
+        (input)="onInputResize(inputField)">
+      </textarea>
+      
+      <div class="vt-acts">
+        <button 
+          type="button"
+          class="btn-sd" 
+          (click)="onSend()" 
+          [disabled]="!inputText.trim() || vtService.isStreaming()"
+          aria-label="Send Message">
+          
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

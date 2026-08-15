@@ -1,0 +1,37 @@
+<div class="ps-wrapper">
+  <div class="intro-card">
+    <!-- Top Left Title -->
+    <h2 class="intro-ttl">Self Intro</h2>
+
+    <!-- Center Top Arch & Photo Pillar -->
+    <div class="intro-arch-container">
+      <div class="intro-blue-pillar">
+        <div class="intro-photo-arch">
+          <img 
+            [src]="portfolioData.profileInfo().photoUrl || 'arun-profile.jpg'" 
+            [alt]="portfolioData.profileInfo().name" 
+            class="intro-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          
+          <div class="intro-ph-fallback" style="display: none;">AK</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Body Content -->
+    <div class="intro-body">
+      <h3 class="intro-hl">{{ portfolioData.profileInfo().headline }}</h3>
+      
+      <p class="intro-desc">
+        {{ portfolioData.profileInfo().bio }}
+      </p>
+
+      <!-- Industry Tags -->
+      <div class="intro-tags">
+        @for (tag of portfolioData.profileInfo().industries; track tag) {
+          <span class="i-tag">{{ tag }}</span>
+        }
+      </div>
+    </div>
+  </div>
+</div>

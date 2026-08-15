@@ -1,0 +1,70 @@
+@use 'styles/mixins' as *;
+
+.bnav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--both);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--sb);
+  border-top: 1px solid var(--border);
+  z-index: 50;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  box-shadow: 0 -4px 20px var(--shadow);
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+
+  @media (max-width: 767px) {
+    display: grid;
+  }
+}
+
+.tbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  min-height: 54px;
+  transition: color 0.15s, background 0.15s;
+  @include tap-friendly;
+
+  &.on {
+    color: var(--accent);
+  }
+
+  &:active {
+    background: var(--accent-subtle);
+  }
+}
+
+.tico {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.tlbl {
+  font-family: var(--fb);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}

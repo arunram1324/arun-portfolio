@@ -1,0 +1,163 @@
+<div class="ps-wrapper">
+  <app-panel-card title="Design & Development Toolkit" monogram="TL">
+    <div class="tools-intro">
+      <p class="tools-desc">
+        Industry-standard software, rapid prototyping engines, design system infrastructure, and frontend technologies I utilize daily to ship production-ready interfaces.
+      </p>
+    </div>
+
+    <div class="ggrid">
+      @for (tool of portfolioData.tools(); track tool.id; let i = $index) {
+        <div class="gchip" [style.animation-delay]="(i * 0.03) + 's'" tabindex="0" role="listitem">
+          
+          <!-- Tool Official Vector Logo -->
+          <div class="tool-logo-box">
+            @switch (tool.id) {
+              @case ('figma') {
+                <svg width="24" height="24" viewBox="0 0 38 57" fill="none">
+                  <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z" fill="#1ABCFE"/>
+                  <path d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z" fill="#0ACF83"/>
+                  <path d="M19 0V19H28.5C33.7467 19 38 14.7467 38 9.5C38 4.25329 33.7467 0 28.5 0H19Z" fill="#FF7262"/>
+                  <path d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z" fill="#F24E1E"/>
+                  <path d="M0 28.5C0 33.7467 4.25329 38 9.5 38H19V19H9.5C4.25329 19 0 23.2533 0 28.5Z" fill="#A259FF"/>
+                </svg>
+              }
+              @case ('protopie') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#FF375F"/>
+                  <path d="M7 6H13C15.2091 6 17 7.79086 17 10C17 12.2091 15.2091 14 13 14H10V18H7V6Z" fill="white"/>
+                  <path d="M10 9V11H13C13.5523 11 14 10.5523 14 10C14 9.44772 13.5523 9 13 9H10Z" fill="#FF375F"/>
+                </svg>
+              }
+              @case ('adobexd') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#470137"/>
+                  <text x="4.5" y="16.5" font-family="'DM Sans', sans-serif" font-weight="900" font-size="11" fill="#FF61F6">Xd</text>
+                </svg>
+              }
+              @case ('illustrator') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#330000"/>
+                  <text x="6" y="16.5" font-family="'DM Sans', sans-serif" font-weight="900" font-size="11" fill="#FF9A00">Ai</text>
+                </svg>
+              }
+              @case ('photoshop') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#001E36"/>
+                  <text x="5.5" y="16.5" font-family="'DM Sans', sans-serif" font-weight="900" font-size="11" fill="#31A8FF">Ps</text>
+                </svg>
+              }
+              @case ('aftereffects') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#00005B"/>
+                  <text x="5" y="16.5" font-family="'DM Sans', sans-serif" font-weight="900" font-size="11" fill="#9999FF">Ae</text>
+                </svg>
+              }
+              @case ('spline') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#0E0F14"/>
+                  <path d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12" stroke="#FF4071" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="12" cy="12" r="3" fill="#36C5F0"/>
+                </svg>
+              }
+              @case ('framer') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 3H20V10H12L4 3Z" fill="#0055FF"/>
+                  <path d="M4 10H12L20 17H4V10Z" fill="#0055FF"/>
+                  <path d="M12 17V23L4 17H12Z" fill="#0055FF"/>
+                </svg>
+              }
+              @case ('principle') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#1C1D24"/>
+                  <path d="M13 3L6 13H12L11 21L18 10H12L13 3Z" fill="#A855F7"/>
+                </svg>
+              }
+              @case ('figjam') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#E76A8E"/>
+                  <path d="M8 7H16V9.5H8V7ZM8 11.5H16V13.5H8V11.5ZM8 15.5H13V17.5H8V15.5Z" fill="white"/>
+                </svg>
+              }
+              @case ('miro') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#FFD02F"/>
+                  <path d="M7 6L9 11L11 6H13L15 11L17 6H19L16 18H14L12 13L10 18H8L5 6H7Z" fill="#050038"/>
+                </svg>
+              }
+              @case ('notion') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#000000"/>
+                  <text x="6" y="17" font-family="'DM Sans', sans-serif" font-weight="900" font-size="14" fill="#FFFFFF">N</text>
+                </svg>
+              }
+              @case ('maze') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#181828"/>
+                  <circle cx="12" cy="12" r="6" stroke="#00E5A3" stroke-width="2.5"/>
+                  <circle cx="12" cy="12" r="2" fill="#00E5A3"/>
+                </svg>
+              }
+              @case ('html5') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 2L5.8 20L12 22L18.2 20L20 2H4Z" fill="#E34F26"/>
+                  <path d="M12 4V20.2L16.8 18.7L18.3 4H12Z" fill="#EF652A"/>
+                  <path d="M8 8H16L15.6 12H12V14.5L14.7 13.8L14.9 11.5H16.9L16.5 16L12 17.3V15.2" fill="white"/>
+                </svg>
+              }
+              @case ('css3') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 2L5.8 20L12 22L18.2 20L20 2H4Z" fill="#1572B6"/>
+                  <path d="M12 4V20.2L16.8 18.7L18.3 4H12Z" fill="#33A9DC"/>
+                  <path d="M8 8H16L15.6 12H12V14.5L14.7 13.8L14.9 11.5H16.9L16.5 16L12 17.3V15.2" fill="white"/>
+                </svg>
+              }
+              @case ('javascript') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#F7DF1E"/>
+                  <text x="6" y="17" font-family="'DM Sans', sans-serif" font-weight="900" font-size="12" fill="#000000">JS</text>
+                </svg>
+              }
+              @case ('typescript') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#3178C6"/>
+                  <text x="5.5" y="17" font-family="'DM Sans', sans-serif" font-weight="900" font-size="12" fill="#FFFFFF">TS</text>
+                </svg>
+              }
+              @case ('angular') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2L3 5.5L4.4 17.5L12 22L19.6 17.5L21 5.5L12 2Z" fill="#E23237"/>
+                  <path d="M12 2V22L19.6 17.5L21 5.5L12 2Z" fill="#B52E31"/>
+                  <path d="M12 5.5L7.5 16H9.5L10.5 13.5H13.5L14.5 16H16.5L12 5.5ZM12.7 11.5H11.3L12 9.5L12.7 11.5Z" fill="white"/>
+                </svg>
+              }
+              @case ('vscode') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M17.5 2.5L7.5 10.5L3.5 7.5L2 8.5V15.5L3.5 16.5L7.5 13.5L17.5 21.5L22 19.5V4.5L17.5 2.5Z" fill="#007ACC"/>
+                  <path d="M17.5 2.5L8.5 12L17.5 21.5L22 19.5V4.5L17.5 2.5Z" fill="#1F9CF0"/>
+                </svg>
+              }
+              @case ('github') {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect width="24" height="24" rx="5" fill="#24292E"/>
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M12 4C7.58 4 4 7.58 4 12C4 15.54 6.29 18.53 9.47 19.59C9.87 19.66 10.02 19.42 10.02 19.21C10.02 19.02 10.01 18.39 10.01 17.62C7.78 18.1 7.31 16.66 7.31 16.66C6.95 15.73 6.42 15.49 6.42 15.49C5.69 14.99 6.48 15 6.48 15C7.29 15.06 7.71 15.83 7.71 15.83C8.43 17.06 9.59 16.71 10.05 16.5C10.12 15.98 10.33 15.62 10.56 15.42C8.78 15.22 6.91 14.53 6.91 11.45C6.91 10.57 7.22 9.86 7.74 9.3C7.66 9.1 7.38 8.28 7.82 7.18C7.82 7.18 8.49 6.96 10.02 8C10.66 7.82 11.34 7.73 12.01 7.73C12.68 7.73 13.36 7.82 14 8C15.53 6.96 16.2 7.18 16.2 7.18C16.64 8.28 16.36 9.1 16.28 9.3C16.8 9.86 17.11 10.57 17.11 11.45C17.11 14.54 15.23 15.21 13.44 15.41C13.73 15.66 13.99 16.16 13.99 16.92C13.99 18.01 13.98 18.89 13.98 19.21C13.98 19.42 14.13 19.67 14.53 19.59C17.71 18.53 20 15.54 20 12C20 7.58 16.42 4 12 4Z" fill="white"/>
+                </svg>
+              }
+              @default {
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              }
+            }
+          </div>
+
+          <!-- Tool Info -->
+          <div class="tool-info">
+            <span class="tool-name">{{ tool.name }}</span>
+            <span class="tool-type">{{ tool.type }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </app-panel-card>
+</div>

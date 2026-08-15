@@ -1,0 +1,301 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.vt-voice-panel {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 24px;
+  gap: 0;
+  transition: background 0.25s var(--ease);
+}
+
+.vt-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, var(--accent-subtle), transparent 70%);
+  transition: background 0.8s ease;
+
+  &.listening {
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, var(--accent-subtle), transparent 70%);
+  }
+
+  &.speaking {
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, var(--accent-subtle), transparent 70%);
+  }
+}
+
+.vt-blob-stage {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+
+  @media (max-width: 767px) {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.voice-blob {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  background: var(--accent);
+  filter: blur(18px);
+  transform: scale(1);
+  animation: morph 8s ease-in-out infinite;
+  transition: background 0.6s ease, filter 0.5s ease, transform 0.5s ease;
+  z-index: 1;
+  cursor: pointer;
+
+  &.listening {
+    transform: scale(1.35);
+    background: var(--accent);
+    filter: blur(22px);
+    animation: morph 8s ease-in-out infinite, breathe 3s ease-in-out infinite;
+  }
+
+  &.speaking {
+    transform: scale(2.0);
+    background: var(--purple-accent);
+    filter: blur(32px);
+    animation: morph 4s ease-in-out infinite, pulse-fast 0.5s ease-in-out infinite;
+  }
+
+  @media (max-width: 767px) {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.master-btn {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 10;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: transform 0.15s, background 0.2s;
+  @include tap-friendly;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &.live {
+    background: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.v-ring {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(43, 92, 230, 0.18);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  [data-theme="dark"] & {
+    border-color: rgba(217, 242, 26, 0.18);
+  }
+
+  &.active {
+    opacity: 1;
+
+    &:nth-child(1) {
+      animation: ring-expand 2.5s ease-out infinite;
+    }
+    &:nth-child(2) {
+      animation: ring-expand 2.5s ease-out 0.83s infinite;
+    }
+    &:nth-child(3) {
+      animation: ring-expand 2.5s ease-out 1.66s infinite;
+    }
+  }
+}
+
+.vt-status-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 400px;
+  padding: 0 20px;
+  width: 100%;
+  margin-top: 28px;
+  z-index: 1;
+
+  @media (max-width: 767px) {
+    margin-top: 18px;
+    gap: 10px;
+  }
+}
+
+.vt-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--fb);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: all 0.3s ease;
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.speaking {
+    background: rgba(155, 81, 224, 0.12);
+    color: var(--purple-accent);
+
+    .vt-bdot {
+      background: var(--purple-accent);
+    }
+  }
+}
+
+.vt-bdot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: badge-pulse 1.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes badge-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.voice-status {
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.35s ease;
+
+  &.speaking {
+    color: var(--purple-accent);
+  }
+}
+
+.vt-transcript-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 14px 20px;
+  min-height: 54px;
+  width: 100%;
+  box-shadow: 0 2px 12px var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.voice-transcript {
+  font-family: var(--fb);
+  font-size: 14px;
+  color: var(--body);
+  line-height: 1.6;
+  text-align: center;
+  font-style: italic;
+  transition: color 0.3s ease;
+
+  &.active {
+    font-style: normal;
+    color: var(--tx);
+  }
+}
+
+.vt-hints {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.vt-hint {
+  font-family: var(--fb);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--body);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s;
+  @include tap-friendly;
+
+  &:hover {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  @media (max-width: 440px) {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}

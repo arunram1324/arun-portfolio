@@ -1,0 +1,51 @@
+// ==========================================
+// DYNAMIC TYPOGRAPHY CONFIGURATION
+// ==========================================
+
+body {
+  font-family: var(--fb);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tx);
+}
+
+h1, h2, h3, h4, h5, h6,
+.display-font, 
+.proj-ttl, 
+.topbar-name, 
+.sc-name, 
+.sec-title, 
+.pcard-name, 
+.exp-co, 
+.landing-title, 
+.panel-title,
+.tb-brand,
+.login-title,
+.qa-q {
+  font-family: var(--fd);
+  font-weight: var(--heading-weight, 700);
+  letter-spacing: var(--heading-spacing, -0.02em);
+}
+
+.heading-xl {
+  font-family: var(--fd);
+  font-size: 36px;
+  font-weight: var(--heading-weight, 700);
+  color: var(--tx);
+  letter-spacing: var(--heading-spacing, -0.02em);
+  transition: color 0.25s var(--ease);
+
+  @media (max-width: 767px) {
+    font-size: 24px;
+  }
+}
+
+.heading-lg {
+  font-family: var(--fd);
+  font-size: 28px;
+  font-weight: var(--heading-weight, 700);
+  text-transform: uppercase;
+  color: var(--tx);
+  letter-spacing: 0.02em;
+  transition: color 0.25s var(--ease);
+}

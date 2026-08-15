@@ -1,0 +1,44 @@
+// ==========================================
+// SCSS MIXINS & REUSABLE UTILITIES
+// ==========================================
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin glass-panel {
+  background: rgba(242, 242, 245, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  [data-theme="dark"] & {
+    background: rgba(15, 15, 15, 0.92);
+  }
+}
+
+@mixin custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+  }
+}
+
+@mixin tap-friendly {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  cursor: pointer;
+}
+
+@mixin transition-all {
+  transition: all 0.25s var(--ease);
+}

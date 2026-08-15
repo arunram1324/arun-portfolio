@@ -1,0 +1,430 @@
+<div class="marttin-container">
+  
+  <!-- ================= 1. STICKY EDITORIAL NAVBAR ================= -->
+  <header class="m-navbar">
+    <div class="m-nav-left">
+      <div class="m-brand-av">
+        <img 
+          [src]="portfolioData.profileInfo().photoUrl || 'arun-profile.jpg'" 
+          [alt]="portfolioData.profileInfo().name"
+          class="m-av-img"
+          onerror="this.style.display='none'">
+      </div>
+      <div class="m-brand-info">
+        <span class="m-brand-name">{{ portfolioData.profileInfo().name }}</span>
+        <span class="m-brand-role">{{ portfolioData.profileInfo().role }}</span>
+      </div>
+      @if (portfolioData.contactInfo().isAvailable) {
+        <div class="m-avail-pill">
+          <span class="pulse-dot"></span>
+          <span>Available for work</span>
+        </div>
+      }
+    </div>
+
+    <nav class="m-nav-links">
+      @if (portfolioData.sectionVisibility().showProjects) {
+        <button type="button" class="m-nlink" (click)="scrollTo('m-work')">Work</button>
+      }
+      @if (portfolioData.sectionVisibility().showVirtualTwin) {
+        <button type="button" class="m-nlink" (click)="scrollTo('m-twin')">Virtual Twin 🎙️</button>
+      }
+      @if (portfolioData.sectionVisibility().showExperience) {
+        <button type="button" class="m-nlink" (click)="scrollTo('m-experience')">Experience</button>
+      }
+      @if (portfolioData.sectionVisibility().showSkillsTools) {
+        <button type="button" class="m-nlink" (click)="scrollTo('m-toolkit')">Toolkit</button>
+      }
+      @if (portfolioData.sectionVisibility().showContact) {
+        <button type="button" class="m-nlink" (click)="scrollTo('m-contact')">Contact</button>
+      }
+    </nav>
+
+    <div class="m-nav-right">
+      <!-- Theme Switcher -->
+      <button 
+        type="button" 
+        class="m-theme-btn" 
+        (click)="themeService.toggleTheme()"
+        [attr.aria-label]="themeService.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+        @if (themeService.isDark()) {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        } @else {
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= 2. MARTTIN EDITORIAL HERO SECTION ================= -->
+  @if (portfolioData.sectionVisibility().showHero) {
+    <section class="m-hero-sec">
+      <div class="m-hero-badge">
+        <span class="m-badge-text">📍 Chennai, India · Open for Global Roles</span>
+      </div>
+
+      <h1 class="m-hero-title">
+        {{ portfolioData.profileInfo().headline }}
+      </h1>
+
+      <p class="m-hero-bio">
+        {{ portfolioData.profileInfo().bio }}
+      </p>
+
+      <!-- Industry Specialization Chips -->
+      <div class="m-ind-row">
+        <span class="m-ind-label">Domain Expertise:</span>
+        <div class="m-ind-tags">
+          @for (ind of portfolioData.profileInfo().industries; track ind) {
+            <span class="m-ind-tag">{{ ind }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="m-hero-actions">
+        @if (portfolioData.sectionVisibility().showProjects) {
+          <button type="button" class="m-btn-primary" (click)="scrollTo('m-work')">
+            <span>Explore Selected Work</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <polyline points="19 12 12 19 5 12"/>
+            </svg>
+          </button>
+        }
+        @if (portfolioData.sectionVisibility().showVirtualTwin) {
+          <button type="button" class="m-btn-secondary" (click)="scrollTo('m-twin')">
+            <span>Talk to Virtual Twin 🎙️</span>
+          </button>
+        }
+        @if (portfolioData.sectionVisibility().showContact) {
+          <button type="button" class="m-btn-ghost" (click)="scrollTo('m-contact')">
+            <span>Get in Touch ↗</span>
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================= 3. SELECTED WORK / CASE STUDIES (01) ================= -->
+  @if (portfolioData.sectionVisibility().showProjects) {
+    <section id="m-work" class="m-sec">
+      <div class="m-sec-header">
+        <div class="m-sec-title-group">
+          <span class="m-sec-num">01 / PORTFOLIO</span>
+          <h2 class="m-sec-title">Selected Case Studies</h2>
+        </div>
+
+        <!-- Category Filters directly below Title -->
+        <div class="m-cat-pills">
+          @for (c of portfolioData.projectCategories(); track c) {
+            <button 
+              type="button" 
+              class="m-cat-pill" 
+              [class.active]="selectedCategory() === c"
+              (click)="selectCategory(c)">
+              {{ c }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="m-projects-grid">
+        @for (project of filteredProjects(); track project.id; let i = $index) {
+          <div 
+            class="m-pcard" 
+            role="button"
+            tabindex="0"
+            (click)="openProject(project)"
+            (keydown.enter)="openProject(project)"
+            aria-label="View case study details">
+            
+            <div class="m-pcard-media-wrap">
+              @if (isVideoProject(project)) {
+                @if (project.image && !project.image.startsWith('data:video') && !project.image.endsWith('.mp4') && !project.image.endsWith('.webm')) {
+                  <img [src]="project.image" [alt]="project.name" class="m-pcard-img">
+                } @else {
+                  <video 
+                    [src]="getVideoSrc(project) + '#t=0.5'" 
+                    class="m-pcard-img m-pcard-vid" 
+                    muted 
+                    playsinline 
+                    preload="metadata"></video>
+                }
+
+                <div class="m-play-btn-overlay">
+                  <div class="m-play-circle">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <polygon points="6 4 20 12 6 20 6 4"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="m-media-tag">▶ Video Showcase</div>
+              } @else if (project.image) {
+                <img [src]="project.image" [alt]="project.name" class="m-pcard-img">
+              } @else {
+                <div class="m-pcard-ph">
+                  <span>{{ project.name }}</span>
+                </div>
+              }
+              <span class="m-cat-badge">{{ project.category }}</span>
+            </div>
+
+            <div class="m-pcard-body">
+              <div class="m-pcard-row">
+                <h3 class="m-pcard-title">{{ project.name }}</h3>
+                @if (project.metrics) {
+                  <span class="m-pcard-metric">{{ project.metrics }}</span>
+                }
+              </div>
+
+              <p class="m-pcard-desc">{{ project.description }}</p>
+
+              <div class="m-pcard-tags">
+                @for (tag of project.tags; track tag) {
+                  <span class="m-ptag">{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================= 4. VIRTUAL TWIN INTERACTIVE AI (02) ================= -->
+  @if (portfolioData.sectionVisibility().showVirtualTwin) {
+    <section id="m-twin" class="m-sec">
+      <div class="m-sec-header">
+        <div>
+          <span class="m-sec-num">02 / INTERACTION</span>
+          <h2 class="m-sec-title">Virtual Twin Voice AI</h2>
+        </div>
+      </div>
+
+      <div class="m-twin-card">
+        <div class="m-twin-stage">
+          <div class="m-twin-avatar-box">
+            <div class="m-twin-avatar" [class.speaking]="isSpeaking()">
+              <img 
+                [src]="portfolioData.profileInfo().photoUrl || 'arun-profile.jpg'" 
+                [alt]="portfolioData.profileInfo().name">
+            </div>
+            @if (isSpeaking()) {
+              <div class="m-wave-anim">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            }
+          </div>
+
+          <div class="m-twin-speech-box">
+            <div class="m-twin-status">
+              <span class="status-dot" [class.live]="isSpeaking()"></span>
+              <span>{{ isSpeaking() ? 'Virtual Twin is speaking...' : 'Virtual Twin is Ready' }}</span>
+            </div>
+            <p class="m-twin-bubble">{{ spokenTranscript() }}</p>
+          </div>
+        </div>
+
+        <div class="m-twin-prompts">
+          <span class="m-prompts-label">Tap a question to ask Arun:</span>
+          <div class="m-prompt-chips">
+            @for (qa of portfolioData.voiceKnowledge(); track qa.id) {
+              <button type="button" class="m-prompt-chip" (click)="triggerVoiceQA(qa)">
+                <span>🎙️</span>
+                <span>{{ qa.questionLabel || qa.keywords }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- ================= 5. CAREER TIMELINE & EXPERIENCE (03) ================= -->
+  @if (portfolioData.sectionVisibility().showExperience) {
+    <section id="m-experience" class="m-sec">
+      <div class="m-sec-header">
+        <div>
+          <span class="m-sec-num">03 / BACKGROUND</span>
+          <h2 class="m-sec-title">Work Experience & Roles</h2>
+        </div>
+      </div>
+
+      <div class="m-exp-timeline">
+        @for (exp of portfolioData.experiences(); track exp.company + exp.period) {
+          <div class="m-exp-item">
+            <div class="m-exp-left">
+              <span class="m-exp-period" [class.current]="exp.current">{{ exp.period }}</span>
+              @if (exp.current) {
+                <span class="m-current-badge">Active Role</span>
+              }
+            </div>
+
+            <div class="m-exp-right">
+              <h3 class="m-exp-role">{{ exp.role }}</h3>
+              <div class="m-exp-company">{{ exp.company }}</div>
+              <p class="m-exp-desc">{{ exp.description }}</p>
+
+              @if (exp.highlights?.length) {
+                <div class="m-exp-highlights">
+                  @for (hl of exp.highlights; track hl) {
+                    <div class="m-hl-row">
+                      <span class="m-hl-bullet">▹</span>
+                      <span>{{ hl }}</span>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================= 6. DESIGN & DEV TOOLKIT (04) ================= -->
+  @if (portfolioData.sectionVisibility().showSkillsTools) {
+    <section id="m-toolkit" class="m-sec">
+      <div class="m-sec-header">
+        <div>
+          <span class="m-sec-num">04 / STACK</span>
+          <h2 class="m-sec-title">Design & Development Toolkit</h2>
+        </div>
+      </div>
+
+      <div class="m-tools-grid">
+        @for (tool of portfolioData.tools(); track tool.id) {
+          <div class="m-tool-card">
+            <div class="m-tool-icon-box">
+              <span class="m-tool-icon">🛠️</span>
+            </div>
+            <div class="m-tool-info">
+              <h4 class="m-tool-name">{{ tool.name }}</h4>
+              <span class="m-tool-type">{{ tool.type }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================= 7. GET IN TOUCH & FOOTER (05) ================= -->
+  @if (portfolioData.sectionVisibility().showContact) {
+    <section id="m-contact" class="m-sec m-contact-sec">
+      <div class="m-sec-header">
+        <div>
+          <span class="m-sec-num">05 / REACH OUT</span>
+          <h2 class="m-sec-title">{{ portfolioData.contactInfo().availabilityTitle }}</h2>
+          <p class="m-contact-sub">{{ portfolioData.contactInfo().subtitle }}</p>
+        </div>
+      </div>
+
+      <div class="m-contact-grid">
+        @for (link of portfolioData.contactLinks(); track link.label) {
+          <div class="m-contact-card">
+            <div class="m-contact-icon">{{ link.icon }}</div>
+            <div class="m-contact-info">
+              <span class="m-contact-label">{{ link.label }}</span>
+              <span class="m-contact-val">{{ link.href }}</span>
+            </div>
+            @if (link.action === 'copy') {
+              <button type="button" class="m-btn-contact-act" (click)="copyContact(link.href, link.label)">
+                Copy
+              </button>
+            } @else {
+              <a [href]="link.href" target="_blank" rel="noopener noreferrer" class="m-btn-contact-act">
+                Visit ↗
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ================= 8. EDITORIAL FOOTER ================= -->
+  <footer class="m-footer">
+    <div class="m-footer-top">
+      <span class="m-footer-brand">{{ portfolioData.profileInfo().name }}</span>
+      <span class="m-footer-rights">© 2026 · Designed & Built with Precision</span>
+    </div>
+  </footer>
+
+  <!-- ================= IN-PAGE LIGHTBOX VIDEO / PROJECT MODAL ================= -->
+  @if (activeModalProject()) {
+    <div class="pmodal-backdrop" (click)="closeProjectModal()">
+      <div class="pmodal-dialog" (click)="$event.stopPropagation()">
+        
+        <button type="button" class="pmodal-close" (click)="closeProjectModal()" aria-label="Close Lightbox">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <div class="pmodal-media-wrap">
+          @if (isVideoProject(activeModalProject())) {
+            <video 
+              #videoPlayer
+              [src]="getVideoSrc(activeModalProject())" 
+              class="pmodal-video-player" 
+              controls 
+              autoplay 
+              playsinline 
+              preload="auto"
+              (play)="isPlaying.set(true)"
+              (pause)="isPlaying.set(false)"
+              (error)="onVideoError($event)"></video>
+
+            @if (!isPlaying()) {
+              <div class="pmodal-center-play" (click)="togglePlay($event)" title="Play Video with Audio">
+                <div class="center-play-disc">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6 4 20 12 6 20 6 4"/>
+                  </svg>
+                </div>
+              </div>
+            }
+          } @else if (activeModalProject()?.image) {
+            <img [src]="activeModalProject()?.image" [alt]="activeModalProject()?.name" class="pmodal-img-display">
+          }
+        </div>
+
+        <div class="pmodal-details">
+          <div class="pmodal-meta-row">
+            <span class="pmodal-cat-badge">{{ activeModalProject()?.category }}</span>
+            @if (activeModalProject()?.metrics) {
+              <span class="pmodal-metric-badge">★ {{ activeModalProject()?.metrics }}</span>
+            }
+          </div>
+
+          <h2 class="pmodal-title">{{ activeModalProject()?.name }}</h2>
+          <p class="pmodal-desc">{{ activeModalProject()?.description }}</p>
+
+          @if (activeModalProject()?.tags?.length) {
+            <div class="pmodal-tags">
+              @for (tag of activeModalProject()?.tags; track tag) {
+                <span class="pmodal-tag">{{ tag }}</span>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>

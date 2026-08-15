@@ -1,0 +1,39 @@
+<div class="ps-wrapper">
+  <app-panel-card title="Core Competencies" monogram="SK" customClass="skills-panel">
+    <div class="skills-intro">
+      <p class="skills-desc">
+        Structured breakdown of technical & design capabilities across UX/UI Design, Web Development, Mobile Prototyping, and Motion Graphics.
+      </p>
+    </div>
+
+    <!-- Categorized Skills Grid -->
+    <div class="categories-grid">
+      @for (category of portfolioData.skillCategories(); track category.id; let i = $index) {
+        <div class="cat-card" [style.animation-delay]="(i * 0.08) + 's'" tabindex="0" role="region" [attr.aria-label]="category.categoryName">
+          
+          <!-- Category Header -->
+          <div class="cat-header">
+            <div class="cat-title-group">
+              <span class="cat-icon">{{ category.icon }}</span>
+              <h3 class="cat-title">{{ category.categoryName }}</h3>
+            </div>
+            <span class="cat-count">{{ category.skills.length }} Skills</span>
+          </div>
+
+          <!-- Category Description -->
+          <p class="cat-desc">{{ category.description }}</p>
+
+          <!-- Categorized Skill Badges -->
+          <div class="cat-skills">
+            @for (skill of category.skills; track skill) {
+              <span class="s-pill" tabindex="0">
+                <span class="s-dot"></span>
+                <span class="s-text">{{ skill }}</span>
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </app-panel-card>
+</div>

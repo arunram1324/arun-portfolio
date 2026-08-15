@@ -1,0 +1,60 @@
+// ==========================================
+// DESIGN SYSTEM TOKENS & CSS VARIABLES
+// ==========================================
+
+:root {
+  // Light Theme Tokens
+  --bg: #F2F2F5;
+  --sb: #FFFFFF;
+  --card: #FFFFFF;
+  --accent: #2B5CE6;
+  --accent-dark: #1E4BC8;
+  --accent-subtle: rgba(43, 92, 230, 0.10);
+  --tx: #0F0F0F;
+  --body: #6B6B80;
+  --nav: #1A1A1A;
+  --muted: #B0B0C0;
+  --border: rgba(0, 0, 0, 0.08);
+  --shadow: rgba(0, 0, 0, 0.06);
+  --purple-accent: #9B51E0;
+  --success: #22C55E;
+  --topbar-bg: rgba(242, 242, 245, 0.95);
+
+  // Typography
+  --fd: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fb: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  // Dimensions & Transitions
+  --sbw: 296px;
+  --icw: 64px;
+  --toph: 58px;
+  --both: 68px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-sm: 12px;
+}
+
+[data-theme="dark"] {
+  // Dark Theme Tokens
+  --bg: #0F0F0F;
+  --sb: #161616;
+  --card: #1C1C1C;
+  --accent: #D9F21A;
+  --accent-dark: #B8CC10;
+  --accent-subtle: rgba(217, 242, 26, 0.10);
+  --tx: #F0F0F0;
+  --body: #8A8A9F;
+  --nav: #DEDEDE;
+  --muted: #484860;
+  --border: rgba(255, 255, 255, 0.08);
+  --shadow: rgba(0, 0, 0, 0.4);
+  --purple-accent: #B37BF2;
+  --topbar-bg: rgba(15, 15, 15, 0.95);
+}
+
+// SCSS Variables for mixins & media breakpoints
+$screen-mobile-max: 767px;
+$screen-tablet-min: 768px;
+$screen-tablet-max: 1023px;
+$screen-desktop-min: 1024px;

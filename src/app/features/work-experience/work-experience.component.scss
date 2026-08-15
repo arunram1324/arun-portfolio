@@ -1,0 +1,134 @@
+@use 'styles/mixins' as *;
+
+:host {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ps-wrapper {
+  padding: 24px;
+  overflow-y: auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  @include custom-scrollbar;
+
+  @media (max-width: 767px) {
+    padding: 16px 14px calc(var(--both) + 20px + env(safe-area-inset-bottom));
+    display: block;
+    height: auto;
+  }
+}
+
+app-panel-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.tl-item {
+  display: flex;
+  gap: 20px;
+  position: relative;
+  padding-bottom: 38px;
+  animation: fu 0.35s ease both;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.tl-l {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 24px;
+}
+
+.tl-ic {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.25s;
+}
+
+.tl-ln {
+  flex: 1;
+  width: 2px;
+  background: var(--border);
+  margin-top: 6px;
+  transition: background 0.25s;
+}
+
+.tl-r {
+  flex: 1;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.tl-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--body);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+
+  &.current {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.tl-co {
+  font-family: var(--fb);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.015em;
+  margin-bottom: 2px;
+  transition: color 0.25s;
+}
+
+.tl-role {
+  font-family: var(--fb);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tx);
+  margin-bottom: 8px;
+}
+
+.tl-tx {
+  font-family: var(--fb);
+  font-size: 14px;
+  color: var(--body);
+  line-height: 1.75;
+  max-width: 520px;
+  transition: color 0.25s;
+}

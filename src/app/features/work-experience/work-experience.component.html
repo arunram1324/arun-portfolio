@@ -1,0 +1,31 @@
+<div class="ps-wrapper">
+  <app-panel-card title="Work Experience" monogram="WX">
+    <div class="timeline">
+      @for (item of portfolioData.experiences(); track item.company; let i = $index) {
+        <div class="tl-item" [style.animation-delay]="(i * 0.08) + 's'">
+          <!-- Left Icon & Line -->
+          <div class="tl-l">
+            <div class="tl-ic">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            @if (i < portfolioData.experiences().length - 1) {
+              <div class="tl-ln"></div>
+            }
+          </div>
+
+          <!-- Right Content Details -->
+          <div class="tl-r">
+            <div class="tl-badge" [class.current]="item.current">
+              {{ item.period }}
+            </div>
+            <h3 class="tl-co">{{ item.company }}</h3>
+            <div class="tl-role">{{ item.role }}</div>
+            <p class="tl-tx">{{ item.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </app-panel-card>
+</div>

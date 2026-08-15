@@ -1,0 +1,1240 @@
+<div class="admin-wrapper">
+  <!-- Top Navigation Bar -->
+  <header class="admin-topbar">
+    <div class="tb-left">
+      <div class="logo-box">AK</div>
+      <div class="tb-brand-group">
+        <span class="tb-brand">ARUN K R</span>
+        <span class="tb-tag">CMS Portal</span>
+      </div>
+    </div>
+
+    <div class="tb-right">
+      <button type="button" class="btn-ghost" (click)="viewPublicSite()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span>View Public Portfolio</span>
+      </button>
+
+      <button type="button" class="btn-icon" (click)="themeService.toggleTheme()" aria-label="Toggle Theme">
+        @if (themeService.isDark()) {
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        } @else {
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        }
+      </button>
+
+      <button type="button" class="btn-logout" (click)="onLogoutClick()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Body with Sidebar + Tab Content -->
+  <div class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'templates'" 
+          (click)="setTab('templates')">
+          <span class="nav-ico">🎨</span>
+          <span class="nav-txt">Templates & Layouts</span>
+          <span class="nav-badge-pill">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin' : 'Bento' }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'visibility'" 
+          (click)="setTab('visibility')">
+          <span class="nav-ico">👁️</span>
+          <span class="nav-txt">Visibility & Privacy</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'voice-ai'" 
+          (click)="setTab('voice-ai')">
+          <span class="nav-ico">🎙️</span>
+          <span class="nav-txt">Voice AI Q&A</span>
+          <span class="nav-count">{{ portfolioData.voiceKnowledge().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'projects'" 
+          (click)="setTab('projects')">
+          <span class="nav-ico">🚀</span>
+          <span class="nav-txt">Projects & Case Studies</span>
+          <span class="nav-count">{{ portfolioData.projects().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'skills'" 
+          (click)="setTab('skills')">
+          <span class="nav-ico">⭐</span>
+          <span class="nav-txt">Skills & Competencies</span>
+          <span class="nav-count">{{ portfolioData.skillCategories().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'tools'" 
+          (click)="setTab('tools')">
+          <span class="nav-ico">🛠️</span>
+          <span class="nav-txt">Design & Dev Toolkit</span>
+          <span class="nav-count">{{ portfolioData.tools().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'experience'" 
+          (click)="setTab('experience')">
+          <span class="nav-ico">💼</span>
+          <span class="nav-txt">Work Experience</span>
+          <span class="nav-count">{{ portfolioData.experiences().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'profile'" 
+          (click)="setTab('profile')">
+          <span class="nav-ico">👤</span>
+          <span class="nav-txt">Profile & Bio</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'contact'" 
+          (click)="setTab('contact')">
+          <span class="nav-ico">📬</span>
+          <span class="nav-txt">Get in Touch & Links</span>
+          <span class="nav-count">{{ portfolioData.contactLinks().length }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'typography'" 
+          (click)="setTab('typography')">
+          <span class="nav-ico">🖋️</span>
+          <span class="nav-txt">Dynamic Typography</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'theme'" 
+          (click)="setTab('theme')">
+          <span class="nav-ico">🎨</span>
+          <span class="nav-txt">Dynamic Theme Colors</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn-reset" (click)="onResetDefaults()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+          <span>Reset Factory Defaults</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+      
+      <!-- ================= 0A. TEMPLATES & LAYOUTS TAB ================= -->
+      @if (activeTab() === 'templates') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Portfolio Layout & Template Switcher</h2>
+              <p class="sec-desc">
+                Choose the visual layout and structure presented to recruiters and visitors. All your data, projects, and voice AI stay synchronized across templates.
+              </p>
+            </div>
+          </div>
+
+          <div class="templates-grid">
+            <!-- Template 1: Bento OS App Layout -->
+            <div class="template-card" [class.selected]="portfolioData.activeTemplate() === 'bento'">
+              <div class="tpl-preview-box bento-preview">
+                <div class="tpl-mini-sidebar"></div>
+                <div class="tpl-mini-stage">
+                  <div class="tpl-mini-card"></div>
+                  <div class="tpl-mini-grid">
+                    <div></div><div></div>
+                  </div>
+                </div>
+                @if (portfolioData.activeTemplate() === 'bento') {
+                  <span class="tpl-active-badge">✓ ACTIVE ON LIVE SITE</span>
+                }
+              </div>
+
+              <div class="tpl-info">
+                <div class="tpl-header">
+                  <h3 class="tpl-title">Bento OS — Multi-Panel App Layout</h3>
+                  <span class="tpl-type-tag">App / Bento</span>
+                </div>
+                <p class="tpl-desc">
+                  Interactive software-grade layout with collapsible sidebar navigation, virtual twin stage, and responsive bento panel views.
+                </p>
+                <button 
+                  type="button" 
+                  class="btn-select-tpl" 
+                  [class.active]="portfolioData.activeTemplate() === 'bento'"
+                  (click)="selectTemplate('bento')">
+                  {{ portfolioData.activeTemplate() === 'bento' ? 'Active Template' : 'Switch to Bento OS' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Template 2: Marttin Framer Template -->
+            <div class="template-card" [class.selected]="portfolioData.activeTemplate() === 'marttin'">
+              <div class="tpl-preview-box marttin-preview">
+                <div class="tpl-mini-header"></div>
+                <div class="tpl-mini-hero"></div>
+                <div class="tpl-mini-projects">
+                  <div></div><div></div>
+                </div>
+                @if (portfolioData.activeTemplate() === 'marttin') {
+                  <span class="tpl-active-badge">✓ ACTIVE ON LIVE SITE</span>
+                }
+              </div>
+
+              <div class="tpl-info">
+                <div class="tpl-header">
+                  <h3 class="tpl-title">Marttin — Editorial Minimalist Showcase</h3>
+                  <span class="tpl-type-tag">Framer Style</span>
+                </div>
+                <p class="tpl-desc">
+                  High-contrast editorial portfolio inspired by Framer Marttin with giant bold typography, full-page scrolling, and 2-column featured case studies.
+                </p>
+                <button 
+                  type="button" 
+                  class="btn-select-tpl" 
+                  [class.active]="portfolioData.activeTemplate() === 'marttin'"
+                  (click)="selectTemplate('marttin')">
+                  {{ portfolioData.activeTemplate() === 'marttin' ? 'Active Template' : 'Switch to Marttin (Framer)' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ================= 0B. SECTION VISIBILITY & PRIVACY TAB ================= -->
+      @if (activeTab() === 'visibility') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Recruiter Privacy & Section Visibility</h2>
+              <p class="sec-desc">
+                Selectively show or hide entire sections on the live portfolio. Perfect for controlling what recruiters or clients see before sharing your link.
+              </p>
+            </div>
+          </div>
+
+          <div class="visibility-cards-list">
+            <!-- 1. Work Experience -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showExperience">
+              <div class="vis-card-left">
+                <span class="vis-icon">💼</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Work Experience & Employment History</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showExperience">
+                      {{ portfolioData.sectionVisibility().showExperience ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    Includes your past employers (Pentica, etc.), roles, dates, and achievements. Turn this off if you don't want recruiters to view your full work history.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showExperience" (change)="toggleVisibility('showExperience')">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- 2. Virtual Twin (Voice AI) -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showVirtualTwin">
+              <div class="vis-card-left">
+                <span class="vis-icon">🎙️</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Virtual Twin (Interactive Voice AI)</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showVirtualTwin">
+                      {{ portfolioData.sectionVisibility().showVirtualTwin ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    The interactive AI voice stage and recruiter interview questions.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showVirtualTwin" (change)="toggleVisibility('showVirtualTwin')">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- 3. Projects & Case Studies -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showProjects">
+              <div class="vis-card-left">
+                <span class="vis-icon">🚀</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Projects & Case Studies Showcase</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showProjects">
+                      {{ portfolioData.sectionVisibility().showProjects ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    The featured case studies grid, video teasers, category tabs, and interactive project lightboxes.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showProjects" (change)="toggleVisibility('showProjects')">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- 4. Design & Dev Toolkit / Skills -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showSkillsTools">
+              <div class="vis-card-left">
+                <span class="vis-icon">🛠️</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Design & Development Toolkit / Skills</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showSkillsTools">
+                      {{ portfolioData.sectionVisibility().showSkillsTools ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    Figma, ProtoPie, Adobe CC, Frontend skills, and UX research methodologies.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showSkillsTools" (change)="toggleVisibility('showSkillsTools')">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- 5. Get in Touch & Contact -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showContact">
+              <div class="vis-card-left">
+                <span class="vis-icon">📬</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Get In Touch & Social Links</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showContact">
+                      {{ portfolioData.sectionVisibility().showContact ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    Contact methods, availability banner, email copy, LinkedIn, Dribbble, and GitHub links.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showContact" (change)="toggleVisibility('showContact')">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- 6. Hero & Introduction -->
+            <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showHero">
+              <div class="vis-card-left">
+                <span class="vis-icon">🌟</span>
+                <div class="vis-text">
+                  <div class="vis-title-row">
+                    <h3 class="vis-title">Hero Header & Bio Introduction</h3>
+                    <span class="vis-status-badge" [class.on]="portfolioData.sectionVisibility().showHero">
+                      {{ portfolioData.sectionVisibility().showHero ? 'LIVE & VISIBLE' : 'HIDDEN FROM VISITORS' }}
+                    </span>
+                  </div>
+                  <p class="vis-desc">
+                    The top headline, bio description, location pill, and domain expertise tags.
+                  </p>
+                </div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [checked]="portfolioData.sectionVisibility().showHero" (change)="toggleVisibility('showHero')">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ================= 1. VOICE AI Q&A TAB ================= -->
+      @if (activeTab() === 'voice-ai') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Voice AI Knowledge Base</h2>
+              <p class="sec-desc">
+                Add trigger keywords and custom spoken answers for recruiters, clients, and interviewers.
+              </p>
+            </div>
+            <button type="button" class="btn-primary" (click)="openAddVoice()">
+              + Add New Voice Q&A
+            </button>
+          </div>
+
+          <div class="qa-grid">
+            @for (item of portfolioData.voiceKnowledge(); track item.id) {
+              <div class="qa-card">
+                <div class="qa-top">
+                  <div class="qa-cat">{{ item.category || 'general' }}</div>
+                  <div class="card-acts">
+                    <button type="button" class="btn-act edit" (click)="openEditVoice(item)">Edit</button>
+                    <button type="button" class="btn-act del" (click)="deleteVoiceQA(item.id)">Delete</button>
+                  </div>
+                </div>
+
+                <h3 class="qa-q">{{ item.questionLabel || 'Trigger: ' + item.keywords }}</h3>
+                
+                <div class="qa-kw-box">
+                  <span class="kw-tag">Keywords</span>
+                  <span class="kw-txt">{{ item.keywords }}</span>
+                </div>
+
+                <div class="qa-spoken">
+                  <div class="qa-subhead">🎙️ Spoken Voice Response:</div>
+                  <p class="qa-text">{{ item.voiceAnswer }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 2. PROJECTS TAB ================= -->
+      @if (activeTab() === 'projects') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Case Studies & Projects</h2>
+              <p class="sec-desc">Manage your featured case studies, direct image file uploads, and project categories.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="openAddProject()">
+              + Add New Project
+            </button>
+          </div>
+
+          <!-- Manage Categories Box -->
+          <div class="cat-manage-box">
+            <h4 class="cm-title">Project Categories (Filter Tabs)</h4>
+            
+            <div class="cm-input-row">
+              <input 
+                type="text" 
+                class="form-input" 
+                placeholder="e.g. Posters & Branding, Video & Motion, AI Tools..." 
+                [ngModel]="newProjectCat()" 
+                (ngModelChange)="newProjectCat.set($event)"
+                (keydown.enter)="addProjectCategory()">
+              <button type="button" class="btn-primary" (click)="addProjectCategory()" [disabled]="!newProjectCat().trim()">
+                + Add Category
+              </button>
+            </div>
+
+            <div class="cm-pills">
+              @for (c of portfolioData.projectCategories(); track c) {
+                <span class="cm-pill">
+                  <span>{{ c }}</span>
+                  @if (c !== 'All') {
+                    <button type="button" class="btn-pill-del" (click)="deleteProjectCategory(c)" title="Delete category">×</button>
+                  }
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="proj-grid">
+            @for (proj of portfolioData.projects(); track proj.id) {
+              <div class="proj-card">
+                <div class="proj-banner">
+                  @if (proj.videoUrl || proj.mediaType === 'video' || (proj.image && (proj.image.startsWith('data:video') || proj.image.endsWith('.mp4') || proj.image.endsWith('.webm') || proj.image.endsWith('.mov')))) {
+                    <video [src]="proj.videoUrl || proj.image" class="proj-img proj-vid-bg" muted loop autoplay playsinline></video>
+                    <span class="proj-vid-indicator">▶ Video</span>
+                  } @else if (proj.image) {
+                    <img [src]="proj.image" alt="Project preview" class="proj-img">
+                  } @else {
+                    <div class="proj-ph">No Media Set</div>
+                  }
+                  <span class="proj-badge">{{ proj.category }}</span>
+                </div>
+
+                <div class="proj-body">
+                  <div class="proj-row">
+                    <h3 class="proj-name">{{ proj.name }}</h3>
+                    <span class="proj-metric">{{ proj.metrics }}</span>
+                  </div>
+
+                  <p class="proj-desc">{{ proj.description }}</p>
+
+                  <div class="proj-tags">
+                    @for (t of proj.tags; track t) {
+                      <span class="p-tag">{{ t }}</span>
+                    }
+                  </div>
+
+                  <div class="card-acts bottom">
+                    <button type="button" class="btn-act edit" (click)="openEditProject(proj)">Edit / Upload Image</button>
+                    <button type="button" class="btn-act del" (click)="deleteProject(proj.id)">Delete</button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 3. SKILLS TAB ================= -->
+      @if (activeTab() === 'skills') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Skills & Core Competencies</h2>
+              <p class="sec-desc">Add new skill badges or remove existing skills from each category.</p>
+            </div>
+          </div>
+
+          <!-- Quick Add Skill Box -->
+          <div class="quick-add-box">
+            <div class="qa-field">
+              <label class="form-label">Category</label>
+              <select class="form-select" [ngModel]="selectedSkillCatId()" (ngModelChange)="selectedSkillCatId.set($event)">
+                @for (c of portfolioData.skillCategories(); track c.id) {
+                  <option [value]="c.id">{{ c.icon }} {{ c.categoryName }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="qa-field grow">
+              <label class="form-label">New Skill Name</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                placeholder="e.g. Design Systems, Tailwind CSS, Spline..." 
+                [ngModel]="newSkillName()" 
+                (ngModelChange)="newSkillName.set($event)"
+                (keydown.enter)="addSkillToSelected()">
+            </div>
+
+            <button type="button" class="btn-primary" (click)="addSkillToSelected()" [disabled]="!newSkillName().trim()">
+              + Add Skill
+            </button>
+          </div>
+
+          <!-- Categories List -->
+          <div class="cats-stack">
+            @for (cat of portfolioData.skillCategories(); track cat.id) {
+              <div class="cat-box">
+                <div class="cat-top">
+                  <div class="cat-head">
+                    <span class="cat-ico">{{ cat.icon }}</span>
+                    <h3 class="cat-name">{{ cat.categoryName }}</h3>
+                    <span class="cat-pill">{{ cat.skills.length }} Skills</span>
+                  </div>
+                </div>
+
+                <p class="cat-info">{{ cat.description }}</p>
+
+                <div class="skill-pills">
+                  @for (s of cat.skills; track s) {
+                    <span class="s-pill">
+                      <span>{{ s }}</span>
+                      <button type="button" class="btn-pill-del" (click)="removeSkill(cat.id, s)" title="Remove skill">×</button>
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 4. TOOLS TAB ================= -->
+      @if (activeTab() === 'tools') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Design & Dev Toolkit</h2>
+              <p class="sec-desc">Manage software, prototyping engines, and development stack items.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="openAddTool()">
+              + Add Tool
+            </button>
+          </div>
+
+          <div class="tools-grid">
+            @for (tool of portfolioData.tools(); track tool.id) {
+              <div class="tool-item-card">
+                <div class="tool-det">
+                  <h3 class="t-name">{{ tool.name }}</h3>
+                  <span class="t-type">{{ tool.type }}</span>
+                  <span class="t-cat">{{ tool.category || 'design' }}</span>
+                </div>
+                <div class="card-acts">
+                  <button type="button" class="btn-act edit" (click)="openEditTool(tool)">Edit</button>
+                  <button type="button" class="btn-act del" (click)="deleteTool(tool.id)">Delete</button>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 5. EXPERIENCE TAB ================= -->
+      @if (activeTab() === 'experience') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Work Experience Timeline</h2>
+              <p class="sec-desc">Add or update previous roles, companies, dates, and achievement descriptions.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="openAddExp()">
+              + Add Experience
+            </button>
+          </div>
+
+          <div class="exp-stack">
+            @for (exp of portfolioData.experiences(); track exp.company; let i = $index) {
+              <div class="exp-card">
+                <div class="exp-top">
+                  <div>
+                    <span class="exp-badge" [class.curr]="exp.current">{{ exp.period }}</span>
+                    <h3 class="exp-co">{{ exp.company }}</h3>
+                    <div class="exp-role">{{ exp.role }}</div>
+                  </div>
+                  <div class="card-acts">
+                    <button type="button" class="btn-act edit" (click)="openEditExp(exp, i)">Edit</button>
+                    <button type="button" class="btn-act del" (click)="deleteExp(i)">Delete</button>
+                  </div>
+                </div>
+                <p class="exp-desc">{{ exp.description }}</p>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 6. PROFILE & PHOTO TAB ================= -->
+      @if (activeTab() === 'profile') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Profile, Bio & Profile Photo</h2>
+              <p class="sec-desc">Directly upload your portrait photo, edit name, headline, and bio paragraph.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="saveProfile()">
+              Save Profile Changes
+            </button>
+          </div>
+
+          <div class="profile-card-layout">
+            <!-- Left Photo Upload Box -->
+            <div class="photo-upload-box">
+              <div class="avatar-preview-wrap">
+                <img 
+                  [src]="profileForm.photoUrl || 'arun-profile.jpg'" 
+                  alt="Profile Avatar" 
+                  class="avatar-preview-img"
+                  onerror="this.src='arun-profile.jpg'">
+              </div>
+
+              <div class="photo-upload-actions">
+                <label class="btn-upload-label">
+                  <input type="file" accept="image/*" class="file-hidden-input" (change)="onProfilePhotoUpload($event)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <span>Upload New Photo</span>
+                </label>
+                <small class="upload-hint">Supports PNG, JPG, WEBP from your machine.</small>
+              </div>
+            </div>
+
+            <!-- Right Profile Form Inputs -->
+            <div class="profile-form-grid">
+              <div class="form-group">
+                <label class="form-label">Full Display Name</label>
+                <input type="text" class="form-input" [(ngModel)]="profileForm.name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Professional Role / Title</label>
+                <input type="text" class="form-input" [(ngModel)]="profileForm.role">
+              </div>
+
+              <div class="form-group full">
+                <label class="form-label">Self Intro Headline</label>
+                <input type="text" class="form-input" [(ngModel)]="profileForm.headline">
+              </div>
+
+              <div class="form-group full">
+                <label class="form-label">Bio Description</label>
+                <textarea class="form-textarea" rows="4" [(ngModel)]="profileForm.bio"></textarea>
+              </div>
+
+              <!-- Industries Tags Manager -->
+              <div class="form-group full">
+                <label class="form-label">Industry Tags</label>
+                <div class="tag-input-row">
+                  <input 
+                    type="text" 
+                    class="form-input" 
+                    placeholder="Add industry (e.g. AI / Web3)..." 
+                    [ngModel]="newIndustryTag()" 
+                    (ngModelChange)="newIndustryTag.set($event)"
+                    (keydown.enter)="addIndustry()">
+                  <button type="button" class="btn-primary" (click)="addIndustry()">+ Add</button>
+                </div>
+
+                <div class="industry-pills">
+                  @for (ind of profileForm.industries; track ind) {
+                    <span class="i-pill">
+                      <span>{{ ind }}</span>
+                      <button type="button" class="btn-pill-del" (click)="removeIndustry(ind)">×</button>
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ================= 7. GET IN TOUCH & SOCIALS TAB ================= -->
+      @if (activeTab() === 'contact') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Get in Touch & Social Links</h2>
+              <p class="sec-desc">Edit contact subtitle, availability card status, and social/email connect links.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="saveContactInfo()">
+              Save Contact Settings
+            </button>
+          </div>
+
+          <!-- Contact Settings Card -->
+          <div class="contact-settings-box">
+            <h4 class="cm-title">Contact Introduction & Availability Banner</h4>
+            
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Contact Intro Subtitle</label>
+                <textarea class="form-textarea" rows="3" [(ngModel)]="contactInfoForm.subtitle"></textarea>
+              </div>
+
+              <div class="form-group-row">
+                <label class="checkbox-label">
+                  <input type="checkbox" [(ngModel)]="contactInfoForm.isAvailable">
+                  <span class="chk-text">Show "Available for Opportunities" Status Card</span>
+                </label>
+              </div>
+
+              @if (contactInfoForm.isAvailable) {
+                <div class="avail-inputs-grid">
+                  <div class="form-group">
+                    <label class="form-label">Availability Title</label>
+                    <input type="text" class="form-input" [(ngModel)]="contactInfoForm.availabilityTitle">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Availability Subtitle</label>
+                    <input type="text" class="form-input" [(ngModel)]="contactInfoForm.availabilitySubtitle">
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Social Links Manager -->
+          <div class="sec-header" style="margin-top: 32px;">
+            <div>
+              <h3 class="sec-title" style="font-size: 19px;">Social & Email Connect Links</h3>
+              <p class="sec-desc">Add or edit your email, LinkedIn, Dribbble, GitHub, or custom social links.</p>
+            </div>
+            <button type="button" class="btn-primary" (click)="openAddContactLink()">
+              + Add Contact Link
+            </button>
+          </div>
+
+          <div class="contact-links-grid">
+            @for (link of portfolioData.contactLinks(); track link.label; let i = $index) {
+              <div class="clink-admin-card">
+                <div class="clink-admin-ico">{{ link.icon }}</div>
+                <div class="clink-admin-det">
+                  <span class="clink-admin-lbl">{{ link.label }}</span>
+                  <span class="clink-admin-href">{{ link.href }}</span>
+                  <span class="clink-admin-action">
+                    Action: <strong>{{ link.action === 'copy' ? 'Copy to Clipboard' : 'Open Link ↗' }}</strong>
+                  </span>
+                </div>
+                <div class="card-acts">
+                  <button type="button" class="btn-act edit" (click)="openEditContactLink(link, i)">Edit</button>
+                  <button type="button" class="btn-act del" (click)="deleteContactLink(i)">Delete</button>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 8. DYNAMIC TYPOGRAPHY TAB ================= -->
+      @if (activeTab() === 'typography') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Dynamic Typography Engine</h2>
+              <p class="sec-desc">
+                Customize Heading typography separately from Description & Body typography. Google Fonts load live across all components!
+              </p>
+            </div>
+          </div>
+
+          <!-- Live Typography Sandbox Preview Box -->
+          <div class="typo-sandbox-card">
+            <div class="typo-sandbox-badge">Live Typography Preview</div>
+            <h1 class="sandbox-heading" [style.font-family]="portfolioData.typography().headingFont + ', sans-serif'">
+              Designing Scalable & High-Impact Digital Experiences
+            </h1>
+            <p class="sandbox-body" [style.font-family]="portfolioData.typography().bodyFont + ', sans-serif'">
+              This is a live preview of how your chosen Heading font (<strong>{{ portfolioData.typography().headingFont }}</strong>) pairs with your Description font (<strong>{{ portfolioData.typography().bodyFont }}</strong>). Task efficiency and visual hierarchy ensure maximum legibility for users and stakeholders.
+            </p>
+          </div>
+
+          <!-- Section 1: Heading Fonts -->
+          <div class="typo-group-box">
+            <div class="typo-hdr-row">
+              <h4 class="typo-group-title">1. Heading & Title Font Family</h4>
+              <span class="typo-active-pill">Active: {{ portfolioData.typography().headingFont }}</span>
+            </div>
+
+            <div class="font-presets-grid">
+              @for (font of headingFontPresets; track font.family) {
+                <div 
+                  class="font-card" 
+                  [class.active]="portfolioData.typography().headingFont === font.family"
+                  (click)="setHeadingFont(font.family)">
+                  <span class="font-cat-tag">{{ font.category }}</span>
+                  <h3 class="font-sample" [style.font-family]="font.family + ', sans-serif'">{{ font.name }}</h3>
+                  <span class="font-preview-txt" [style.font-family]="font.family + ', sans-serif'">Ag 123 Showcase</span>
+                </div>
+              }
+            </div>
+
+            <!-- Heading Weight & Letter Spacing -->
+            <div class="typo-controls-row">
+              <div class="control-item">
+                <label class="control-label">Heading Font Weight</label>
+                <div class="control-btns">
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingWeight === '600'" (click)="setHeadingWeight('600')">Semi-Bold (600)</button>
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingWeight === '700'" (click)="setHeadingWeight('700')">Bold (700)</button>
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingWeight === '800'" (click)="setHeadingWeight('800')">Extra Bold (800)</button>
+                </div>
+              </div>
+
+              <div class="control-item">
+                <label class="control-label">Heading Letter Spacing</label>
+                <div class="control-btns">
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingLetterSpacing === '-0.03em'" (click)="setHeadingLetterSpacing('-0.03em')">Tight (-0.03em)</button>
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingLetterSpacing === '-0.02em'" (click)="setHeadingLetterSpacing('-0.02em')">Modern (-0.02em)</button>
+                  <button type="button" class="btn-ctrl" [class.active]="portfolioData.typography().headingLetterSpacing === '0em'" (click)="setHeadingLetterSpacing('0em')">Normal (0em)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Description & Body Fonts -->
+          <div class="typo-group-box" style="margin-top: 24px;">
+            <div class="typo-hdr-row">
+              <h4 class="typo-group-title">2. Description & Body Font Family</h4>
+              <span class="typo-active-pill">Active: {{ portfolioData.typography().bodyFont }}</span>
+            </div>
+
+            <div class="font-presets-grid">
+              @for (font of bodyFontPresets; track font.family) {
+                <div 
+                  class="font-card" 
+                  [class.active]="portfolioData.typography().bodyFont === font.family"
+                  (click)="setBodyFont(font.family)">
+                  <span class="font-cat-tag">{{ font.category }}</span>
+                  <h3 class="font-sample" [style.font-family]="font.family + ', sans-serif'">{{ font.name }}</h3>
+                  <p class="font-body-sample" [style.font-family]="font.family + ', sans-serif'">
+                    The quick brown fox jumps over the lazy dog. 1234567890
+                  </p>
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ================= 9. DYNAMIC THEME COLORS TAB ================= -->
+      @if (activeTab() === 'theme') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <h2 class="sec-title">Dynamic Theme Color Settings</h2>
+              <p class="sec-desc">Choose from premium curated presets or pick your custom hex color to brand the portfolio.</p>
+            </div>
+          </div>
+
+          <div class="theme-config-box">
+            <!-- Active Color Banner -->
+            <div class="active-color-banner">
+              <div class="active-swatch" [style.background]="portfolioData.accentColor()"></div>
+              <div class="active-info">
+                <span class="active-label">Active Accent Color</span>
+                <span class="active-hex">{{ portfolioData.accentColor() }}</span>
+              </div>
+            </div>
+
+            <!-- Color Presets -->
+            <h4 class="theme-subtitle">Curated Color Palettes</h4>
+            <div class="palette-grid">
+              @for (p of themePresets; track p.hex) {
+                <div 
+                  class="palette-card" 
+                  [class.active]="portfolioData.accentColor().toLowerCase() === p.hex.toLowerCase()"
+                  (click)="selectThemeColor(p.hex)">
+                  <div class="swatch-circle" [style.background]="p.hex"></div>
+                  <span class="palette-name">{{ p.name }}</span>
+                  <span class="palette-hex">{{ p.hex }}</span>
+                </div>
+              }
+            </div>
+
+            <!-- Custom Color Picker -->
+            <h4 class="theme-subtitle" style="margin-top: 24px;">Custom Color Picker</h4>
+            <div class="custom-color-row">
+              <input 
+                type="color" 
+                class="color-picker-input" 
+                [value]="portfolioData.accentColor()"
+                (input)="onCustomColorInput($event)">
+              
+              <input 
+                type="text" 
+                class="form-input hex-input" 
+                [ngModel]="portfolioData.accentColor()"
+                (ngModelChange)="portfolioData.setAccentColor($event)">
+              
+              <span class="color-hint">Live preview applies instantly across public views!</span>
+            </div>
+          </div>
+        </section>
+      }
+
+    </main>
+  </div>
+
+  <!-- ================= CUSTOM UI CONFIRMATION DIALOG MODAL ================= -->
+  @if (confirmModalOpen() && confirmConfig()) {
+    <div class="modal-backdrop confirm-backdrop" (click)="closeConfirm()">
+      <div class="confirm-dialog" (click)="$event.stopPropagation()">
+        
+        <div class="confirm-icon-wrap" [class.danger]="confirmConfig()?.isDanger">
+          @if (confirmConfig()?.isDanger) {
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          } @else {
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+          }
+        </div>
+
+        <div class="confirm-content">
+          <h3 class="confirm-title">{{ confirmConfig()?.title }}</h3>
+          <p class="confirm-message">{{ confirmConfig()?.message }}</p>
+        </div>
+
+        <div class="confirm-actions">
+          <button type="button" class="btn-ghost" (click)="closeConfirm()">Cancel</button>
+          <button 
+            type="button" 
+            class="btn-confirm" 
+            [class.btn-danger]="confirmConfig()?.isDanger"
+            [class.btn-primary-confirm]="!confirmConfig()?.isDanger"
+            (click)="onExecuteConfirm()">
+            {{ confirmConfig()?.confirmBtnText }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- ================= UNIVERSAL CONTENT EDIT MODAL POPUP ================= -->
+  @if (isModalOpen()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">
+            {{ isEditMode() ? 'Edit' : 'Add New' }} 
+            {{ modalType() === 'voice-ai' ? 'Voice AI Question' : modalType() === 'projects' ? 'Project' : modalType() === 'tools' ? 'Tool' : modalType() === 'contact' ? 'Contact Link' : 'Work Experience' }}
+          </h3>
+          <button type="button" class="modal-close" (click)="closeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+          <!-- Voice AI Form -->
+          @if (modalType() === 'voice-ai') {
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Trigger Keywords (comma separated)</label>
+                <input type="text" class="form-input" placeholder="e.g. uber, driver app, ride sharing" [(ngModel)]="voiceForm.keywords">
+                <small class="form-hint">When a user speaks or chats any of these words, this response will trigger.</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Question Label (Short summary)</label>
+                <input type="text" class="form-input" placeholder="e.g. How would you redesign the Uber driver app?" [(ngModel)]="voiceForm.questionLabel">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Spoken Voice Answer (Spoken by AI Voice)</label>
+                <textarea class="form-textarea" rows="3" placeholder="Concise, natural spoken sentences..." [(ngModel)]="voiceForm.voiceAnswer"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Full Text Answer (For Chat display)</label>
+                <textarea class="form-textarea" rows="4" placeholder="Detailed bullet points or formatted text..." [(ngModel)]="voiceForm.textAnswer"></textarea>
+              </div>
+            </div>
+          }
+
+          <!-- Project Form with Direct File Upload -->
+          @if (modalType() === 'projects') {
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Project Title</label>
+                <input type="text" class="form-input" placeholder="e.g. MAP – MAN" [(ngModel)]="projectForm.name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-select" [(ngModel)]="projectForm.category">
+                  @for (c of portfolioData.projectCategories(); track c) {
+                    @if (c !== 'All') {
+                      <option [value]="c">{{ c }}</option>
+                    }
+                  }
+                </select>
+              </div>
+
+              <!-- Project Media (Image / Video File Upload) -->
+              <div class="form-group">
+                <label class="form-label">Project Video or Primary Media (.mp4, .webm, .mov, image)</label>
+                
+                @if (projectForm.videoUrl || projectForm.mediaType === 'video' || (projectForm.image && (projectForm.image.startsWith('data:video') || projectForm.image.endsWith('.mp4') || projectForm.image.endsWith('.webm') || projectForm.image.endsWith('.mov')))) {
+                  <div class="modal-img-preview-box">
+                    <video [src]="projectForm.videoUrl || projectForm.image" class="modal-vid-preview" controls autoplay muted loop playsinline></video>
+                    <button type="button" class="btn-remove-img" (click)="removeProjectMedia()">Remove Video</button>
+                  </div>
+                } @else if (projectForm.image) {
+                  <div class="modal-img-preview-box">
+                    <img [src]="projectForm.image" alt="Project preview" class="modal-img-preview">
+                    <button type="button" class="btn-remove-img" (click)="removeProjectMedia()">Remove Image</button>
+                  </div>
+                }
+
+                <div class="media-upload-options">
+                  <label class="btn-file-upload">
+                    <input type="file" accept="image/*,video/mp4,video/webm,video/quicktime,video/*" class="file-hidden-input" (change)="onProjectMediaUpload($event)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>{{ projectForm.image || projectForm.videoUrl ? 'Change Uploaded Video/Image' : 'Upload Video or Image from Computer' }}</span>
+                  </label>
+                </div>
+                <small class="form-hint">Upload MP4, WebM, MOV videos or mockup images.</small>
+              </div>
+
+              <!-- Optional Card Thumbnail / Poster Image for Video Projects -->
+              @if (projectForm.videoUrl || projectForm.mediaType === 'video') {
+                <div class="form-group">
+                  <label class="form-label">Custom Video Thumbnail / Poster Image (Optional)</label>
+                  @if (projectForm.image && !projectForm.image.startsWith('data:video') && !projectForm.image.endsWith('.mp4') && !projectForm.image.endsWith('.webm')) {
+                    <div class="modal-img-preview-box">
+                      <img [src]="projectForm.image" alt="Poster preview" class="modal-img-preview">
+                      <button type="button" class="btn-remove-img" (click)="removeProjectPoster()">Remove Thumbnail</button>
+                    </div>
+                  }
+                  <label class="btn-file-upload">
+                    <input type="file" accept="image/*" class="file-hidden-input" (change)="onProjectPosterUpload($event)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    <span>Upload Card Thumbnail Cover</span>
+                  </label>
+                  <small class="form-hint">Displayed on the card grid with a Play button overlay.</small>
+                </div>
+              }
+
+              <div class="form-group">
+                <label class="form-label">Key Metric / Result</label>
+                <input type="text" class="form-input" placeholder="e.g. -22% Dispatch Latency" [(ngModel)]="projectForm.metrics">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea" rows="3" placeholder="Brief project summary..." [(ngModel)]="projectForm.description"></textarea>
+              </div>
+            </div>
+          }
+
+          <!-- Tool Form -->
+          @if (modalType() === 'tools') {
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Tool Name</label>
+                <input type="text" class="form-input" placeholder="e.g. Figma" [(ngModel)]="toolForm.name">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Type / Subtitle</label>
+                <input type="text" class="form-input" placeholder="e.g. UI / UX Design & Systems" [(ngModel)]="toolForm.type">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-select" [(ngModel)]="toolForm.category">
+                  <option value="design">Design & Prototyping</option>
+                  <option value="dev">Frontend Development</option>
+                  <option value="research">UX Research & Strategy</option>
+                  <option value="3d">3D & Interactive</option>
+                </select>
+              </div>
+            </div>
+          }
+
+          <!-- Experience Form -->
+          @if (modalType() === 'experience') {
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Company Name</label>
+                <input type="text" class="form-input" placeholder="e.g. Pentica IT Service" [(ngModel)]="expForm.company">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Role Title</label>
+                <input type="text" class="form-input" placeholder="e.g. UX/UI & Product Designer" [(ngModel)]="expForm.role">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Period / Dates</label>
+                <input type="text" class="form-input" placeholder="e.g. Present or Feb 2024 – Feb 2025" [(ngModel)]="expForm.period">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Description & Achievements</label>
+                <textarea class="form-textarea" rows="4" [(ngModel)]="expForm.description"></textarea>
+              </div>
+            </div>
+          }
+
+          <!-- Contact Link Form -->
+          @if (modalType() === 'contact') {
+            <div class="form-stack">
+              <div class="form-group">
+                <label class="form-label">Platform Icon / Emoji</label>
+                <select class="form-select" [(ngModel)]="contactLinkForm.icon">
+                  <option value="📧">📧 Email</option>
+                  <option value="💼">💼 LinkedIn</option>
+                  <option value="🎨">🎨 Dribbble</option>
+                  <option value="🌐">🌐 Twitter / X</option>
+                  <option value="🐙">🐙 GitHub</option>
+                  <option value="💬">💬 WhatsApp</option>
+                  <option value="📝">📝 Medium / Blog</option>
+                  <option value="📱">📱 Phone / Mobile</option>
+                  <option value="🔗">🔗 Custom Link</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Display Label</label>
+                <input type="text" class="form-input" placeholder="e.g. arunram1324@gmail.com or linkedin.com/in/arunkr" [(ngModel)]="contactLinkForm.label">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Target URL / Mailto Address</label>
+                <input type="text" class="form-input" placeholder="e.g. mailto:arunram1324@gmail.com or https://linkedin.com/in/arunkr" [(ngModel)]="contactLinkForm.href">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Click Action</label>
+                <select class="form-select" [(ngModel)]="contactLinkForm.action">
+                  <option value="link">Open Link in New Tab (↗)</option>
+                  <option value="copy">Copy Text to Clipboard (Copy)</option>
+                </select>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeModal()">Cancel</button>
+          
+          @if (modalType() === 'voice-ai') {
+            <button type="button" class="btn-primary" (click)="saveVoiceQA()">Save Voice Q&A</button>
+          }
+          @if (modalType() === 'projects') {
+            <button type="button" class="btn-primary" (click)="saveProject()">Save Project</button>
+          }
+          @if (modalType() === 'tools') {
+            <button type="button" class="btn-primary" (click)="saveTool()">Save Tool</button>
+          }
+          @if (modalType() === 'experience') {
+            <button type="button" class="btn-primary" (click)="saveExp()">Save Experience</button>
+          }
+          @if (modalType() === 'contact') {
+            <button type="button" class="btn-primary" (click)="saveContactLink()">Save Contact Link</button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,40 @@
+<div class="ps-wrapper">
+  <app-panel-card title="Get in Touch" monogram="CT">
+    <div class="contact-box">
+      <p class="contact-sub">
+        {{ portfolioData.contactInfo().subtitle }}
+      </p>
+
+      <div class="clinks">
+        @for (link of portfolioData.contactLinks(); track link.label) {
+          <a 
+            class="clink" 
+            [href]="link.href" 
+            [target]="link.action === 'link' ? '_blank' : '_self'"
+            rel="noopener noreferrer"
+            (click)="onContactClick($event, link)">
+            
+            <span class="clink-ico">{{ link.icon }}</span>
+            <span class="clink-lbl">{{ link.label }}</span>
+            
+            @if (link.action === 'copy') {
+              <span class="clink-action-tag">Copy</span>
+            } @else {
+              <span class="clink-action-tag">↗</span>
+            }
+          </a>
+        }
+      </div>
+
+      @if (portfolioData.contactInfo().isAvailable) {
+        <div class="availability-card">
+          <div class="avail-dot"></div>
+          <div class="avail-text">
+            <strong>{{ portfolioData.contactInfo().availabilityTitle }}</strong>
+            <span>{{ portfolioData.contactInfo().availabilitySubtitle }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </app-panel-card>
+</div>

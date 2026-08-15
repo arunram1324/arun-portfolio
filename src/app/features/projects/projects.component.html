@@ -1,0 +1,217 @@
+<div class="ps-wrapper">
+  <div class="projects-card">
+    <!-- Header: Title + Pagination Top Row, Filters Below Title -->
+    <div class="proj-hdr">
+      <div class="proj-hdr-top">
+        <h2 class="proj-ttl">Projects</h2>
+
+        <div class="proj-nav">
+          <span class="proj-count-label">
+            Page {{ currentPage() + 1 }} of {{ maxPages() }}
+          </span>
+
+          <button 
+            type="button"
+            class="pnav pnav-p" 
+            (click)="prev()" 
+            [disabled]="currentPage() === 0"
+            aria-label="Previous Projects">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"/>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+          </button>
+
+          <button 
+            type="button"
+            class="pnav pnav-n" 
+            (click)="next()" 
+            [disabled]="currentPage() >= maxPages() - 1"
+            aria-label="Next Projects">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+              <polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters Row directly below Title -->
+      <div class="proj-filters-row">
+        <!-- Desktop/Tablet Category Filter Tabs -->
+        <div class="proj-cat-tabs">
+          @for (cat of portfolioData.projectCategories(); track cat) {
+            <button 
+              type="button" 
+              class="cat-tab-btn" 
+              [class.active]="selectedCategory() === cat"
+              (click)="selectCategory(cat)">
+              {{ cat }}
+            </button>
+          }
+        </div>
+
+        <!-- Mobile Category Dropdown -->
+        <div class="proj-cat-dropdown">
+          <select 
+            class="cat-select" 
+            [ngModel]="selectedCategory()" 
+            (ngModelChange)="selectCategory($event)">
+            @for (cat of portfolioData.projectCategories(); track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3x2 Projects Grid (6 Cards per Page) -->
+    <div class="pgrid">
+      @for (project of visibleProjects(); track project.id; let i = $index) {
+        <div 
+          class="pcard" 
+          [class.has-video]="isVideoProject(project)"
+          [style.animation-delay]="(i * 0.05) + 's'" 
+          tabindex="0" 
+          role="button" 
+          (click)="openProject(project)"
+          (keydown.enter)="openProject(project)"
+          aria-label="View project details and video">
+          
+          <!-- Project Video Thumbnail / Media Asset -->
+          @if (isVideoProject(project)) {
+            @if (project.image && !project.image.startsWith('data:video') && !project.image.endsWith('.mp4') && !project.image.endsWith('.webm')) {
+              <img [src]="project.image" [alt]="project.name" class="pcard-img" onerror="this.style.display='none'">
+            } @else {
+              <video 
+                [src]="getVideoSrc(project) + '#t=0.5'" 
+                class="pcard-img pcard-video-thumb" 
+                muted 
+                playsinline 
+                preload="metadata"></video>
+            }
+
+            <!-- Center Video Play Overlay Button -->
+            <div class="pcard-play-overlay">
+              <div class="play-btn-circle">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="6 4 20 12 6 20 6 4"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="pcard-media-badge">▶ Video Preview</div>
+          } @else if (project.image) {
+            <img 
+              [src]="project.image" 
+              [alt]="project.name" 
+              class="pcard-img" 
+              onerror="this.style.display='none'">
+          }
+
+          <!-- Category Badge on Top-Right -->
+          <div class="pcard-badge">{{ project.category }}</div>
+
+          <!-- Bottom Card Info Overlay -->
+          <div class="pcard-info">
+            <h3 class="pcard-name">{{ project.name }}</h3>
+            <p class="pcard-desc">{{ project.description }}</p>
+          </div>
+        </div>
+      } @empty {
+        <div class="no-proj-box">
+          <p class="no-proj-txt">No projects found in this category.</p>
+          <button type="button" class="btn-reset-cat" (click)="selectCategory('All')">Show All Projects</button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ================= IN-PAGE PROJECT / VIDEO LIGHTBOX MODAL ================= -->
+  @if (activeModalProject()) {
+    <div class="pmodal-backdrop" (click)="closeProjectModal()">
+      <div class="pmodal-dialog" (click)="$event.stopPropagation()">
+        
+        <!-- Modal Top Close Button -->
+        <button type="button" class="pmodal-close" (click)="closeProjectModal()" aria-label="Close Project Lightbox">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+
+        <!-- Media Player Stage -->
+        <div class="pmodal-media-wrap" [class.is-video]="isVideoProject(activeModalProject())">
+          @if (isVideoProject(activeModalProject())) {
+            <video 
+              #videoPlayer
+              [src]="getVideoSrc(activeModalProject())" 
+              class="pmodal-video-player" 
+              controls 
+              autoplay 
+              playsinline 
+              preload="auto"
+              (play)="isPlaying.set(true)"
+              (pause)="isPlaying.set(false)"
+              (error)="onVideoError($event)"></video>
+
+            <!-- Large Center Play/Pause Overlay Button when paused -->
+            @if (!isPlaying()) {
+              <div class="pmodal-center-play" (click)="togglePlay($event)" title="Click to Play Video with Audio">
+                <div class="center-play-disc">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6 4 20 12 6 20 6 4"/>
+                  </svg>
+                </div>
+              </div>
+            }
+
+            @if (videoLoadError()) {
+              <div class="video-error-box">
+                <p>⚠️ Unable to play this video format directly in browser. Please verify the video codec or upload an MP4/WebM video file.</p>
+              </div>
+            }
+          } @else if (activeModalProject()?.image) {
+            <img 
+              [src]="activeModalProject()?.image" 
+              [alt]="activeModalProject()?.name" 
+              class="pmodal-img-display">
+          } @else {
+            <div class="pmodal-ph-box">
+              <span class="pmodal-ph-icon">🎨</span>
+              <h3 class="pmodal-ph-title">{{ activeModalProject()?.name }}</h3>
+            </div>
+          }
+        </div>
+
+        <!-- Project Details & Case Study Info -->
+        <div class="pmodal-details">
+          <div class="pmodal-meta-row">
+            <div class="pmodal-badges">
+              <span class="pmodal-cat-badge">{{ activeModalProject()?.category }}</span>
+              @if (isVideoProject(activeModalProject())) {
+                <span class="pmodal-vid-tag">🎬 Video Showcase</span>
+              }
+            </div>
+            @if (activeModalProject()?.metrics) {
+              <span class="pmodal-metric-badge">★ {{ activeModalProject()?.metrics }}</span>
+            }
+          </div>
+
+          <h2 class="pmodal-title">{{ activeModalProject()?.name }}</h2>
+          <p class="pmodal-desc">{{ activeModalProject()?.description }}</p>
+
+          <!-- Tags -->
+          @if (activeModalProject()?.tags?.length) {
+            <div class="pmodal-tags">
+              @for (tag of activeModalProject()?.tags; track tag) {
+                <span class="pmodal-tag">{{ tag }}</span>
+              }
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

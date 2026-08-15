@@ -1,0 +1,68 @@
+<aside class="sb" [class.icon]="navService.isSidebarIconMode()" [class.open]="navService.isMobileDrawerOpen()">
+  <!-- Top Hamburger -->
+  <div class="sb-top">
+    <button class="hbg" (click)="toggleCollapse()" aria-label="Toggle Navigation Width">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Nav Items -->
+  <nav class="nav" aria-label="Main Navigation">
+    @for (item of navService.visibleNavItems(); track item.id) {
+      <button 
+        type="button"
+        class="ni-row" 
+        [class.on]="navService.activePage() === item.id"
+        [attr.data-tip]="item.tooltip"
+        (click)="onNavClick(item.id)">
+        
+        <span class="ico">
+          @switch (item.icon) {
+            @case ('mic') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+            }
+            @case ('user') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            }
+            @case ('briefcase') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            }
+            @case ('grid') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            }
+            @case ('tool') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            }
+            @case ('star') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            }
+            @case ('phone') {
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9A16 16 0 0 0 15 16.09l1.14-1.14a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            }
+          }
+        </span>
+        
+        <span class="lbl">{{ item.label }}</span>
+        <span class="chev">›</span>
+      </button>
+    }
+  </nav>
+
+  <!-- Profile Footer (Matching Exact Design) -->
+  <div class="sb-prof">
+    <div class="av">
+      <img 
+        [src]="portfolioData.profileInfo().photoUrl || 'arun-profile.jpg'" 
+        [alt]="portfolioData.profileInfo().name" 
+        class="av-img"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+      <span class="av-txt" style="display: none;">AK</span>
+    </div>
+    <div class="sb-info">
+      <div class="sb-name">{{ portfolioData.profileInfo().name }}</div>
+      <div class="sb-role">{{ portfolioData.profileInfo().role }}</div>
+    </div>
+  </div>
+</aside>
