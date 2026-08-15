@@ -1,7 +1,7 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings } from '../models/portfolio.model';
 
-const STORAGE_PREFIX = 'ak_portfolio_cms_';
+const STORAGE_PREFIX = 'ak_portfolio_v3_';
 
 const DEFAULT_SECTION_VISIBILITY: SectionVisibilitySettings = {
   showHero: true,
