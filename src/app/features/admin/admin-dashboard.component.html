@@ -52,7 +52,13 @@
           class="nav-item" 
           [class.active]="activeTab() === 'templates'" 
           (click)="setTab('templates')">
-          <span class="nav-ico">🎨</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2"/>
+              <path d="M3 9h18"/>
+              <path d="M9 21V9"/>
+            </svg>
+          </span>
           <span class="nav-txt">Templates & Layouts</span>
           <span class="nav-badge-pill">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin' : 'Bento' }}</span>
         </button>
@@ -62,7 +68,12 @@
           class="nav-item" 
           [class.active]="activeTab() === 'visibility'" 
           (click)="setTab('visibility')">
-          <span class="nav-ico">👁️</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </span>
           <span class="nav-txt">Visibility & Privacy</span>
         </button>
 
@@ -71,7 +82,13 @@
           class="nav-item" 
           [class.active]="activeTab() === 'voice-ai'" 
           (click)="setTab('voice-ai')">
-          <span class="nav-ico">🎙️</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+            </svg>
+          </span>
           <span class="nav-txt">Voice AI Q&A</span>
           <span class="nav-count">{{ portfolioData.voiceKnowledge().length }}</span>
         </button>
@@ -81,7 +98,12 @@
           class="nav-item" 
           [class.active]="activeTab() === 'projects'" 
           (click)="setTab('projects')">
-          <span class="nav-ico">🚀</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+            </svg>
+          </span>
           <span class="nav-txt">Projects & Case Studies</span>
           <span class="nav-count">{{ portfolioData.projects().length }}</span>
         </button>
@@ -91,7 +113,11 @@
           class="nav-item" 
           [class.active]="activeTab() === 'skills'" 
           (click)="setTab('skills')">
-          <span class="nav-ico">⭐</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            </svg>
+          </span>
           <span class="nav-txt">Skills & Competencies</span>
           <span class="nav-count">{{ portfolioData.skillCategories().length }}</span>
         </button>
@@ -101,7 +127,11 @@
           class="nav-item" 
           [class.active]="activeTab() === 'tools'" 
           (click)="setTab('tools')">
-          <span class="nav-ico">🛠️</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </span>
           <span class="nav-txt">Design & Dev Toolkit</span>
           <span class="nav-count">{{ portfolioData.tools().length }}</span>
         </button>
@@ -111,7 +141,12 @@
           class="nav-item" 
           [class.active]="activeTab() === 'experience'" 
           (click)="setTab('experience')">
-          <span class="nav-ico">💼</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </span>
           <span class="nav-txt">Work Experience</span>
           <span class="nav-count">{{ portfolioData.experiences().length }}</span>
         </button>
@@ -121,7 +156,12 @@
           class="nav-item" 
           [class.active]="activeTab() === 'profile'" 
           (click)="setTab('profile')">
-          <span class="nav-ico">👤</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
           <span class="nav-txt">Profile & Bio</span>
         </button>
 
@@ -130,7 +170,12 @@
           class="nav-item" 
           [class.active]="activeTab() === 'contact'" 
           (click)="setTab('contact')">
-          <span class="nav-ico">📬</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </span>
           <span class="nav-txt">Get in Touch & Links</span>
           <span class="nav-count">{{ portfolioData.contactLinks().length }}</span>
         </button>
@@ -140,7 +185,13 @@
           class="nav-item" 
           [class.active]="activeTab() === 'typography'" 
           (click)="setTab('typography')">
-          <span class="nav-ico">🖋️</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="4 7 4 4 20 4 20 7"/>
+              <line x1="9" y1="20" x2="15" y2="20"/>
+              <line x1="12" y1="4" x2="12" y2="20"/>
+            </svg>
+          </span>
           <span class="nav-txt">Dynamic Typography</span>
         </button>
 
@@ -149,7 +200,15 @@
           class="nav-item" 
           [class.active]="activeTab() === 'theme'" 
           (click)="setTab('theme')">
-          <span class="nav-ico">🎨</span>
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+          </span>
           <span class="nav-txt">Dynamic Theme Colors</span>
         </button>
       </nav>
@@ -264,7 +323,12 @@
             <!-- 1. Work Experience -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showExperience">
               <div class="vis-card-left">
-                <span class="vis-icon">💼</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Work Experience & Employment History</h3>
@@ -286,7 +350,13 @@
             <!-- 2. Virtual Twin (Voice AI) -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showVirtualTwin">
               <div class="vis-card-left">
-                <span class="vis-icon">🎙️</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="22"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Virtual Twin (Interactive Voice AI)</h3>
@@ -308,7 +378,12 @@
             <!-- 3. Projects & Case Studies -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showProjects">
               <div class="vis-card-left">
-                <span class="vis-icon">🚀</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+                    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Projects & Case Studies Showcase</h3>
@@ -330,7 +405,11 @@
             <!-- 4. Design & Dev Toolkit / Skills -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showSkillsTools">
               <div class="vis-card-left">
-                <span class="vis-icon">🛠️</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Design & Development Toolkit / Skills</h3>
@@ -352,7 +431,12 @@
             <!-- 5. Get in Touch & Contact -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showContact">
               <div class="vis-card-left">
-                <span class="vis-icon">📬</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="16" x="2" y="4" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Get In Touch & Social Links</h3>
@@ -374,7 +458,12 @@
             <!-- 6. Hero & Introduction -->
             <div class="vis-card" [class.hidden-sec]="!portfolioData.sectionVisibility().showHero">
               <div class="vis-card-left">
-                <span class="vis-icon">🌟</span>
+                <span class="vis-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </span>
                 <div class="vis-text">
                   <div class="vis-title-row">
                     <h3 class="vis-title">Hero Header & Bio Introduction</h3>
@@ -430,7 +519,14 @@
                 </div>
 
                 <div class="qa-spoken">
-                  <div class="qa-subhead">🎙️ Spoken Voice Response:</div>
+                  <div class="qa-subhead">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 4px;">
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                      <line x1="12" y1="19" x2="12" y2="22"/>
+                    </svg>
+                    Spoken Voice Response:
+                  </div>
                   <p class="qa-text">{{ item.voiceAnswer }}</p>
                 </div>
               </div>
@@ -1180,17 +1276,13 @@
           @if (modalType() === 'contact') {
             <div class="form-stack">
               <div class="form-group">
-                <label class="form-label">Platform Icon / Emoji</label>
+                <label class="form-label">Platform Icon</label>
                 <select class="form-select" [(ngModel)]="contactLinkForm.icon">
-                  <option value="📧">📧 Email</option>
-                  <option value="💼">💼 LinkedIn</option>
-                  <option value="🎨">🎨 Dribbble</option>
-                  <option value="🌐">🌐 Twitter / X</option>
-                  <option value="🐙">🐙 GitHub</option>
-                  <option value="💬">💬 WhatsApp</option>
-                  <option value="📝">📝 Medium / Blog</option>
-                  <option value="📱">📱 Phone / Mobile</option>
-                  <option value="🔗">🔗 Custom Link</option>
+                  <option value="mail">Email (Envelope Icon)</option>
+                  <option value="linkedin">LinkedIn (Professional Icon)</option>
+                  <option value="dribbble">Dribbble (Design Icon)</option>
+                  <option value="globe">Twitter / X / Web (Globe Icon)</option>
+                  <option value="link">Custom Web Link (Anchor Icon)</option>
                 </select>
               </div>
 

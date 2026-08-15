@@ -168,7 +168,14 @@
 
             @if (videoLoadError()) {
               <div class="video-error-box">
-                <p>⚠️ Unable to play this video format directly in browser. Please verify the video codec or upload an MP4/WebM video file.</p>
+                <p>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 4px;">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  Unable to play this video format directly in browser. Please verify the video codec or upload an MP4/WebM video file.
+                </p>
               </div>
             }
           } @else if (activeModalProject()?.image) {
@@ -178,7 +185,11 @@
               class="pmodal-img-display">
           } @else {
             <div class="pmodal-ph-box">
-              <span class="pmodal-ph-icon">🎨</span>
+              <span class="pmodal-ph-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>
+                </svg>
+              </span>
               <h3 class="pmodal-ph-title">{{ activeModalProject()?.name }}</h3>
             </div>
           }
@@ -190,11 +201,21 @@
             <div class="pmodal-badges">
               <span class="pmodal-cat-badge">{{ activeModalProject()?.category }}</span>
               @if (isVideoProject(activeModalProject())) {
-                <span class="pmodal-vid-tag">🎬 Video Showcase</span>
+                <span class="pmodal-vid-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; vertical-align: middle; margin-right: 3px;">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  Video Showcase
+                </span>
               }
             </div>
             @if (activeModalProject()?.metrics) {
-              <span class="pmodal-metric-badge">★ {{ activeModalProject()?.metrics }}</span>
+              <span class="pmodal-metric-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 3px;">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                {{ activeModalProject()?.metrics }}
+              </span>
             }
           </div>
 

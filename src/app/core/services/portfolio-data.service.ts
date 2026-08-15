@@ -183,7 +183,7 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'ux-ui',
     categoryName: 'UX / UI Design',
-    icon: '🎨',
+    icon: 'ux-ui',
     description: 'Human-centered product design, user research methodologies, and scalable design token systems.',
     skills: [
       'UX Research & User Personas',
@@ -199,7 +199,7 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'web-dev',
     categoryName: 'Web Development',
-    icon: '💻',
+    icon: 'web-dev',
     description: 'Engineering responsive, pixel-perfect web interfaces using modern frameworks and component architectures.',
     skills: [
       'HTML5 Semantic Markup',
@@ -215,7 +215,7 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'mobile-dev',
     categoryName: 'Mobile App Development & Prototyping',
-    icon: '📱',
+    icon: 'mobile-dev',
     description: 'Native mobile design standards, gesture-driven touch interactions, and high-fidelity device prototypes.',
     skills: [
       'iOS Human Interface Guidelines (HIG)',
@@ -229,7 +229,7 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'video-motion',
     categoryName: 'Video Editing & Motion Design',
-    icon: '🎬',
+    icon: 'video-motion',
     description: 'Dynamic UI motion graphics, animated micro-interactions, and engaging product showcase videos.',
     skills: [
       'Adobe After Effects (Motion Design)',
@@ -294,10 +294,10 @@ const DEFAULT_VOICE_QA: VoiceQAItem[] = [
 ];
 
 const DEFAULT_CONTACTS: ContactLink[] = [
-  { icon: '📧', label: 'arunram1324@gmail.com', href: 'mailto:arunram1324@gmail.com', action: 'copy' },
-  { icon: '💼', label: 'linkedin.com/in/arunkr', href: 'https://linkedin.com/in/arunkr', action: 'link' },
-  { icon: '🎨', label: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' },
-  { icon: '🌐', label: '@arunkr_design', href: 'https://twitter.com/arunkr_design', action: 'link' }
+  { icon: 'mail', label: 'arunram1324@gmail.com', href: 'mailto:arunram1324@gmail.com', action: 'copy' },
+  { icon: 'linkedin', label: 'linkedin.com/in/arunkr', href: 'https://linkedin.com/in/arunkr', action: 'link' },
+  { icon: 'dribbble', label: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' },
+  { icon: 'globe', label: '@arunkr_design', href: 'https://twitter.com/arunkr_design', action: 'link' }
 ];
 
 const DEFAULT_CONTACT_INFO: ContactInfo = {
@@ -365,6 +365,10 @@ export class PortfolioDataService {
   public sectionVisibility = signal<SectionVisibilitySettings>(this.load('section_visibility', DEFAULT_SECTION_VISIBILITY));
 
   constructor() {
+    // Normalize any legacy emoji icons to modern SVG icon keys
+    this.contactLinks.update(links => links.map(l => ({ ...l, icon: this.normalizeIcon(l.icon) })));
+    this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
+
     // Apply dynamic theme color & typography immediately
     this.applyAccentColor(this.accentColor());
     this.applyTypography(this.typography());
@@ -585,6 +589,19 @@ export class PortfolioDataService {
         .filter(k => k.startsWith(STORAGE_PREFIX))
         .forEach(k => localStorage.removeItem(k));
     } catch (e) {}
+  }
+
+  private normalizeIcon(icon: string): string {
+    const map: Record<string, string> = {
+      '📧': 'mail',
+      '💼': 'linkedin',
+      '🎨': 'dribbble',
+      '🌐': 'globe',
+      '💻': 'web-dev',
+      '📱': 'mobile-dev',
+      '🎬': 'video-motion'
+    };
+    return map[icon] || icon;
   }
 
   // Storage helpers
