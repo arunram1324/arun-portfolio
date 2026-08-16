@@ -1,148 +1,158 @@
-<div class="contact-page-container">
+<div class="ps-wrapper">
   <div class="contact-card-frame">
-    <!-- Left Column: Contact Details matching reference image -->
-    <div class="contact-info-col">
-      <!-- Office / Location Block -->
-      <div class="info-block">
-        <h3 class="info-title">Our Office</h3>
-        <p class="info-text">
-          Bangalore, Karnataka<br>
-          India · Available for Global Remote
-        </p>
-      </div>
-
-      <!-- Dynamic Contacts Loop -->
-      @for (link of portfolioData.contactLinks(); track (link.label + link.href)) {
-        <div class="info-block">
-          <h3 class="info-title">{{ link.label }}</h3>
-          <div class="info-link-wrap">
-            <a 
-              class="info-link" 
-              [href]="link.href" 
-              [target]="link.action === 'link' ? '_blank' : '_self'"
-              rel="noopener noreferrer"
-              (click)="onContactClick($event, link)">
-              {{ link.value || link.href || link.label }}
-              @if (link.action === 'link') {
-                <span class="ext-ico">↗</span>
-              }
-            </a>
-          </div>
-        </div>
-      }
-
-      <!-- Availability / Status -->
-      @if (portfolioData.contactInfo().isAvailable) {
-        <div class="info-block status-block">
-          <h3 class="info-title">Status</h3>
-          <div class="avail-badge">
-            <span class="status-dot"></span>
-            <span>{{ portfolioData.contactInfo().availabilityTitle }}</span>
-          </div>
-          <p class="info-subtext">{{ portfolioData.contactInfo().availabilitySubtitle }}</p>
-        </div>
-      }
+    <!-- Top Header: Title & Subtitle as requested -->
+    <div class="contact-header">
+      <h2 class="contact-title">Get in Touch</h2>
+      <p class="contact-subtitle">
+        {{ portfolioData.contactInfo().subtitle || "I'm always excited to connect for full-time product design roles, freelance collaborations, or design system consultations." }}
+      </p>
     </div>
 
-    <!-- Right Column: Form matching reference image -->
-    <div class="contact-form-col">
-      <form (ngSubmit)="onSubmitMessage()" class="contact-form">
-        <!-- Row 1: First Name & Last Name -->
-        <div class="form-row-2">
+    <div class="contact-content-grid">
+      <!-- Left Column: Contact Details matching reference image -->
+      <div class="contact-info-col">
+        <!-- Office / Location Block -->
+        <div class="info-block">
+          <h3 class="info-title">Our Office</h3>
+          <p class="info-text">
+            Bangalore, Karnataka<br>
+            India · Available for Global Remote
+          </p>
+        </div>
+
+        <!-- Dynamic Contacts Loop -->
+        @for (link of portfolioData.contactLinks(); track (link.label + link.href)) {
+          <div class="info-block">
+            <h3 class="info-title">{{ link.label }}</h3>
+            <div class="info-link-wrap">
+              <a 
+                class="info-link" 
+                [href]="link.href" 
+                [target]="link.action === 'link' ? '_blank' : '_self'"
+                rel="noopener noreferrer"
+                (click)="onContactClick($event, link)">
+                {{ link.value || link.href || link.label }}
+                @if (link.action === 'link') {
+                  <span class="ext-ico">↗</span>
+                }
+              </a>
+            </div>
+          </div>
+        }
+
+        <!-- Availability / Status -->
+        @if (portfolioData.contactInfo().isAvailable) {
+          <div class="info-block status-block">
+            <h3 class="info-title">Status</h3>
+            <div class="avail-badge">
+              <span class="status-dot"></span>
+              <span>{{ portfolioData.contactInfo().availabilityTitle }}</span>
+            </div>
+            <p class="info-subtext">{{ portfolioData.contactInfo().availabilitySubtitle }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Right Column: Form matching reference image -->
+      <div class="contact-form-col">
+        <form (ngSubmit)="onSubmitMessage()" class="contact-form">
+          <!-- Row 1: First Name & Last Name -->
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="field-label">First Name</label>
+              <input 
+                type="text" 
+                class="field-input" 
+                placeholder="Max" 
+                name="firstName" 
+                [(ngModel)]="messageForm.firstName" 
+                required>
+            </div>
+            <div class="form-field">
+              <label class="field-label">Last Name</label>
+              <input 
+                type="text" 
+                class="field-input" 
+                placeholder="Mustermann" 
+                name="lastName" 
+                [(ngModel)]="messageForm.lastName" 
+                required>
+            </div>
+          </div>
+
+          <!-- Row 2: Phone Number & Email -->
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="field-label">Phone Number</label>
+              <input 
+                type="tel" 
+                class="field-input" 
+                placeholder="Phone" 
+                name="phone" 
+                [(ngModel)]="messageForm.phone">
+            </div>
+            <div class="form-field">
+              <label class="field-label">Email</label>
+              <input 
+                type="email" 
+                class="field-input" 
+                placeholder="Email" 
+                name="email" 
+                [(ngModel)]="messageForm.email" 
+                required>
+            </div>
+          </div>
+
+          <!-- Row 3: Inquiry Type -->
           <div class="form-field">
-            <label class="field-label">First Name</label>
+            <label class="field-label">Project / Inquiry Type</label>
             <input 
               type="text" 
               class="field-input" 
-              placeholder="Max" 
-              name="firstName" 
-              [(ngModel)]="messageForm.firstName" 
-              required>
+              placeholder="e.g. Mobile App UI/UX or Full-Time Opportunity" 
+              name="projectType" 
+              [(ngModel)]="messageForm.projectType">
           </div>
+
+          <!-- Row 4: Timeline / Scope -->
           <div class="form-field">
-            <label class="field-label">Last Name</label>
+            <label class="field-label">Project Timeline / Scope</label>
             <input 
               type="text" 
               class="field-input" 
-              placeholder="Mustermann" 
-              name="lastName" 
-              [(ngModel)]="messageForm.lastName" 
-              required>
+              placeholder="e.g. Immediate / 1-3 Months" 
+              name="timeline" 
+              [(ngModel)]="messageForm.timeline">
           </div>
-        </div>
 
-        <!-- Row 2: Phone Number & Email -->
-        <div class="form-row-2">
+          <!-- Row 5: Message -->
           <div class="form-field">
-            <label class="field-label">Phone Number</label>
-            <input 
-              type="tel" 
-              class="field-input" 
-              placeholder="Phone" 
-              name="phone" 
-              [(ngModel)]="messageForm.phone">
+            <label class="field-label">Message</label>
+            <textarea 
+              class="field-textarea" 
+              rows="5" 
+              placeholder="Tell us about your project and how we can help..." 
+              name="message" 
+              [(ngModel)]="messageForm.message" 
+              required></textarea>
           </div>
-          <div class="form-field">
-            <label class="field-label">Email</label>
-            <input 
-              type="email" 
-              class="field-input" 
-              placeholder="Email" 
-              name="email" 
-              [(ngModel)]="messageForm.email" 
-              required>
-          </div>
-        </div>
 
-        <!-- Row 3: Inquiry Type -->
-        <div class="form-field">
-          <label class="field-label">Project / Inquiry Type</label>
-          <input 
-            type="text" 
-            class="field-input" 
-            placeholder="e.g. Mobile App UI/UX or Full-Time Opportunity" 
-            name="projectType" 
-            [(ngModel)]="messageForm.projectType">
-        </div>
-
-        <!-- Row 4: Timeline / Scope -->
-        <div class="form-field">
-          <label class="field-label">Project Timeline / Scope</label>
-          <input 
-            type="text" 
-            class="field-input" 
-            placeholder="e.g. Immediate / 1-3 Months" 
-            name="timeline" 
-            [(ngModel)]="messageForm.timeline">
-        </div>
-
-        <!-- Row 5: Message -->
-        <div class="form-field">
-          <label class="field-label">Message</label>
-          <textarea 
-            class="field-textarea" 
-            rows="5" 
-            placeholder="Tell us about your school and how we can help..." 
-            name="message" 
-            [(ngModel)]="messageForm.message" 
-            required></textarea>
-        </div>
-
-        <!-- Submit Button -->
-        <button 
-          type="submit" 
-          class="btn-send-pill" 
-          [disabled]="isSubmitting()">
-          @if (isSubmitting()) {
-            <span class="btn-spinner"></span>
-            <span>Sending Message...</span>
-          } @else if (isSuccess()) {
-            <span>✓ Message Sent Successfully!</span>
-          } @else {
-            <span>Send Message</span>
-          }
-        </button>
-      </form>
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="btn-send-pill" 
+            [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              <span class="btn-spinner"></span>
+              <span>Sending Message...</span>
+            } @else if (isSuccess()) {
+              <span>✓ Message Sent Successfully!</span>
+            } @else {
+              <span>Send Message</span>
+            }
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
