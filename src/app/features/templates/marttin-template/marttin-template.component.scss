@@ -974,6 +974,128 @@
   }
 }
 
+.m-contact-form-wrap {
+  margin-top: 32px;
+}
+
+.m-form-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 32px;
+
+  @media (max-width: 767px) {
+    padding: 20px 16px;
+  }
+}
+
+.m-form-header {
+  margin-bottom: 24px;
+}
+
+.m-form-title {
+  font-family: var(--fh);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 6px;
+}
+
+.m-form-sub {
+  font-family: var(--fb);
+  font-size: 13.5px;
+  color: var(--body);
+}
+
+.m-msg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.m-form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.m-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m-form-label {
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.m-form-input, .m-form-select, .m-form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: var(--fb);
+  font-size: 14px;
+  color: var(--tx);
+  outline: none;
+  transition: 0.18s;
+
+  &:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+}
+
+.m-form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.m-btn-submit {
+  align-self: flex-start;
+  padding: 12px 28px;
+  border-radius: 999px;
+  background: var(--tx);
+  color: var(--bg);
+  border: none;
+  font-family: var(--fb);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.18s, opacity 0.18s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.m-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(125, 125, 125, 0.4);
+  border-top-color: var(--bg);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
 .m-footer {
   padding: 40px 0 20px;
   display: flex;

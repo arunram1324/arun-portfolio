@@ -2,6 +2,7 @@ import { Component, signal, computed, ViewChild, ElementRef, HostListener } from
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioDataService } from '../../../core/services/portfolio-data.service';
+import { MessageService } from '../../../core/services/message.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Project, VoiceQAItem } from '../../../core/models/portfolio.model';
@@ -15,6 +16,16 @@ import { Project, VoiceQAItem } from '../../../core/models/portfolio.model';
 })
 export class MarttinTemplateComponent {
   public selectedCategory = signal<string>('All');
+
+  // Contact Form State
+  public messageForm = {
+    name: '',
+    email: '',
+    subject: 'Freelance Project',
+    message: ''
+  };
+  public isSubmitting = signal<boolean>(false);
+  public isSuccess = signal<boolean>(false);
 
   // In-Page Lightbox Modal State
   public activeModalProject = signal<Project | null>(null);
@@ -37,9 +48,35 @@ export class MarttinTemplateComponent {
 
   constructor(
     public portfolioData: PortfolioDataService,
+    public messageService: MessageService,
     public themeService: ThemeService,
     public toastService: ToastService
   ) {}
+
+  public async onSubmitMessage(): Promise<void> {
+    if (!this.messageForm.name.trim() || !this.messageForm.email.trim() || !this.messageForm.message.trim()) {
+      this.toastService.show('Please fill in your name, email, and message.');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    try {
+      await this.messageService.sendMessage(this.messageForm);
+      this.isSuccess.set(true);
+      this.toastService.show('Message sent successfully! Arun will reach out soon.');
+      this.messageForm = {
+        name: '',
+        email: '',
+        subject: 'Freelance Project',
+        message: ''
+      };
+      setTimeout(() => this.isSuccess.set(false), 6000);
+    } catch (e) {
+      this.toastService.show('Failed to send message. Please reach out directly via email.');
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
 
   public selectCategory(cat: string): void {
     this.selectedCategory.set(cat);

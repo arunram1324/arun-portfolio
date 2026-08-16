@@ -54,6 +54,40 @@
         <button 
           type="button" 
           class="nav-item" 
+          [class.active]="activeTab() === 'analytics'" 
+          (click)="setTab('analytics')">
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Analytics Dashboard</span>
+          <span class="nav-badge-pill live">LIVE</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
+          [class.active]="activeTab() === 'messages'" 
+          (click)="setTab('messages')">
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Messages Inbox</span>
+          @if (messageService.unreadCount() > 0) {
+            <span class="nav-badge-pill unread">{{ messageService.unreadCount() }} new</span>
+          } @else {
+            <span class="nav-count">{{ messageService.messages().length }}</span>
+          }
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
           [class.active]="activeTab() === 'templates'" 
           (click)="setTab('templates')">
           <span class="nav-ico">
@@ -230,7 +264,299 @@
 
     <!-- Main Content Area -->
     <main class="admin-main">
-      
+
+      <!-- ================= 00. REAL-TIME ANALYTICS DASHBOARD ================= -->
+      @if (activeTab() === 'analytics') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title-wrap">
+                <h2 class="sec-title">Portfolio Traffic & Visitor Analytics</h2>
+                <span class="live-pulse-badge">
+                  <span class="pulse-dot"></span>
+                  REAL-TIME SYNC
+                </span>
+              </div>
+              <p class="sec-desc">
+                Live metrics tracked across all your portfolio pages and templates powered by Firebase Cloud Firestore.
+              </p>
+            </div>
+          </div>
+
+          <!-- KPI Metric Cards Grid -->
+          <div class="analytics-kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon views">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">TOTAL PAGEVIEWS</span>
+                <span class="kpi-value">{{ analyticsService.stats().totalViews }}</span>
+                <span class="kpi-trend">All visitor impressions</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon visitors">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">UNIQUE SESSIONS</span>
+                <span class="kpi-value">{{ analyticsService.stats().uniqueVisitors }}</span>
+                <span class="kpi-trend">Distinct visitor sessions</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon messages">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">FORM INQUIRIES</span>
+                <span class="kpi-value">{{ messageService.messages().length }}</span>
+                <span class="kpi-trend">{{ messageService.unreadCount() }} unread messages</span>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-icon template">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="18" height="18" x="3" y="3" rx="2"/>
+                  <path d="M3 9h18"/>
+                  <path d="M9 21V9"/>
+                </svg>
+              </div>
+              <div class="kpi-info">
+                <span class="kpi-label">ACTIVE TEMPLATE</span>
+                <span class="kpi-value tpl-name">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin' : 'Bento OS' }}</span>
+                <span class="kpi-trend">Live presentation mode</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakdown Grid (Devices + Top Visited Sections) -->
+          <div class="analytics-split-grid">
+            <!-- Device Breakdown -->
+            <div class="analytics-card">
+              <div class="card-head">
+                <h3 class="card-head-title">Visitor Device Breakdown</h3>
+                <span class="card-head-sub">Traffic by screen format</span>
+              </div>
+              <div class="device-list">
+                <div class="device-row">
+                  <div class="dev-meta">
+                    <span class="dev-ico">📱 Mobile</span>
+                    <span class="dev-cnt">{{ analyticsService.stats().devices.mobile }} visits</span>
+                  </div>
+                  <div class="prog-bar-wrap">
+                    <div class="prog-bar mobile" [style.width.%]="analyticsService.stats().totalViews ? (analyticsService.stats().devices.mobile / analyticsService.stats().totalViews * 100) : 0"></div>
+                  </div>
+                </div>
+
+                <div class="device-row">
+                  <div class="dev-meta">
+                    <span class="dev-ico">💻 Desktop / Laptop</span>
+                    <span class="dev-cnt">{{ analyticsService.stats().devices.desktop }} visits</span>
+                  </div>
+                  <div class="prog-bar-wrap">
+                    <div class="prog-bar desktop" [style.width.%]="analyticsService.stats().totalViews ? (analyticsService.stats().devices.desktop / analyticsService.stats().totalViews * 100) : 0"></div>
+                  </div>
+                </div>
+
+                <div class="device-row">
+                  <div class="dev-meta">
+                    <span class="dev-ico">📟 Tablet</span>
+                    <span class="dev-cnt">{{ analyticsService.stats().devices.tablet }} visits</span>
+                  </div>
+                  <div class="prog-bar-wrap">
+                    <div class="prog-bar tablet" [style.width.%]="analyticsService.stats().totalViews ? (analyticsService.stats().devices.tablet / analyticsService.stats().totalViews * 100) : 0"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Page Popularity -->
+            <div class="analytics-card">
+              <div class="card-head">
+                <h3 class="card-head-title">Most Visited Sections</h3>
+                <span class="card-head-sub">Popular views in portfolio</span>
+              </div>
+              <div class="page-views-list">
+                <div class="pv-row">
+                  <span class="pv-name">🤖 Virtual Twin AI</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.vt }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">👤 Self Introduction</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.intro }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">💼 Work Experience</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.exp }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">🎨 Featured Projects</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.proj }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">🛠️ Design Toolkit</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.tools }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">⭐ Skills Matrix</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.skills }} views</span>
+                </div>
+                <div class="pv-row">
+                  <span class="pv-name">📞 Contact & Inquiries</span>
+                  <span class="pv-count">{{ analyticsService.stats().pageViews.contact }} views</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Recent Visitors Feed -->
+          <div class="analytics-card" style="margin-top: 24px;">
+            <div class="card-head">
+              <h3 class="card-head-title">Live Recent Visitors Activity</h3>
+              <span class="card-head-sub">Real-time log of visitors browsing your portfolio</span>
+            </div>
+
+            @if (analyticsService.recentVisitors().length === 0) {
+              <div class="empty-feed">
+                <p>Waiting for first live visitor... Open your portfolio in a new tab or phone to see live tracking!</p>
+              </div>
+            } @else {
+              <div class="visitors-table-wrap">
+                <table class="visitors-table">
+                  <thead>
+                    <tr>
+                      <th>Device</th>
+                      <th>Viewed Section</th>
+                      <th>Traffic Referrer</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (v of analyticsService.recentVisitors(); track v.id) {
+                      <tr>
+                        <td>
+                          <span class="dev-badge" [class]="v.device.toLowerCase()">
+                            {{ v.device === 'Mobile' ? '📱 Mobile' : (v.device === 'Tablet' ? '📟 Tablet' : '💻 Desktop') }}
+                          </span>
+                        </td>
+                        <td>
+                          <span class="page-badge">{{ v.page | uppercase }}</span>
+                        </td>
+                        <td class="ref-cell">{{ v.referrer || 'Direct Visit' }}</td>
+                        <td class="time-cell">{{ v.timestamp | date:'medium' }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- ================= 0B. MESSAGES INBOX TAB ================= -->
+      @if (activeTab() === 'messages') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title-wrap">
+                <h2 class="sec-title">Messages & Contact Inquiries</h2>
+                @if (messageService.unreadCount() > 0) {
+                  <span class="unread-pill">{{ messageService.unreadCount() }} UNREAD</span>
+                }
+              </div>
+              <p class="sec-desc">
+                Inquiries sent by recruiters, clients, and visitors via your portfolio contact form.
+              </p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="inbox-filters">
+              <button 
+                type="button" 
+                class="filter-pill" 
+                [class.active]="messageFilter() === 'all'"
+                (click)="messageFilter.set('all')">
+                All ({{ messageService.messages().length }})
+              </button>
+              <button 
+                type="button" 
+                class="filter-pill" 
+                [class.active]="messageFilter() === 'unread'"
+                (click)="messageFilter.set('unread')">
+                Unread ({{ messageService.unreadCount() }})
+              </button>
+            </div>
+          </div>
+
+          <!-- Messages List -->
+          @if (filteredMessages().length === 0) {
+            <div class="empty-inbox-card">
+              <div class="empty-ico">📬</div>
+              <h3>No Messages Found</h3>
+              <p>{{ messageFilter() === 'unread' ? 'All messages have been read!' : 'When someone fills out your contact form, their message will appear here in real-time.' }}</p>
+            </div>
+          } @else {
+            <div class="messages-list">
+              @for (msg of filteredMessages(); track msg.id) {
+                <div class="msg-row-card" [class.unread]="!msg.read" (click)="viewMessage(msg)">
+                  <div class="msg-unread-dot"></div>
+                  
+                  <div class="msg-main-content">
+                    <div class="msg-row-top">
+                      <span class="msg-sender-name">{{ msg.name }}</span>
+                      <span class="msg-sender-email">{{ msg.email }}</span>
+                      <span class="msg-subject-tag">{{ msg.subject }}</span>
+                      <span class="msg-time">{{ msg.createdAt | date:'short' }}</span>
+                    </div>
+                    <p class="msg-snippet">{{ msg.message }}</p>
+                  </div>
+
+                  <div class="msg-row-actions">
+                    <button 
+                      type="button" 
+                      class="msg-act-btn" 
+                      [title]="msg.read ? 'Mark as Unread' : 'Mark as Read'"
+                      (click)="toggleMessageRead(msg, $event)">
+                      {{ msg.read ? '✉️' : '👁️' }}
+                    </button>
+                    <button 
+                      type="button" 
+                      class="msg-act-btn reply" 
+                      title="Reply via Email"
+                      (click)="replyMessage(msg); $event.stopPropagation()">
+                      ↗ Reply
+                    </button>
+                    <button 
+                      type="button" 
+                      class="msg-act-btn del" 
+                      title="Delete Message"
+                      (click)="confirmDeleteMessage(msg, $event)">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      }
+
       <!-- ================= 0A. TEMPLATES & LAYOUTS TAB ================= -->
       @if (activeTab() === 'templates') {
         <section class="cms-sec">
@@ -1347,6 +1673,48 @@
           @if (modalType() === 'contact') {
             <button type="button" class="btn-primary" (click)="saveContactLink()">Save Contact Link</button>
           }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ================= MESSAGE VIEW MODAL ================= -->
+  @if (isMessageModalOpen() && selectedMessage(); as msg) {
+    <div class="modal-backdrop" (click)="closeMessageModal()">
+      <div class="modal-card msg-detail-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <span class="msg-sub-pill">{{ msg.subject }}</span>
+            <h3 class="modal-title" style="margin-top: 6px;">Message from {{ msg.name }}</h3>
+          </div>
+          <button type="button" class="btn-close" (click)="closeMessageModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="msg-meta-box">
+            <div class="meta-item">
+              <span class="meta-lbl">From:</span>
+              <span class="meta-val"><strong>{{ msg.name }}</strong> &lt;{{ msg.email }}&gt;</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-lbl">Received:</span>
+              <span class="meta-val">{{ msg.createdAt | date:'full' }}</span>
+            </div>
+          </div>
+
+          <div class="msg-content-view">
+            <h4 class="msg-body-title">Inquiry Message:</h4>
+            <div class="msg-body-text">{{ msg.message }}</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeMessageModal()">Close</button>
+          <button type="button" class="btn-act del" (click)="confirmDeleteMessage(msg)">Delete</button>
+          <button type="button" class="btn-primary" (click)="replyMessage(msg)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Reply via Email ({{ msg.email }})
+          </button>
         </div>
       </div>
     </div>

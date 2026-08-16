@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,6 +9,8 @@ import {
   HEADING_FONT_PRESETS, 
   BODY_FONT_PRESETS 
 } from '../../core/services/portfolio-data.service';
+import { AnalyticsService } from '../../core/services/analytics.service';
+import { MessageService } from '../../core/services/message.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { ToastService } from '../../shared/services/toast.service';
 import { 
@@ -20,12 +22,13 @@ import {
   ProfileInfo,
   ContactLink,
   ContactInfo,
+  ContactMessage,
   TypographySettings,
   PortfolioTemplateMode,
   SectionVisibilitySettings
 } from '../../core/models/portfolio.model';
 
-type AdminTab = 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
+type AdminTab = 'analytics' | 'messages' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
 
 interface ConfirmConfig {
   title: string;
@@ -43,7 +46,7 @@ interface ConfirmConfig {
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent {
-  public activeTab = signal<AdminTab>('voice-ai');
+  public activeTab = signal<AdminTab>('analytics');
   public themePresets = THEME_COLOR_PRESETS;
   public headingFontPresets = HEADING_FONT_PRESETS;
   public bodyFontPresets = BODY_FONT_PRESETS;
@@ -57,6 +60,17 @@ export class AdminDashboardComponent {
   public modalType = signal<AdminTab>('voice-ai');
   public isEditMode = signal<boolean>(false);
 
+  // Messages State
+  public selectedMessage = signal<ContactMessage | null>(null);
+  public isMessageModalOpen = signal<boolean>(false);
+  public messageFilter = signal<'all' | 'unread'>('all');
+
+  public filteredMessages = computed(() => {
+    const list = this.messageService.messages();
+    const filter = this.messageFilter();
+    return filter === 'unread' ? list.filter(m => !m.read) : list;
+  });
+
   // Form Models
   public voiceForm: VoiceQAItem = this.getEmptyVoiceQA();
   public projectForm: Project = this.getEmptyProject();
@@ -67,23 +81,24 @@ export class AdminDashboardComponent {
   public expForm: WorkExperience = this.getEmptyExp();
   public expEditIndex = -1;
   public profileForm!: ProfileInfo;
-  public newIndustryTag = signal<string>('');
-  public newProjectCat = signal<string>('');
-
-  // Contact / Get in Touch Form Models
   public contactInfoForm!: ContactInfo;
   public contactLinkForm: ContactLink = this.getEmptyContactLink();
   public contactLinkEditIndex = -1;
+  public newIndustryTag = signal<string>('');
+  public newProjectCat = signal<string>('');
 
   constructor(
-    public authService: AuthService,
     public portfolioData: PortfolioDataService,
+    public analyticsService: AnalyticsService,
+    public messageService: MessageService,
+    private authService: AuthService,
     public themeService: ThemeService,
-    public toastService: ToastService,
+    private toastService: ToastService,
     private router: Router
   ) {
     this.profileForm = { ...this.portfolioData.profileInfo() };
     this.contactInfoForm = { ...this.portfolioData.contactInfo() };
+
     if (!this.authService.verifyStoredSession() || !this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
     }
@@ -97,6 +112,49 @@ export class AdminDashboardComponent {
     if (tab === 'contact') {
       this.contactInfoForm = { ...this.portfolioData.contactInfo() };
     }
+  }
+
+  // --- Messages Inbox Actions ---
+  public viewMessage(msg: ContactMessage): void {
+    this.selectedMessage.set(msg);
+    this.isMessageModalOpen.set(true);
+    if (!msg.read) {
+      this.messageService.markAsRead(msg.id, true);
+    }
+  }
+
+  public closeMessageModal(): void {
+    this.isMessageModalOpen.set(false);
+    this.selectedMessage.set(null);
+  }
+
+  public toggleMessageRead(msg: ContactMessage, event: Event): void {
+    event.stopPropagation();
+    this.messageService.markAsRead(msg.id, !msg.read);
+    this.toastService.show(msg.read ? 'Marked as unread' : 'Marked as read');
+  }
+
+  public replyMessage(msg: ContactMessage): void {
+    const subject = encodeURIComponent(`Re: ${msg.subject}`);
+    const body = encodeURIComponent(`Hi ${msg.name},\n\nThank you for reaching out through my portfolio.\n\nBest regards,\nArun K R`);
+    window.open(`mailto:${msg.email}?subject=${subject}&body=${body}`, '_blank');
+  }
+
+  public confirmDeleteMessage(msg: ContactMessage, event?: Event): void {
+    if (event) event.stopPropagation();
+    this.openConfirm({
+      title: 'Delete Message',
+      message: `Are you sure you want to delete the message from "${msg.name}"? This cannot be undone.`,
+      confirmBtnText: 'Delete Message',
+      isDanger: true,
+      action: () => {
+        this.messageService.deleteMessage(msg.id);
+        if (this.selectedMessage()?.id === msg.id) {
+          this.closeMessageModal();
+        }
+        this.toastService.show('Message deleted successfully.');
+      }
+    });
   }
 
   // --- Custom Confirmation Dialog Engine ---

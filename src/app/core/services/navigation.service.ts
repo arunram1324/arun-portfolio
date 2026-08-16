@@ -1,21 +1,31 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { NavItem, NavPage } from '../models/portfolio.model';
 import { PortfolioDataService } from './portfolio-data.service';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationService {
   private portfolioData = inject(PortfolioDataService);
+  private analytics = inject(AnalyticsService);
 
   public hasStarted = signal<boolean>(false);
   public activePage = signal<NavPage>('intro');
   public isSidebarIconMode = signal<boolean>(false);
   public isMobileDrawerOpen = signal<boolean>(false);
 
+  constructor() {
+    // Initial page impression tracking
+    setTimeout(() => {
+      this.analytics.trackPageView(this.activePage());
+    }, 500);
+  }
+
   public startApp(targetPage: NavPage = 'intro'): void {
     this.activePage.set(targetPage);
     this.hasStarted.set(true);
+    this.analytics.trackPageView(targetPage);
   }
 
   public returnToLanding(): void {
@@ -61,6 +71,7 @@ export class NavigationService {
   public navigateTo(page: NavPage): void {
     this.activePage.set(page);
     this.closeMobileDrawer();
+    this.analytics.trackPageView(page);
   }
 
   public toggleSidebarCollapse(): void {

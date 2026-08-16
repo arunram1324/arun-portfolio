@@ -108,3 +108,40 @@ export interface ProfileInfo {
   photoUrl: string;
   industries: string[];
 }
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+}
+
+export interface VisitorLogItem {
+  id: string;
+  timestamp: string;
+  page: string;
+  device: 'Mobile' | 'Desktop' | 'Tablet';
+  referrer: string;
+}
+
+export interface VisitorAnalytics {
+  totalViews: number;
+  uniqueVisitors: number;
+  devices: {
+    mobile: number;
+    desktop: number;
+    tablet: number;
+  };
+  pageViews: {
+    intro: number;
+    vt: number;
+    exp: number;
+    proj: number;
+    tools: number;
+    skills: number;
+    contact: number;
+  };
+}

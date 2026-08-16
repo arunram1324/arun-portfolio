@@ -453,6 +453,56 @@
           </div>
         }
       </div>
+
+      <div class="m-contact-form-wrap">
+        <div class="m-form-card">
+          <div class="m-form-header">
+            <h3 class="m-form-title">Send a Direct Message</h3>
+            <p class="m-form-sub">Have a project, job inquiry, or question? Send a note directly to my inbox.</p>
+          </div>
+
+          <form (ngSubmit)="onSubmitMessage()" class="m-msg-form">
+            <div class="m-form-row-2">
+              <div class="m-form-group">
+                <label class="m-form-label">Your Name *</label>
+                <input type="text" class="m-form-input" placeholder="e.g. Sarah Connor" name="mName" [(ngModel)]="messageForm.name" required>
+              </div>
+              <div class="m-form-group">
+                <label class="m-form-label">Your Email *</label>
+                <input type="email" class="m-form-input" placeholder="e.g. sarah@company.com" name="mEmail" [(ngModel)]="messageForm.email" required>
+              </div>
+            </div>
+
+            <div class="m-form-group">
+              <label class="m-form-label">Subject / Inquiry Type</label>
+              <select class="m-form-select" name="mSubject" [(ngModel)]="messageForm.subject">
+                <option value="Freelance Project">💼 Freelance Design Sprint / Project</option>
+                <option value="Full-time Role">🏢 Full-time Hiring Opportunity</option>
+                <option value="Design Consultation">💡 Design System / UI Consultation</option>
+                <option value="General Connect">👋 Just Saying Hi / Networking</option>
+              </select>
+            </div>
+
+            <div class="m-form-group">
+              <label class="m-form-label">Your Message *</label>
+              <textarea class="m-form-textarea" rows="4" placeholder="Tell me about your product or requirements..." name="mMessage" [(ngModel)]="messageForm.message" required></textarea>
+            </div>
+
+            <button type="submit" class="m-btn-submit" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="m-spinner"></span>
+                <span>Sending Message...</span>
+              } @else if (isSuccess()) {
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Message Sent!</span>
+              } @else {
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span>Send Message</span>
+              }
+            </button>
+          </form>
+        </div>
+      </div>
     </section>
   }
 
