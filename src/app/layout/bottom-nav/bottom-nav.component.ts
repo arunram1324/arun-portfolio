@@ -14,7 +14,7 @@ export class BottomNavComponent {
   // Dynamically filter mobile quick navigation tabs based on visibility settings
   public visibleMobileNav = computed(() => {
     const visible = this.navService.visibleNavItems();
-    return visible.slice(0, 5).map(item => ({
+    return visible.map(item => ({
       id: item.id,
       label: item.shortLabel,
       icon: item.icon

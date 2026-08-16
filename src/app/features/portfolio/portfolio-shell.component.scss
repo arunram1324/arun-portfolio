@@ -52,6 +52,10 @@ app-sidebar {
   min-width: 0;
   height: 100%;
   position: relative;
+
+  @media (max-width: 767px) {
+    height: calc(100% - var(--both, 62px) - env(safe-area-inset-bottom));
+  }
 }
 
 .views-wrapper {
@@ -61,6 +65,14 @@ app-sidebar {
   overflow: hidden;
   height: 100%;
   position: relative;
+
+  @media (max-width: 767px) {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    padding-bottom: 20px;
+  }
 }
 
 .view-active {
@@ -70,4 +82,11 @@ app-sidebar {
   overflow: hidden;
   height: 100%;
   width: 100%;
+
+  @media (max-width: 767px) {
+    display: block;
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
 }

@@ -7,6 +7,13 @@
   width: 100%;
   min-height: 0;
   overflow: hidden;
+
+  @media (max-width: 767px) {
+    display: block;
+    height: auto;
+    overflow: visible;
+    min-height: 100%;
+  }
 }
 
 .ps-wrapper {
@@ -20,9 +27,10 @@
   @include custom-scrollbar;
 
   @media (max-width: 767px) {
-    padding: 16px 14px calc(var(--both) + 20px + env(safe-area-inset-bottom));
+    padding: 16px 14px 28px;
     display: block;
     height: auto;
+    overflow: visible;
   }
 }
 

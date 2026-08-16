@@ -6,18 +6,25 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--both);
+  height: var(--both, 62px);
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--sb);
   border-top: 1px solid var(--border);
   z-index: 50;
-  grid-template-columns: repeat(5, 1fr);
-  align-items: center;
   box-shadow: 0 -4px 20px var(--shadow);
   transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
 
   @media (max-width: 767px) {
-    display: grid;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
