@@ -251,6 +251,42 @@ export class AnalyticsService {
     }
   }
 
+  // --- Notify Arun via Email when Visitor Enters Portfolio ---
+  public async notifyVisitorEntered(): Promise<void> {
+    if (typeof window === 'undefined') return;
+
+    // Send 1 email alert per visitor session to keep Arun's inbox clean
+    if (sessionStorage.getItem('ak_visitor_enter_notified')) return;
+    sessionStorage.setItem('ak_visitor_enter_notified', 'true');
+
+    try {
+      const device = this.detectDevice();
+      const geo = await this.resolveVisitorLocation();
+      const referrer = typeof document !== 'undefined' && document.referrer ? document.referrer : 'Direct Visit';
+      const timeStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) + ' IST';
+
+      await fetch('https://formsubmit.co/ajax/arunram1324@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `🚀 [Live Alert] A visitor from ${geo.city ? geo.city + ', ' + geo.country : geo.country} just entered your Portfolio!`,
+          'Event Notification': 'A visitor clicked "Start / Explore Portfolio" on your Landing Page',
+          '📍 Visitor Location': `${geo.flag} ${geo.locationText}`,
+          '📱 Device Used': device,
+          '🌐 Traffic Source': referrer,
+          '⏰ Timestamp': timeStr,
+          '💡 Status': 'User is actively browsing your portfolio right now',
+          _template: 'box'
+        })
+      }).catch(e => console.warn('Visitor entry notification note:', e));
+    } catch (err) {
+      console.warn('Visitor entry alert error:', err);
+    }
+  }
+
   private detectDevice(): 'Mobile' | 'Desktop' | 'Tablet' {
     if (typeof window === 'undefined') return 'Desktop';
     const width = window.innerWidth;
