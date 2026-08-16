@@ -1,10 +1,16 @@
 import { Injectable, signal, effect } from '@angular/core';
-import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings } from '../models/portfolio.model';
+import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings, AutoReplySettings } from '../models/portfolio.model';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, doc, onSnapshot, setDoc, Firestore } from 'firebase/firestore';
 import { FIREBASE_CONFIG } from '../config/firebase.config';
 
 const STORAGE_PREFIX = 'ak_portfolio_v4_';
+
+const DEFAULT_AUTO_REPLY: AutoReplySettings = {
+  enabled: true,
+  subjectTemplate: 'Thank you for connecting, {{name}}! — Arun K R',
+  bodyTemplate: `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nIn the meantime, feel free to check out more of my work on Dribbble (dribbble.com/arunkr) or connect with me on LinkedIn (linkedin.com/in/arunkr).\n\nBest regards,\nArun K R\nLead Product Designer\nBangalore, India`
+};
 
 const DEFAULT_SECTION_VISIBILITY: SectionVisibilitySettings = {
   showHero: true,
@@ -367,6 +373,7 @@ export class PortfolioDataService {
   public accentColor = signal<string>(this.load('accent_color', '#1A56F0'));
   public activeTemplate = signal<PortfolioTemplateMode>(this.load('active_template', 'bento'));
   public sectionVisibility = signal<SectionVisibilitySettings>(this.load('section_visibility', DEFAULT_SECTION_VISIBILITY));
+  public autoReplySettings = signal<AutoReplySettings>(this.load('auto_reply', DEFAULT_AUTO_REPLY));
 
   // Firebase Firestore instance & synchronization flags
   private firestore: Firestore | null = null;
@@ -437,6 +444,10 @@ export class PortfolioDataService {
       this.scheduleFirestoreSync();
     });
     effect(() => {
+      this.save('auto_reply', this.autoReplySettings());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
       const typo = this.typography();
       this.save('typography', typo);
       this.applyTypography(typo);
@@ -479,6 +490,7 @@ export class PortfolioDataService {
           if (data['accent_color']) this.accentColor.set(data['accent_color']);
           if (data['active_template']) this.activeTemplate.set(data['active_template']);
           if (data['section_visibility']) this.sectionVisibility.set(data['section_visibility']);
+          if (data['auto_reply']) this.autoReplySettings.set(data['auto_reply']);
 
           setTimeout(() => {
             this.isRemoteSync = false;
@@ -523,6 +535,7 @@ export class PortfolioDataService {
         accent_color: this.accentColor(),
         active_template: this.activeTemplate(),
         section_visibility: this.sectionVisibility(),
+        auto_reply: this.autoReplySettings(),
         updatedAt: new Date().toISOString()
       };
       setDoc(docRef, payload, { merge: true }).catch(err => {
@@ -531,6 +544,10 @@ export class PortfolioDataService {
     } catch (e) {
       console.warn('Firestore sync error:', e);
     }
+  }
+
+  public updateAutoReplySettings(settings: Partial<AutoReplySettings>): void {
+    this.autoReplySettings.update(curr => ({ ...curr, ...settings }));
   }
 
   // --- Multi-Template Switcher ---

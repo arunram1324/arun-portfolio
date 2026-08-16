@@ -145,3 +145,9 @@ export interface VisitorAnalytics {
     contact: number;
   };
 }
+
+export interface AutoReplySettings {
+  enabled: boolean;
+  subjectTemplate: string;
+  bodyTemplate: string;
+}

@@ -25,7 +25,8 @@ import {
   ContactMessage,
   TypographySettings,
   PortfolioTemplateMode,
-  SectionVisibilitySettings
+  SectionVisibilitySettings,
+  AutoReplySettings
 } from '../../core/models/portfolio.model';
 
 type AdminTab = 'analytics' | 'messages' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
@@ -64,6 +65,10 @@ export class AdminDashboardComponent {
   public selectedMessage = signal<ContactMessage | null>(null);
   public isMessageModalOpen = signal<boolean>(false);
   public messageFilter = signal<'all' | 'unread'>('all');
+  public isAutoReplyDrawerOpen = signal<boolean>(false);
+  public autoReplyForm: AutoReplySettings = { enabled: true, subjectTemplate: '', bodyTemplate: '' };
+  public replyPreviewBody = signal<string>('');
+  public replyPreviewSubject = signal<string>('');
 
   public filteredMessages = computed(() => {
     const list = this.messageService.messages();
@@ -118,9 +123,29 @@ export class AdminDashboardComponent {
   public viewMessage(msg: ContactMessage): void {
     this.selectedMessage.set(msg);
     this.isMessageModalOpen.set(true);
+    
+    // Generate personalized response from dynamic auto-reply template
+    this.refreshReplyPreview(msg);
+
     if (!msg.read) {
       this.messageService.markAsRead(msg.id, true);
     }
+  }
+
+  public refreshReplyPreview(msg: ContactMessage): void {
+    const settings = this.portfolioData.autoReplySettings();
+    const renderedSubject = (settings.subjectTemplate || 'Thank you for reaching out, {{name}}! — Arun K R')
+      .replace(/\{\{name\}\}/gi, msg.name || 'there')
+      .replace(/\{\{subject\}\}/gi, msg.subject || 'your inquiry')
+      .replace(/\{\{email\}\}/gi, msg.email || '');
+
+    const renderedBody = (settings.bodyTemplate || `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer`)
+      .replace(/\{\{name\}\}/gi, msg.name || 'there')
+      .replace(/\{\{subject\}\}/gi, msg.subject || 'your inquiry')
+      .replace(/\{\{email\}\}/gi, msg.email || '');
+
+    this.replyPreviewSubject.set(renderedSubject);
+    this.replyPreviewBody.set(renderedBody);
   }
 
   public closeMessageModal(): void {
@@ -135,9 +160,47 @@ export class AdminDashboardComponent {
   }
 
   public replyMessage(msg: ContactMessage): void {
-    const subject = encodeURIComponent(`Re: ${msg.subject}`);
-    const body = encodeURIComponent(`Hi ${msg.name},\n\nThank you for reaching out through my portfolio.\n\nBest regards,\nArun K R`);
+    this.refreshReplyPreview(msg);
+    const subject = encodeURIComponent(this.replyPreviewSubject() || `Re: ${msg.subject}`);
+    const body = encodeURIComponent(this.replyPreviewBody());
     window.open(`mailto:${msg.email}?subject=${subject}&body=${body}`, '_blank');
+    this.toastService.show(`Email composer opened for ${msg.email}`);
+  }
+
+  public copyReplyText(): void {
+    this.toastService.copyToClipboard(this.replyPreviewBody(), 'Response draft copied to clipboard!');
+  }
+
+  public openAutoReplySettings(): void {
+    this.autoReplyForm = { ...this.portfolioData.autoReplySettings() };
+    this.isAutoReplyDrawerOpen.set(true);
+  }
+
+  public closeAutoReplySettings(): void {
+    this.isAutoReplyDrawerOpen.set(false);
+  }
+
+  public saveAutoReplySettings(): void {
+    if (!this.autoReplyForm.subjectTemplate.trim() || !this.autoReplyForm.bodyTemplate.trim()) {
+      this.toastService.show('Please fill in both subject and body templates.');
+      return;
+    }
+    this.portfolioData.updateAutoReplySettings(this.autoReplyForm);
+    this.toastService.show('Quick reply template updated and synced with cloud!');
+    this.closeAutoReplySettings();
+
+    // If a message is currently open, refresh its preview
+    const currentMsg = this.selectedMessage();
+    if (currentMsg) {
+      this.refreshReplyPreview(currentMsg);
+    }
+  }
+
+  public getInitials(name: string): string {
+    if (!name) return '??';
+    const parts = name.trim().split(' ').filter(p => p.length > 0);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
   public confirmDeleteMessage(msg: ContactMessage, event?: Event): void {
