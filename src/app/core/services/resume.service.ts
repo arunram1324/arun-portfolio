@@ -27,11 +27,24 @@ export class ResumeService {
   public async downloadPdfResume(): Promise<void> {
     const profile = this.portfolioData.profileInfo();
 
-    // If user configured a custom resume URL in Admin, open it directly
-    if (profile.customResumeUrl && profile.customResumeUrl.trim().startsWith('http')) {
-      window.open(profile.customResumeUrl.trim(), '_blank');
-      this.toastService.show('Opening official resume document...');
-      return;
+    // If user uploaded or configured a custom resume file/URL in Admin
+    if (profile.customResumeUrl && profile.customResumeUrl.trim().length > 0) {
+      const url = profile.customResumeUrl.trim();
+
+      if (url.startsWith('data:application/pdf') || url.startsWith('blob:')) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Arun_K_R_Product_Designer_Resume_${new Date().getFullYear()}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.toastService.show('Custom PDF Resume downloaded successfully! 📄✨');
+        return;
+      } else if (url.startsWith('http')) {
+        window.open(url, '_blank');
+        this.toastService.show('Opening official resume document...');
+        return;
+      }
     }
 
     this.isGeneratingPdf.set(true);

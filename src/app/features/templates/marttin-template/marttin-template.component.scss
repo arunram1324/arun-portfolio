@@ -144,6 +144,40 @@
   gap: 8px;
 }
 
+.m-nav-btn-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--tx);
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+
+  svg {
+    stroke: currentColor;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 500px) {
+    span {
+      display: none;
+    }
+    padding: 7px 10px;
+  }
+}
+
 .m-theme-btn {
   width: 36px;
   height: 36px;

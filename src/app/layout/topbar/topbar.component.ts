@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from '../../core/services/navigation.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { ResumeService } from '../../core/services/resume.service';
 
 @Component({
   selector: 'app-topbar',
@@ -13,7 +14,8 @@ import { ThemeService } from '../../core/services/theme.service';
 export class TopbarComponent {
   constructor(
     public navService: NavigationService,
-    public themeService: ThemeService
+    public themeService: ThemeService,
+    public resumeService: ResumeService
   ) {}
 
   public toggleTheme(): void {

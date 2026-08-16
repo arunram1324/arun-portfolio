@@ -1363,36 +1363,80 @@
                 </div>
               </div>
 
-              <!-- Curriculum Vitae / Resume Configuration -->
-              <div class="form-group full" style="margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--border);">
-                <label class="form-label">Curriculum Vitae (CV / Resume) Configuration</label>
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                  <input 
-                    type="url" 
-                    class="form-input" 
-                    style="flex: 1; min-width: 260px;" 
-                    placeholder="Custom PDF URL (Optional: Leave blank to use 1-click ATS Dynamic Resume Generator)" 
-                    [(ngModel)]="profileForm.customResumeUrl">
-                  
-                  <button type="button" class="btn-secondary" (click)="resumeService.downloadPdfResume()">
+              <!-- Curriculum Vitae / Resume Configuration & Direct PDF Upload -->
+              <div class="form-group full" style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                  <div>
+                    <label class="form-label" style="font-size: 14px; font-weight: 700; color: var(--tx); margin: 0 0 4px;">
+                      Curriculum Vitae (CV / Resume) Management
+                    </label>
+                    <p class="sec-desc" style="font-size: 12.5px; margin: 0;">
+                      Upload your own custom PDF resume OR use the automated dynamic ATS resume generator.
+                    </p>
+                  </div>
+
+                  @if (isCustomPdfUploaded()) {
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: rgba(16, 185, 129, 0.12); color: #10B981; font-size: 12px; font-weight: 700;">
+                      <span class="pulse-dot" style="background: #10B981;"></span>
+                      Custom PDF Linked
+                    </span>
+                  } @else {
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 6px; background: var(--accent-subtle); color: var(--accent); font-size: 12px; font-weight: 700;">
+                      <span class="pulse-dot"></span>
+                      Dynamic ATS Generator Active
+                    </span>
+                  }
+                </div>
+
+                <!-- Action Toolbar: Upload Button + URL + Test Actions -->
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;">
+                  <!-- Direct File Upload Button -->
+                  <label class="btn-upload-label" style="margin: 0; cursor: pointer;">
+                    <input type="file" accept=".pdf,application/pdf" class="file-hidden-input" (change)="onResumePdfUpload($event)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Upload Resume PDF</span>
+                  </label>
+
+                  <!-- Direct URL Input -->
+                  <input 
+                    type="text" 
+                    class="form-input" 
+                    style="flex: 1; min-width: 220px;" 
+                    placeholder="Or paste external PDF URL (Google Drive, Dropbox, etc.)..." 
+                    [(ngModel)]="profileForm.customResumeUrl">
+
+                  @if (isCustomPdfUploaded()) {
+                    <button type="button" class="btn-secondary" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.3);" (click)="removeCustomResumePdf()">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                      </svg>
+                      <span>Remove Custom PDF</span>
+                    </button>
+                  }
+
+                  <button type="button" class="btn-secondary" (click)="resumeService.downloadPdfResume()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                       <polyline points="7 10 12 15 17 10"/>
                       <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    <span>Test Download PDF</span>
+                    <span>Test Download</span>
                   </button>
 
                   <button type="button" class="btn-secondary" (click)="resumeService.openResumeModal()">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                       <circle cx="12" cy="12" r="3"/>
                     </svg>
                     <span>Preview CV Sheet</span>
                   </button>
                 </div>
-                <small class="upload-hint" style="margin-top: 6px; display: block;">
-                  ⚡ Auto-Generated Resume dynamically pulls your latest Experience, Skills, Tools, and Bio into a pixel-perfect ATS-friendly PDF.
+
+                <small class="upload-hint">
+                  💡 When no custom PDF is uploaded, the portfolio generates a live, high-precision ATS-friendly PDF dynamically from your experience and skills data.
                 </small>
               </div>
             </div>

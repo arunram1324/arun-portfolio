@@ -484,6 +484,44 @@ export class AdminDashboardComponent {
     }
   }
 
+  public onResumePdfUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+        this.toastService.show('Please select a valid PDF file (.pdf)');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.toastService.show('PDF file is too large (max 5MB).');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          this.profileForm.customResumeUrl = result;
+          this.portfolioData.updateProfile({ customResumeUrl: result });
+          this.toastService.show(`✓ Resume PDF "${file.name}" uploaded successfully! 📄✨`);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  public removeCustomResumePdf(): void {
+    this.profileForm.customResumeUrl = '';
+    this.portfolioData.updateProfile({ customResumeUrl: '' });
+    this.toastService.show('Custom PDF removed. Portfolio will now use the Dynamic Resume Generator.');
+  }
+
+  public isCustomPdfUploaded(): boolean {
+    const url = this.profileForm.customResumeUrl;
+    return !!(url && url.trim().length > 0);
+  }
+
   // --- Modal Openers ---
   public openAddVoice(): void {
     this.voiceForm = this.getEmptyVoiceQA();
