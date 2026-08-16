@@ -4,21 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { PortfolioDataService } from '../../core/services/portfolio-data.service';
 import { MessageService } from '../../core/services/message.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { PanelCardComponent } from '../../shared/components/panel-card/panel-card.component';
 import { ContactLink } from '../../core/models/portfolio.model';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, PanelCardComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
 export class ContactComponent {
   public messageForm = {
-    name: '',
+    firstName: '',
+    lastName: '',
+    phone: '',
     email: '',
-    subject: 'Freelance Project',
+    projectType: 'Freelance UI/UX Design Project',
+    timeline: '1-3 Months',
     message: ''
   };
 
@@ -40,20 +42,32 @@ export class ContactComponent {
   }
 
   public async onSubmitMessage(): Promise<void> {
-    if (!this.messageForm.name.trim() || !this.messageForm.email.trim() || !this.messageForm.message.trim()) {
+    const fullName = `${this.messageForm.firstName.trim()} ${this.messageForm.lastName.trim()}`.trim();
+    if (!fullName || !this.messageForm.email.trim() || !this.messageForm.message.trim()) {
       this.toastService.show('Please fill in your name, email, and message.');
       return;
     }
 
     this.isSubmitting.set(true);
     try {
-      await this.messageService.sendMessage(this.messageForm);
+      const detailedMessage = `Contact Phone: ${this.messageForm.phone || 'Not provided'}\nInquiry Type: ${this.messageForm.projectType}\nProject Timeline: ${this.messageForm.timeline}\n\nMessage:\n${this.messageForm.message}`;
+
+      await this.messageService.sendMessage({
+        name: fullName,
+        email: this.messageForm.email,
+        subject: this.messageForm.projectType || 'Portfolio Contact Inquiry',
+        message: detailedMessage
+      });
+
       this.isSuccess.set(true);
-      this.toastService.show('Message sent successfully! Arun will reach out soon.');
+      this.toastService.show('Message sent successfully! Arun will get back to you shortly.');
       this.messageForm = {
-        name: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
         email: '',
-        subject: 'Freelance Project',
+        projectType: 'Freelance UI/UX Design Project',
+        timeline: '1-3 Months',
         message: ''
       };
       setTimeout(() => this.isSuccess.set(false), 6000);
