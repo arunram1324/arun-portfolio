@@ -1,10 +1,11 @@
-import { Component, signal, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, signal, computed, ViewChild, ElementRef, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PortfolioDataService } from '../../../core/services/portfolio-data.service';
 import { MessageService } from '../../../core/services/message.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { ToastService } from '../../../shared/services/toast.service';
+import { ResumeService } from '../../../core/services/resume.service';
 import { Project, VoiceQAItem } from '../../../core/models/portfolio.model';
 
 @Component({
@@ -49,6 +50,7 @@ export class MarttinTemplateComponent {
   constructor(
     public portfolioData: PortfolioDataService,
     public messageService: MessageService,
+    public resumeService: ResumeService,
     public themeService: ThemeService,
     public toastService: ToastService
   ) {}

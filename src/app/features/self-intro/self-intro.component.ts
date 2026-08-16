@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from '../../core/services/navigation.service';
 import { PortfolioDataService } from '../../core/services/portfolio-data.service';
+import { ResumeService } from '../../core/services/resume.service';
 
 @Component({
   selector: 'app-self-intro',
@@ -13,7 +14,8 @@ import { PortfolioDataService } from '../../core/services/portfolio-data.service
 export class SelfIntroComponent {
   constructor(
     public navService: NavigationService,
-    public portfolioData: PortfolioDataService
+    public portfolioData: PortfolioDataService,
+    public resumeService: ResumeService
   ) {}
 
   public exploreWork(): void {

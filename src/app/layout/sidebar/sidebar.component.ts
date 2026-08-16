@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from '../../core/services/navigation.service';
 import { PortfolioDataService } from '../../core/services/portfolio-data.service';
+import { ResumeService } from '../../core/services/resume.service';
 import { NavPage } from '../../core/models/portfolio.model';
 
 @Component({
@@ -14,7 +15,8 @@ import { NavPage } from '../../core/models/portfolio.model';
 export class SidebarComponent {
   constructor(
     public navService: NavigationService,
-    public portfolioData: PortfolioDataService
+    public portfolioData: PortfolioDataService,
+    public resumeService: ResumeService
   ) {}
 
   public onNavClick(page: NavPage): void {

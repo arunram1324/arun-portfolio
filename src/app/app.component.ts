@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/components/toast/toast.component';
+import { ResumeModalComponent } from './shared/components/resume-modal/resume-modal.component';
 import { ThemeService } from './core/services/theme.service';
 import { VersionCheckService } from './core/services/version-check.service';
 
@@ -11,7 +12,8 @@ import { VersionCheckService } from './core/services/version-check.service';
   imports: [
     CommonModule,
     RouterOutlet,
-    ToastComponent
+    ToastComponent,
+    ResumeModalComponent
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']

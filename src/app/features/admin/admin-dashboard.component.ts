@@ -31,6 +31,8 @@ import {
 } from '../../core/models/portfolio.model';
 import { VersionControlService } from '../../core/services/version-control.service';
 
+import { ResumeService } from '../../core/services/resume.service';
+
 type AdminTab = 'analytics' | 'messages' | 'versions' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
 
 interface ConfirmConfig {
@@ -110,6 +112,7 @@ export class AdminDashboardComponent {
     public analyticsService: AnalyticsService,
     public messageService: MessageService,
     public versionControl: VersionControlService,
+    public resumeService: ResumeService,
     private authService: AuthService,
     public themeService: ThemeService,
     private toastService: ToastService,

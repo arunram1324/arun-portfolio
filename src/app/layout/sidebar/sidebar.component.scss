@@ -296,3 +296,54 @@
   margin-top: 4px;
   transition: color 0.25s var(--ease);
 }
+
+.sb-resume-wrap {
+  padding: 0 16px 18px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .sb.icon & {
+    padding: 0 8px 14px;
+
+    .sb-cv-txt {
+      display: none;
+    }
+
+    .btn-sb-cv {
+      padding: 8px;
+      border-radius: 8px;
+    }
+  }
+}
+
+.btn-sb-cv {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--tx);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: border-color 0.18s, color 0.18s, background 0.18s;
+  @include tap-friendly;
+
+  svg {
+    stroke: currentColor;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg);
+  }
+}

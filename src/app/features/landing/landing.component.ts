@@ -4,6 +4,7 @@ import { NavigationService } from '../../core/services/navigation.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { PortfolioDataService } from '../../core/services/portfolio-data.service';
 import { AnalyticsService } from '../../core/services/analytics.service';
+import { ResumeService } from '../../core/services/resume.service';
 
 @Component({
   selector: 'app-landing',
@@ -17,6 +18,7 @@ export class LandingComponent {
     public navService: NavigationService,
     public themeService: ThemeService,
     public portfolioData: PortfolioDataService,
+    public resumeService: ResumeService,
     private analyticsService: AnalyticsService
   ) {}
 

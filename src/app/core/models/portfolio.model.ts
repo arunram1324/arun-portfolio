@@ -107,6 +107,8 @@ export interface ProfileInfo {
   bio: string;
   photoUrl: string;
   industries: string[];
+  customResumeUrl?: string;
+  resumeHeadline?: string;
 }
 
 export interface ContactMessage {

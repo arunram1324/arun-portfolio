@@ -1,0 +1,150 @@
+@if (resumeService.isResumeModalOpen()) {
+  <div class="resume-backdrop" (click)="onClose()">
+    <div class="resume-dialog" (click)="$event.stopPropagation()">
+      <!-- Sticky Action Bar Header -->
+      <div class="resume-topbar">
+        <div class="rt-left">
+          <span class="rt-icon">📄</span>
+          <div>
+            <h3 class="rt-title">Curriculum Vitae</h3>
+            <span class="rt-sub">ATS-Compliant & Verified Portfolio Resume</span>
+          </div>
+        </div>
+
+        <div class="rt-actions">
+          <button type="button" class="btn-rt-secondary" (click)="onPrint()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect width="12" height="8" x="6" y="14"/>
+            </svg>
+            <span>Print</span>
+          </button>
+
+          <button type="button" class="btn-rt-primary" (click)="onDownload()" [disabled]="resumeService.isGeneratingPdf()">
+            @if (resumeService.isGeneratingPdf()) {
+              <span class="rt-spinner"></span>
+              <span>Generating PDF...</span>
+            } @else {
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download PDF</span>
+            }
+          </button>
+
+          <button type="button" class="btn-rt-close" (click)="onClose()" aria-label="Close Modal">✕</button>
+        </div>
+      </div>
+
+      <!-- Printable A4 Resume Sheet -->
+      <div class="resume-sheet-wrap">
+        <div class="resume-sheet" id="printable-resume">
+          <!-- 1. Header -->
+          <header class="rs-header">
+            <div class="rs-header-main">
+              <h1 class="rs-name">{{ portfolioData.profileInfo().name }}</h1>
+              <span class="rs-role">{{ portfolioData.profileInfo().role || 'Lead UX/UI & Product Designer' }}</span>
+            </div>
+
+            <div class="rs-contact-bar">
+              <span>📍 Bangalore, India</span>
+              <span class="rs-dot">•</span>
+              <span>✉️ {{ getContactEmail() }}</span>
+              <span class="rs-dot">•</span>
+              <span>📞 {{ getContactPhone() }}</span>
+              <span class="rs-dot">•</span>
+              <span>🌐 arunram1324.github.io/arun-portfolio</span>
+              <span class="rs-dot">•</span>
+              <span>💼 linkedin.com/in/arunkr</span>
+            </div>
+          </header>
+
+          <div class="rs-divider"></div>
+
+          <!-- 2. Professional Summary -->
+          <section class="rs-sec">
+            <h2 class="rs-sec-title">PROFESSIONAL SUMMARY</h2>
+            <p class="rs-summary-text">
+              {{ portfolioData.profileInfo().bio || 'Lead Product Designer with 3+ years of enterprise experience specializing in FinTech, ERP, and CRM platforms. Adept in user research, wireframing, interactive prototyping, and architecting multi-brand design systems that accelerate engineering handoff and improve user task efficiency.' }}
+            </p>
+          </section>
+
+          <!-- 3. Work Experience -->
+          <section class="rs-sec">
+            <h2 class="rs-sec-title">WORK EXPERIENCE</h2>
+            <div class="rs-exp-list">
+              @for (exp of portfolioData.experiences(); track exp.company) {
+                <div class="rs-exp-item">
+                  <div class="rs-exp-head">
+                    <div class="rs-exp-left">
+                      <strong class="rs-exp-role">{{ exp.role }}</strong>
+                      <span class="rs-exp-company"> · {{ exp.company }}</span>
+                    </div>
+                    <span class="rs-exp-period">{{ exp.period }}</span>
+                  </div>
+                  <p class="rs-exp-desc">{{ exp.description }}</p>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- 4. Core Competencies & Skills -->
+          <section class="rs-sec">
+            <h2 class="rs-sec-title">CORE COMPETENCIES & SKILLS</h2>
+            <div class="rs-skills-list">
+              @for (cat of portfolioData.skillCategories(); track cat.id) {
+                <div class="rs-skill-row">
+                  <strong class="rs-cat-name">{{ cat.categoryName }}:</strong>
+                  <span class="rs-skill-names">
+                    {{ cat.skills.join('  •  ') }}
+                  </span>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- 5. Tools & Software -->
+          <section class="rs-sec">
+            <h2 class="rs-sec-title">TOOLS & TECHNOLOGIES</h2>
+            <div class="rs-tools-row">
+              @for (tool of portfolioData.tools(); track tool.id; let last = $last) {
+                <span class="rs-tool-tag">{{ tool.name }} ({{ tool.type }}){{ last ? '' : ' • ' }}</span>
+              }
+            </div>
+          </section>
+
+          <!-- 6. Featured Projects & Case Studies -->
+          <section class="rs-sec">
+            <h2 class="rs-sec-title">FEATURED CASE STUDIES & KEY PROJECTS</h2>
+            <div class="rs-proj-list">
+              @for (proj of portfolioData.projects().slice(0, 3); track proj.id) {
+                <div class="rs-proj-item">
+                  <div class="rs-proj-head">
+                    <strong class="rs-proj-name">{{ proj.name }}</strong>
+                    @if (proj.metrics) {
+                      <span class="rs-proj-metric">[{{ proj.metrics }}]</span>
+                    }
+                  </div>
+                  <p class="rs-proj-desc">{{ proj.description }} <em>(Tech/Tools: {{ proj.tags.join(', ') }})</em></p>
+                </div>
+              }
+            </div>
+          </section>
+
+          <!-- 7. Domains & Industries -->
+          @if (portfolioData.profileInfo().industries && portfolioData.profileInfo().industries.length > 0) {
+            <section class="rs-sec">
+              <h2 class="rs-sec-title">DOMAIN & INDUSTRY EXPERTISE</h2>
+              <p class="rs-industries-text">
+                {{ portfolioData.profileInfo().industries.join('  •  ') }}
+              </p>
+            </section>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

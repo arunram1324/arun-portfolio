@@ -1362,6 +1362,39 @@
                   }
                 </div>
               </div>
+
+              <!-- Curriculum Vitae / Resume Configuration -->
+              <div class="form-group full" style="margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <label class="form-label">Curriculum Vitae (CV / Resume) Configuration</label>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <input 
+                    type="url" 
+                    class="form-input" 
+                    style="flex: 1; min-width: 260px;" 
+                    placeholder="Custom PDF URL (Optional: Leave blank to use 1-click ATS Dynamic Resume Generator)" 
+                    [(ngModel)]="profileForm.customResumeUrl">
+                  
+                  <button type="button" class="btn-secondary" (click)="resumeService.downloadPdfResume()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Test Download PDF</span>
+                  </button>
+
+                  <button type="button" class="btn-secondary" (click)="resumeService.openResumeModal()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span>Preview CV Sheet</span>
+                  </button>
+                </div>
+                <small class="upload-hint" style="margin-top: 6px; display: block;">
+                  ⚡ Auto-Generated Resume dynamically pulls your latest Experience, Skills, Tools, and Bio into a pixel-perfect ATS-friendly PDF.
+                </small>
+              </div>
             </div>
           </div>
         </section>
