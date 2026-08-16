@@ -15,16 +15,11 @@
   transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
 
   @media (max-width: 767px) {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
     align-items: center;
-    justify-content: space-around;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 
@@ -33,14 +28,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 6px 4px;
+  gap: 2px;
+  padding: 4px 1px;
   border: none;
   background: none;
   cursor: pointer;
   border-radius: var(--radius-sm);
   color: var(--muted);
-  min-height: 54px;
+  min-height: 52px;
+  min-width: 0;
   transition: color 0.15s, background 0.15s;
   @include tap-friendly;
 
@@ -54,24 +50,27 @@
 }
 
 .tico {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 }
 
 .tlbl {
   font-family: var(--fb);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 8.5px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   line-height: 1;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
