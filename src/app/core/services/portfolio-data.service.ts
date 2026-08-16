@@ -1,5 +1,8 @@
 import { Injectable, signal, effect } from '@angular/core';
 import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings } from '../models/portfolio.model';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, doc, onSnapshot, setDoc, Firestore } from 'firebase/firestore';
+import { FIREBASE_CONFIG } from '../config/firebase.config';
 
 const STORAGE_PREFIX = 'ak_portfolio_v4_';
 
@@ -364,7 +367,21 @@ export class PortfolioDataService {
   public activeTemplate = signal<PortfolioTemplateMode>(this.load('active_template', 'bento'));
   public sectionVisibility = signal<SectionVisibilitySettings>(this.load('section_visibility', DEFAULT_SECTION_VISIBILITY));
 
+  // Firebase Firestore instance & synchronization flags
+  private firestore: Firestore | null = null;
+  private isRemoteSync = false;
+  private syncDebounceTimer: any = null;
+
   constructor() {
+    // Initialize Firebase Firestore safely
+    try {
+      const app = !getApps().length ? initializeApp(FIREBASE_CONFIG) : getApp();
+      this.firestore = getFirestore(app);
+      this.initFirestoreRealtimeSync();
+    } catch (err) {
+      console.warn('Firebase initialization note:', err);
+    }
+
     // Normalize any legacy emoji icons to modern SVG icon keys
     this.contactLinks.update(links => links.map(l => ({ ...l, icon: this.normalizeIcon(l.icon) })));
     this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
@@ -373,28 +390,146 @@ export class PortfolioDataService {
     this.applyAccentColor(this.accentColor());
     this.applyTypography(this.typography());
 
-    // Auto sync signals to localStorage
-    effect(() => this.save('profile', this.profileInfo()));
-    effect(() => this.save('experiences', this.experiences()));
-    effect(() => this.save('projects', this.projects()));
-    effect(() => this.save('project_categories', this.projectCategories()));
-    effect(() => this.save('tools', this.tools()));
-    effect(() => this.save('skills', this.skillCategories()));
-    effect(() => this.save('voice_qa', this.voiceKnowledge()));
-    effect(() => this.save('contact', this.contactLinks()));
-    effect(() => this.save('contact_info', this.contactInfo()));
-    effect(() => this.save('active_template', this.activeTemplate()));
-    effect(() => this.save('section_visibility', this.sectionVisibility()));
+    // Auto sync signals to localStorage & trigger debounced Cloud Firestore sync
+    effect(() => {
+      this.save('profile', this.profileInfo());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('experiences', this.experiences());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('projects', this.projects());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('project_categories', this.projectCategories());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('tools', this.tools());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('skills', this.skillCategories());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('voice_qa', this.voiceKnowledge());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('contact', this.contactLinks());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('contact_info', this.contactInfo());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('active_template', this.activeTemplate());
+      this.scheduleFirestoreSync();
+    });
+    effect(() => {
+      this.save('section_visibility', this.sectionVisibility());
+      this.scheduleFirestoreSync();
+    });
     effect(() => {
       const typo = this.typography();
       this.save('typography', typo);
       this.applyTypography(typo);
+      this.scheduleFirestoreSync();
     });
     effect(() => {
       const color = this.accentColor();
       this.save('accent_color', color);
       this.applyAccentColor(color);
+      this.scheduleFirestoreSync();
     });
+  }
+
+  // --- Real-Time Firestore Synchronization ---
+  private initFirestoreRealtimeSync(): void {
+    if (!this.firestore) return;
+    try {
+      const docRef = doc(this.firestore, 'portfolio_content', 'main');
+      onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          this.isRemoteSync = true;
+
+          if (data['profile']) this.profileInfo.set(data['profile']);
+          if (data['experiences']) this.experiences.set(data['experiences']);
+          if (data['projects']) this.projects.set(data['projects']);
+          if (data['project_categories']) this.projectCategories.set(data['project_categories']);
+          if (data['tools']) this.tools.set(data['tools']);
+          if (data['skills']) {
+            const rawSkills: SkillCategory[] = data['skills'];
+            this.skillCategories.set(rawSkills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
+          }
+          if (data['voice_qa']) this.voiceKnowledge.set(data['voice_qa']);
+          if (data['contact']) {
+            const rawContacts: ContactLink[] = data['contact'];
+            this.contactLinks.set(rawContacts.map(c => ({ ...c, icon: this.normalizeIcon(c.icon) })));
+          }
+          if (data['contact_info']) this.contactInfo.set(data['contact_info']);
+          if (data['typography']) this.typography.set(data['typography']);
+          if (data['accent_color']) this.accentColor.set(data['accent_color']);
+          if (data['active_template']) this.activeTemplate.set(data['active_template']);
+          if (data['section_visibility']) this.sectionVisibility.set(data['section_visibility']);
+
+          setTimeout(() => {
+            this.isRemoteSync = false;
+          }, 300);
+        } else {
+          // If Firestore is empty (first time run), seed it with current defaults
+          this.syncToFirestore();
+        }
+      }, (err) => {
+        console.warn('Firestore real-time sync listening note:', err);
+      });
+    } catch (e) {
+      console.warn('Firestore setup note:', e);
+    }
+  }
+
+  private scheduleFirestoreSync(): void {
+    if (this.isRemoteSync || !this.firestore) return;
+    if (this.syncDebounceTimer) {
+      clearTimeout(this.syncDebounceTimer);
+    }
+    this.syncDebounceTimer = setTimeout(() => {
+      this.syncToFirestore();
+    }, 600);
+  }
+
+  public syncToFirestore(): void {
+    if (!this.firestore) return;
+    try {
+      const docRef = doc(this.firestore, 'portfolio_content', 'main');
+      const payload = {
+        profile: this.profileInfo(),
+        experiences: this.experiences(),
+        projects: this.projects(),
+        project_categories: this.projectCategories(),
+        tools: this.tools(),
+        skills: this.skillCategories(),
+        voice_qa: this.voiceKnowledge(),
+        contact: this.contactLinks(),
+        contact_info: this.contactInfo(),
+        typography: this.typography(),
+        accent_color: this.accentColor(),
+        active_template: this.activeTemplate(),
+        section_visibility: this.sectionVisibility(),
+        updatedAt: new Date().toISOString()
+      };
+      setDoc(docRef, payload, { merge: true }).catch(err => {
+        console.warn('Firestore push note:', err);
+      });
+    } catch (e) {
+      console.warn('Firestore sync error:', e);
+    }
   }
 
   // --- Multi-Template Switcher ---
