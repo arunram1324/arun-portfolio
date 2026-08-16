@@ -125,6 +125,12 @@ export interface VisitorLogItem {
   page: string;
   device: 'Mobile' | 'Desktop' | 'Tablet';
   referrer: string;
+  city?: string;
+  region?: string;
+  country?: string;
+  countryCode?: string;
+  flag?: string;
+  location?: string;
 }
 
 export interface VisitorAnalytics {

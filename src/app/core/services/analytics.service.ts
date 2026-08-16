@@ -88,9 +88,9 @@ export class AnalyticsService {
         console.warn('Analytics stats listener note:', err);
       });
 
-      // 2. Listen to recent visitor activity log (Last 20)
+      // 2. Listen to recent visitor activity log (Last 25)
       const visitorsColRef = collection(this.firestore, 'portfolio_analytics_visitors');
-      const q = query(visitorsColRef, orderBy('timestamp', 'desc'), limit(20));
+      const q = query(visitorsColRef, orderBy('timestamp', 'desc'), limit(25));
       onSnapshot(q, (snapshot) => {
         const list: VisitorLogItem[] = [];
         snapshot.forEach((docSnap) => {
@@ -100,7 +100,13 @@ export class AnalyticsService {
             timestamp: d['timestamp'] || new Date().toISOString(),
             page: d['page'] || 'intro',
             device: d['device'] || 'Desktop',
-            referrer: d['referrer'] || 'Direct'
+            referrer: d['referrer'] || 'Direct',
+            city: d['city'] || '',
+            region: d['region'] || '',
+            country: d['country'] || '',
+            countryCode: d['countryCode'] || '',
+            flag: d['flag'] || '🌐',
+            location: d['location'] || (d['city'] && d['country'] ? `${d['city']}, ${d['country']}` : 'Global')
           });
         });
         this.recentVisitors.set(list);
@@ -113,8 +119,86 @@ export class AnalyticsService {
     }
   }
 
+  // --- Cached Location Resolution ---
+  private cachedLocation: {
+    city: string;
+    region: string;
+    country: string;
+    countryCode: string;
+    flag: string;
+    locationText: string;
+  } | null = null;
+
+  private async resolveVisitorLocation(): Promise<{
+    city: string;
+    region: string;
+    country: string;
+    countryCode: string;
+    flag: string;
+    locationText: string;
+  }> {
+    if (this.cachedLocation) return this.cachedLocation;
+
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('ak_visitor_geo');
+      if (stored) {
+        try {
+          this.cachedLocation = JSON.parse(stored);
+          return this.cachedLocation!;
+        } catch {}
+      }
+    }
+
+    try {
+      const res = await fetch('https://ipwho.is/', {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          const loc = {
+            city: data.city || '',
+            region: data.region || '',
+            country: data.country || 'Global',
+            countryCode: data.country_code || '',
+            flag: data.flag?.emoji || '🌐',
+            locationText: [data.city, data.country].filter(Boolean).join(', ') || 'Global'
+          };
+          this.cachedLocation = loc;
+          if (typeof window !== 'undefined') {
+            sessionStorage.setItem('ak_visitor_geo', JSON.stringify(loc));
+          }
+          return loc;
+        }
+      }
+    } catch (e) {
+      // Fallback below
+    }
+
+    // Fallback using timezone if geolocation fails or is blocked
+    let fallbackCountry = 'India';
+    let fallbackFlag = '🇮🇳';
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (!tz.includes('Kolkata') && !tz.includes('Calcutta') && !tz.includes('India') && !tz.includes('Asia/Colombo')) {
+        fallbackCountry = 'Global';
+        fallbackFlag = '🌐';
+      }
+    } catch {}
+
+    const defaultLoc = {
+      city: '',
+      region: '',
+      country: fallbackCountry,
+      countryCode: fallbackCountry === 'India' ? 'IN' : '',
+      flag: fallbackFlag,
+      locationText: fallbackCountry
+    };
+    return defaultLoc;
+  }
+
   // --- Track Page Views and Visitor Sessions ---
-  public trackPageView(page: string): void {
+  public async trackPageView(page: string): Promise<void> {
     if (!this.firestore) return;
 
     try {
@@ -143,14 +227,23 @@ export class AnalyticsService {
         console.warn('Failed to record page view:', e);
       });
 
-      // Record detailed log entry in visitors collection
+      // Resolve visitor exact location
+      const geo = await this.resolveVisitorLocation();
+
+      // Record detailed log entry in visitors collection with location
       const visitorsColRef = collection(this.firestore, 'portfolio_analytics_visitors');
       addDoc(visitorsColRef, {
         timestamp: new Date().toISOString(),
         page: page,
         device: device,
         referrer: typeof document !== 'undefined' && document.referrer ? document.referrer : 'Direct Visit',
-        isNewSession: isNewSession
+        isNewSession: isNewSession,
+        city: geo.city,
+        region: geo.region,
+        country: geo.country,
+        countryCode: geo.countryCode,
+        flag: geo.flag,
+        location: geo.locationText
       }).catch(() => {});
 
     } catch (err) {

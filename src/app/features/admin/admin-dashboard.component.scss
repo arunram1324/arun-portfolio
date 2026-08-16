@@ -2391,6 +2391,42 @@
   font-weight: 700;
 }
 
+.geo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--fb);
+  font-size: 12px;
+  white-space: nowrap;
+  max-width: 220px;
+}
+
+.geo-flag {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.geo-text {
+  color: var(--tx);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.geo-city {
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.geo-country {
+  color: var(--muted);
+}
+
 .ref-cell {
   color: var(--body);
   font-size: 12.5px;
