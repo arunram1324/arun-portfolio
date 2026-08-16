@@ -247,12 +247,12 @@
 .pnav-n {
   background: #1A56F0;
   color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(26, 86, 240, 0.35);
+  box-shadow: none;
 
   [data-theme="dark"] & {
     background: var(--accent);
     color: #0F0F0F;
-    box-shadow: 0 4px 14px rgba(217, 242, 26, 0.25);
+    box-shadow: none;
   }
 }
 

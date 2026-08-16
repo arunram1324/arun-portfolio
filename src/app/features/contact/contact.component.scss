@@ -165,13 +165,13 @@ app-panel-card {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px var(--accent);
-  transition: opacity 0.18s, transform 0.15s, box-shadow 0.18s;
+  box-shadow: none;
+  transition: opacity 0.18s, transform 0.15s;
   @include tap-friendly;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--accent);
+    box-shadow: none;
   }
 
   &:disabled {

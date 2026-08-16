@@ -355,12 +355,12 @@
   justify-content: center;
   gap: 8px;
   margin-top: 6px;
-  box-shadow: 0 4px 14px var(--shadow);
-  transition: transform 0.18s, filter 0.2s, box-shadow 0.2s;
+  box-shadow: none;
+  transition: transform 0.18s, filter 0.2s;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px var(--shadow);
+    box-shadow: none;
     filter: brightness(1.06);
   }
 

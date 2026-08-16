@@ -1544,13 +1544,13 @@
   &.btn-danger {
     background: #EF4444;
     color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    box-shadow: none;
   }
 
   &.btn-primary-confirm {
     background: var(--accent);
     color: #FFFFFF;
-    box-shadow: 0 4px 14px var(--shadow);
+    box-shadow: none;
   }
 }
 
@@ -1654,7 +1654,7 @@
   &.active {
     border-color: var(--accent);
     background: var(--accent-subtle);
-    box-shadow: 0 4px 14px var(--shadow);
+    box-shadow: none;
   }
 }
 
@@ -1953,7 +1953,7 @@
     background: var(--accent);
     color: #FFFFFF;
     border-color: var(--accent);
-    box-shadow: 0 4px 14px var(--accent);
+    box-shadow: none;
   }
 }
 

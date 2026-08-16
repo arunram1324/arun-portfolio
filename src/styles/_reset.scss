@@ -101,3 +101,33 @@ html, body {
 .fade-in-up {
   animation: fu 0.35s ease both;
 }
+
+// ==========================================
+// UNIVERSAL BUTTON FLAT STYLING (NO SHADOWS)
+// ==========================================
+button, 
+[type="button"], 
+[type="submit"], 
+[type="reset"], 
+.btn, 
+.btn-primary, 
+.btn-secondary, 
+.btn-ghost, 
+.btn-act, 
+.btn-icon, 
+.btn-hero, 
+.btn-logout, 
+a.btn, 
+.btn-select-tpl, 
+.msg-submit-btn, 
+.m-btn-submit, 
+.m-btn-contact-act, 
+.cat-pill,
+.filter-pill,
+.msg-act-btn {
+  box-shadow: none !important;
+
+  &:hover, &:focus, &:active {
+    box-shadow: none !important;
+  }
+}
