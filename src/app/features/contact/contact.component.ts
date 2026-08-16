@@ -21,7 +21,8 @@ export class ContactComponent {
   public onContactClick(event: MouseEvent, link: ContactLink): void {
     if (link.action === 'copy') {
       event.preventDefault();
-      this.toastService.copyToClipboard('arun.uxdesigner@example.com', 'Email copied to clipboard!');
+      const textToCopy = link.value || link.label || link.href.replace('mailto:', '').replace('tel:', '');
+      this.toastService.copyToClipboard(textToCopy, `${link.label || 'Contact'} copied to clipboard!`);
     }
   }
 }

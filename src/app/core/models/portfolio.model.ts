@@ -65,6 +65,7 @@ export interface SkillCategory {
 export interface ContactLink {
   icon: string;
   label: string;
+  value?: string;
   href: string;
   action?: 'copy' | 'link';
 }

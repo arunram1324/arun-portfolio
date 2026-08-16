@@ -526,16 +526,26 @@ export class AdminDashboardComponent {
   }
 
   public saveContactLink(): void {
-    if (!this.contactLinkForm.label.trim() || !this.contactLinkForm.href.trim()) {
-      alert('Please enter contact label and link/email address!');
+    if (!this.contactLinkForm.label.trim()) {
+      alert('Please enter category/platform label!');
       return;
+    }
+    if (!this.contactLinkForm.value?.trim() && !this.contactLinkForm.href.trim()) {
+      alert('Please enter display value or link URL!');
+      return;
+    }
+    if (!this.contactLinkForm.value?.trim()) {
+      this.contactLinkForm.value = this.contactLinkForm.href;
+    }
+    if (!this.contactLinkForm.href.trim()) {
+      this.contactLinkForm.href = this.contactLinkForm.value;
     }
 
     if (this.isEditMode() && this.contactLinkEditIndex >= 0) {
-      this.portfolioData.updateContactLink(this.contactLinkEditIndex, this.contactLinkForm);
+      this.portfolioData.updateContactLink(this.contactLinkEditIndex, { ...this.contactLinkForm });
       this.toastService.show('Contact Link Updated!');
     } else {
-      this.portfolioData.addContactLink(this.contactLinkForm);
+      this.portfolioData.addContactLink({ ...this.contactLinkForm });
       this.toastService.show('New Contact Link Added!');
     }
     this.closeModal();
@@ -641,10 +651,11 @@ export class AdminDashboardComponent {
 
   private getEmptyContactLink(): ContactLink {
     return {
-      icon: '📧',
-      label: '',
+      icon: 'mail',
+      label: 'Email',
+      value: '',
       href: '',
-      action: 'link'
+      action: 'copy'
     };
   }
 }

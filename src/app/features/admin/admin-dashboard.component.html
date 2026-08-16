@@ -894,11 +894,14 @@
           </div>
 
           <div class="contact-links-grid">
-            @for (link of portfolioData.contactLinks(); track link.label; let i = $index) {
+            @for (link of portfolioData.contactLinks(); track (link.label + link.href); let i = $index) {
               <div class="clink-admin-card">
                 <div class="clink-admin-ico">{{ link.icon }}</div>
                 <div class="clink-admin-det">
-                  <span class="clink-admin-lbl">{{ link.label }}</span>
+                  <div class="clink-admin-top">
+                    <span class="clink-badge">{{ link.label }}</span>
+                    <span class="clink-val-main">{{ link.value || link.label }}</span>
+                  </div>
                   <span class="clink-admin-href">{{ link.href }}</span>
                   <span class="clink-admin-action">
                     Action: <strong>{{ link.action === 'copy' ? 'Copy to Clipboard' : 'Open Link ↗' }}</strong>
@@ -1282,22 +1285,37 @@
               <div class="form-group">
                 <label class="form-label">Platform Icon</label>
                 <select class="form-select" [(ngModel)]="contactLinkForm.icon">
-                  <option value="mail">Email (Envelope Icon)</option>
-                  <option value="linkedin">LinkedIn (Professional Icon)</option>
-                  <option value="dribbble">Dribbble (Design Icon)</option>
-                  <option value="globe">Twitter / X / Web (Globe Icon)</option>
-                  <option value="link">Custom Web Link (Anchor Icon)</option>
+                  <option value="mail">📧 Email (Envelope Icon)</option>
+                  <option value="phone">📞 Phone / Call (Telephone Icon)</option>
+                  <option value="whatsapp">💬 WhatsApp (Chat Icon)</option>
+                  <option value="linkedin">💼 LinkedIn (Professional Icon)</option>
+                  <option value="dribbble">🎨 Dribbble (Design Portfolio Icon)</option>
+                  <option value="behance">🖌️ Behance (Creative Icon)</option>
+                  <option value="github">💻 GitHub (Code Icon)</option>
+                  <option value="globe">🌐 Personal Website / Portfolio (Globe Icon)</option>
+                  <option value="twitter">🐦 Twitter / X (Social Icon)</option>
+                  <option value="instagram">📷 Instagram (Media Icon)</option>
+                  <option value="location">📍 Location / City (Pin Icon)</option>
+                  <option value="link">🔗 Custom Web Link (Anchor Icon)</option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Display Label</label>
-                <input type="text" class="form-input" placeholder="e.g. arunram1324@gmail.com or linkedin.com/in/arunkr" [(ngModel)]="contactLinkForm.label">
+                <label class="form-label">Category / Platform Label</label>
+                <input type="text" class="form-input" placeholder="e.g. Email, Phone, LinkedIn, Location" [(ngModel)]="contactLinkForm.label">
+                <span class="form-hint">Shown as the category header above the details.</span>
               </div>
 
               <div class="form-group">
-                <label class="form-label">Target URL / Mailto Address</label>
-                <input type="text" class="form-input" placeholder="e.g. mailto:arunram1324@gmail.com or https://linkedin.com/in/arunkr" [(ngModel)]="contactLinkForm.href">
+                <label class="form-label">Display Detail / Value</label>
+                <input type="text" class="form-input" placeholder="e.g. arunram1324@gmail.com or +91 98765 43210 or Bangalore, India" [(ngModel)]="contactLinkForm.value">
+                <span class="form-hint">The main details shown to visitors and recruiters.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Target URL / Action Link</label>
+                <input type="text" class="form-input" placeholder="e.g. mailto:arunram1324@gmail.com or tel:+919876543210 or https://linkedin.com/in/arunkr" [(ngModel)]="contactLinkForm.href">
+                <span class="form-hint">URL opened on click or phone/email action.</span>
               </div>
 
               <div class="form-group">

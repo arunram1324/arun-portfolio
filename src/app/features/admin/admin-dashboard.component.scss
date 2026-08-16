@@ -1053,9 +1053,29 @@
   min-width: 0;
 }
 
-.clink-admin-lbl {
+.clink-admin-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.clink-badge {
   font-family: var(--fb);
-  font-size: 14px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent);
+  padding: 2px 7px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.clink-val-main {
+  font-family: var(--fb);
+  font-size: 13.5px;
   font-weight: 700;
   color: var(--tx);
   overflow: hidden;

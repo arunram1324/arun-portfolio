@@ -297,10 +297,11 @@ const DEFAULT_VOICE_QA: VoiceQAItem[] = [
 ];
 
 const DEFAULT_CONTACTS: ContactLink[] = [
-  { icon: 'mail', label: 'arunram1324@gmail.com', href: 'mailto:arunram1324@gmail.com', action: 'copy' },
-  { icon: 'linkedin', label: 'linkedin.com/in/arunkr', href: 'https://linkedin.com/in/arunkr', action: 'link' },
-  { icon: 'dribbble', label: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' },
-  { icon: 'globe', label: '@arunkr_design', href: 'https://twitter.com/arunkr_design', action: 'link' }
+  { icon: 'mail', label: 'Email', value: 'arunram1324@gmail.com', href: 'mailto:arunram1324@gmail.com', action: 'copy' },
+  { icon: 'phone', label: 'Phone', value: '+91 98765 43210', href: 'tel:+919876543210', action: 'copy' },
+  { icon: 'linkedin', label: 'LinkedIn', value: 'linkedin.com/in/arunkr', href: 'https://linkedin.com/in/arunkr', action: 'link' },
+  { icon: 'dribbble', label: 'Dribbble', value: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' },
+  { icon: 'globe', label: 'Website / Social', value: '@arunkr_design', href: 'https://twitter.com/arunkr_design', action: 'link' }
 ];
 
 const DEFAULT_CONTACT_INFO: ContactInfo = {
@@ -382,8 +383,8 @@ export class PortfolioDataService {
       console.warn('Firebase initialization note:', err);
     }
 
-    // Normalize any legacy emoji icons to modern SVG icon keys
-    this.contactLinks.update(links => links.map(l => ({ ...l, icon: this.normalizeIcon(l.icon) })));
+    // Normalize any legacy emoji icons to modern SVG icon keys & upgrade contact structure
+    this.contactLinks.update(links => links.map(l => this.normalizeContact(l)));
     this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
 
     // Apply dynamic theme color & typography immediately
@@ -471,7 +472,7 @@ export class PortfolioDataService {
           if (data['voice_qa']) this.voiceKnowledge.set(data['voice_qa']);
           if (data['contact']) {
             const rawContacts: ContactLink[] = data['contact'];
-            this.contactLinks.set(rawContacts.map(c => ({ ...c, icon: this.normalizeIcon(c.icon) })));
+            this.contactLinks.set(rawContacts.map(c => this.normalizeContact(c)));
           }
           if (data['contact_info']) this.contactInfo.set(data['contact_info']);
           if (data['typography']) this.typography.set(data['typography']);
@@ -738,6 +739,39 @@ export class PortfolioDataService {
       '🎬': 'video-motion'
     };
     return map[icon] || icon;
+  }
+
+  public normalizeContact(link: ContactLink): ContactLink {
+    if (!link) return { icon: 'mail', label: 'Email', value: '', href: '', action: 'copy' };
+    const icon = this.normalizeIcon(link.icon || 'mail');
+    let label = link.label || 'Contact';
+    let value = link.value;
+
+    if (!value) {
+      if (label.includes('@') && !label.toLowerCase().startsWith('email')) {
+        value = label;
+        label = 'Email';
+      } else if (label.toLowerCase().includes('linkedin')) {
+        value = label;
+        label = 'LinkedIn';
+      } else if (label.toLowerCase().includes('dribbble')) {
+        value = label;
+        label = 'Dribbble';
+      } else if (label.toLowerCase().includes('phone')) {
+        value = (link.href || '').replace('tel:', '') || '+91 98765 43210';
+        label = 'Phone';
+      } else {
+        value = label;
+        label = icon === 'mail' ? 'Email' : icon === 'phone' ? 'Phone' : icon === 'linkedin' ? 'LinkedIn' : icon === 'dribbble' ? 'Dribbble' : icon === 'globe' ? 'Website' : 'Contact';
+      }
+    }
+
+    return {
+      ...link,
+      icon,
+      label,
+      value
+    };
   }
 
   // Storage helpers
