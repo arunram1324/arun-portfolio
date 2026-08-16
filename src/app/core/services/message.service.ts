@@ -67,7 +67,10 @@ export class MessageService {
   }
 
   // --- Send Message from Public Site ---
-  public async sendMessage(payload: { name: string; email: string; subject: string; message: string }): Promise<{ success: boolean; message?: string }> {
+  public async sendMessage(
+    payload: { name: string; email: string; subject: string; message: string },
+    autoReplyText?: string
+  ): Promise<{ success: boolean; message?: string }> {
     const trimmedPayload = {
       name: payload.name.trim(),
       email: payload.email.trim(),
@@ -77,37 +80,40 @@ export class MessageService {
       read: false
     };
 
-    let firestoreSaved = false;
-
     // 1. Write to Cloud Firestore (Admin Inbox)
     if (this.firestore) {
       try {
         const messagesColRef = collection(this.firestore, 'contact_messages');
         await addDoc(messagesColRef, trimmedPayload);
-        firestoreSaved = true;
       } catch (err) {
         console.warn('Failed to save message to Firestore:', err);
       }
     }
 
-    // 2. Dispatch Email Notification directly to arunram1324@gmail.com
+    // 2. Dispatch Email directly to arunram1324@gmail.com + Trigger Instant Auto-Reply to sender
+    const defaultAutoReply = `Hi ${trimmedPayload.name},\n\nThank you for reaching out through my portfolio regarding "${trimmedPayload.subject}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer\nBangalore, India`;
+
+    const autoResponseContent = autoReplyText || defaultAutoReply;
+
     try {
-      // Using Web3Forms public contact API endpoint with recipient set to arunram1324@gmail.com
-      await fetch('https://api.web3forms.com/submit', {
+      await fetch('https://formsubmit.co/ajax/arunram1324@gmail.com', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: '5eb497fa-4b82-4113-94c6-8c5efb70ce66', // Web3Forms Access Key for Arun's email
-          from_name: `${trimmedPayload.name} (Portfolio Inquiry)`,
-          subject: `[Portfolio Inquiry] ${trimmedPayload.subject} from ${trimmedPayload.name}`,
+          name: trimmedPayload.name,
           email: trimmedPayload.email,
-          message: `Sender Name: ${trimmedPayload.name}\nSender Email: ${trimmedPayload.email}\nSubject: ${trimmedPayload.subject}\n\nMessage:\n${trimmedPayload.message}\n\n---\nSent from Arun K R Portfolio Web App`,
-          to_email: 'arunram1324@gmail.com'
+          _replyto: trimmedPayload.email,
+          _subject: `[Portfolio Inquiry] ${trimmedPayload.subject} from ${trimmedPayload.name}`,
+          _autoresponse: autoResponseContent,
+          _template: 'table',
+          'Inquiry Type': trimmedPayload.subject,
+          'Sender Details': `${trimmedPayload.name} <${trimmedPayload.email}>`,
+          'Message Content': trimmedPayload.message
         })
-      }).catch(e => console.warn('Email dispatch note:', e));
+      }).catch(e => console.warn('FormSubmit dispatch note:', e));
     } catch (e) {
       console.warn('Email notification note:', e);
     }

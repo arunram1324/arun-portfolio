@@ -19,7 +19,7 @@ export class ContactComponent {
     lastName: '',
     phone: '',
     email: '',
-    projectType: 'Freelance UI/UX Design Project',
+    projectType: 'Freelance Project',
     timeline: '1-3 Months',
     message: ''
   };
@@ -50,23 +50,31 @@ export class ContactComponent {
 
     this.isSubmitting.set(true);
     try {
-      const detailedMessage = `Contact Phone: ${this.messageForm.phone || 'Not provided'}\nInquiry Type: ${this.messageForm.projectType}\nProject Timeline: ${this.messageForm.timeline}\n\nMessage:\n${this.messageForm.message}`;
+      const isNetworking = this.messageForm.projectType === 'Networking';
+      const detailedMessage = `Contact Phone: ${this.messageForm.phone || 'Not provided'}\nInquiry Type: ${this.messageForm.projectType}${isNetworking ? '' : '\nProject Timeline: ' + (this.messageForm.timeline || 'Immediate / 1-3 Months')}\n\nMessage:\n${this.messageForm.message}`;
+
+      // Retrieve dynamic auto-reply template configured in Admin
+      const autoReplySettings = this.portfolioData.autoReplySettings();
+      const autoReplyText = (autoReplySettings.bodyTemplate || `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer`)
+        .replace(/\{\{name\}\}/gi, fullName)
+        .replace(/\{\{subject\}\}/gi, this.messageForm.projectType)
+        .replace(/\{\{email\}\}/gi, this.messageForm.email);
 
       await this.messageService.sendMessage({
         name: fullName,
         email: this.messageForm.email,
         subject: this.messageForm.projectType || 'Portfolio Contact Inquiry',
         message: detailedMessage
-      });
+      }, autoReplyText);
 
       this.isSuccess.set(true);
-      this.toastService.show('Message sent successfully! Arun will get back to you shortly.');
+      this.toastService.show('Message sent successfully! A confirmation reply was dispatched to your email.');
       this.messageForm = {
         firstName: '',
         lastName: '',
         phone: '',
         email: '',
-        projectType: 'Freelance UI/UX Design Project',
+        projectType: 'Freelance Project',
         timeline: '1-3 Months',
         message: ''
       };

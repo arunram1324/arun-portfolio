@@ -61,9 +61,15 @@ export class MarttinTemplateComponent {
 
     this.isSubmitting.set(true);
     try {
-      await this.messageService.sendMessage(this.messageForm);
+      const autoReplySettings = this.portfolioData.autoReplySettings();
+      const autoReplyText = (autoReplySettings.bodyTemplate || `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer`)
+        .replace(/\{\{name\}\}/gi, this.messageForm.name)
+        .replace(/\{\{subject\}\}/gi, this.messageForm.subject)
+        .replace(/\{\{email\}\}/gi, this.messageForm.email);
+
+      await this.messageService.sendMessage(this.messageForm, autoReplyText);
       this.isSuccess.set(true);
-      this.toastService.show('Message sent successfully! Arun will reach out soon.');
+      this.toastService.show('Message sent successfully! A confirmation reply was sent to your email.');
       this.messageForm = {
         name: '',
         email: '',
