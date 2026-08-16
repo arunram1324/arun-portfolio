@@ -157,3 +157,16 @@ export interface AutoReplySettings {
   subjectTemplate: string;
   bodyTemplate: string;
 }
+
+export interface PortfolioVersionSnapshot {
+  id: string;
+  version: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  isLive?: boolean;
+  author: string;
+  template: 'bento' | 'marttin';
+  highlights: string[];
+  dataSnapshot?: any;
+}

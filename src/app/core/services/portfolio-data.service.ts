@@ -791,6 +791,45 @@ export class PortfolioDataService {
     };
   }
 
+  // Full Snapshot & Rollback Helpers
+  public getFullDataSnapshot(): any {
+    return {
+      profileInfo: this.profileInfo(),
+      experiences: this.experiences(),
+      projects: this.projects(),
+      projectCategories: this.projectCategories(),
+      tools: this.tools(),
+      skillCategories: this.skillCategories(),
+      voiceKnowledge: this.voiceKnowledge(),
+      contactLinks: this.contactLinks(),
+      contactInfo: this.contactInfo(),
+      typography: this.typography(),
+      accentColor: this.accentColor(),
+      activeTemplate: this.activeTemplate(),
+      sectionVisibility: this.sectionVisibility(),
+      autoReplySettings: this.autoReplySettings()
+    };
+  }
+
+  public restoreFullDataSnapshot(data: any): void {
+    if (!data) return;
+    if (data.profileInfo) this.profileInfo.set(data.profileInfo);
+    if (data.experiences) this.experiences.set(data.experiences);
+    if (data.projects) this.projects.set(data.projects);
+    if (data.projectCategories) this.projectCategories.set(data.projectCategories);
+    if (data.tools) this.tools.set(data.tools);
+    if (data.skillCategories) this.skillCategories.set(data.skillCategories);
+    if (data.skills) this.skillCategories.set(data.skills);
+    if (data.voiceKnowledge) this.voiceKnowledge.set(data.voiceKnowledge);
+    if (data.contactLinks) this.contactLinks.set(data.contactLinks);
+    if (data.contactInfo) this.contactInfo.set(data.contactInfo);
+    if (data.typography) this.updateTypography(data.typography);
+    if (data.accentColor) this.setAccentColor(data.accentColor);
+    if (data.activeTemplate) this.setActiveTemplate(data.activeTemplate);
+    if (data.sectionVisibility) this.updateSectionVisibility(data.sectionVisibility);
+    if (data.autoReplySettings) this.updateAutoReplySettings(data.autoReplySettings);
+  }
+
   // Storage helpers
   private load<T>(key: string, fallback: T): T {
     try {

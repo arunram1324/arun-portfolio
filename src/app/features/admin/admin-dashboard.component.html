@@ -88,6 +88,23 @@
         <button 
           type="button" 
           class="nav-item" 
+          [class.active]="activeTab() === 'versions'" 
+          (click)="setTab('versions')">
+          <span class="nav-ico">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 8v4l3 3"/>
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+            </svg>
+          </span>
+          <span class="nav-txt">Version Control</span>
+          <span class="nav-badge-pill build">{{ versionControl.currentVersion() }}</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="nav-item" 
           [class.active]="activeTab() === 'templates'" 
           (click)="setTab('templates')">
           <span class="nav-ico">
@@ -577,6 +594,170 @@
               }
             </div>
           }
+        </section>
+      }
+
+      <!-- ================= 00. VERSION CONTROL & RELEASE MANAGER ================= -->
+      @if (activeTab() === 'versions') {
+        <section class="cms-sec">
+          <div class="sec-header">
+            <div>
+              <div class="sec-title-row">
+                <h2 class="sec-title">Version Control & Release History</h2>
+                <span class="live-tag-pill">
+                  <span class="pulse-dot"></span>
+                  Live Build: {{ versionControl.currentVersion() }}
+                </span>
+              </div>
+              <p class="sec-desc">
+                Track live releases, take full portfolio snapshots, and seamlessly rollback to any previous version with 1-click.
+              </p>
+            </div>
+            
+            <div class="sec-actions">
+              <input type="file" #backupFileInput (change)="onImportBackupFile($event)" accept=".json" style="display: none;">
+              
+              <button type="button" class="btn-secondary" (click)="backupFileInput.click()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Import JSON</span>
+              </button>
+
+              <button type="button" class="btn-secondary" (click)="onExportBackup()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Export Backup</span>
+              </button>
+
+              <button type="button" class="btn-primary" (click)="openCreateSnapshotModal()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="16"/>
+                  <line x1="8" y1="12" x2="16" y2="12"/>
+                </svg>
+                <span>Take New Snapshot</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Current Live Environment Banner -->
+          <div class="ver-live-banner">
+            <div class="live-banner-left">
+              <div class="live-icon-box">🚀</div>
+              <div class="live-banner-info">
+                <div class="live-title-row">
+                  <span class="live-env-badge">PRODUCTION LIVE</span>
+                  <span class="live-ver-title">{{ versionControl.currentVersion() }}</span>
+                </div>
+                <p class="live-desc">
+                  Active on GitHub Pages (<code>arunram1324.github.io/arun-portfolio</code>) & Cloud Firestore real-time stream.
+                </p>
+              </div>
+            </div>
+            <div class="live-banner-stats">
+              <div class="vstat-item">
+                <span class="vstat-lbl">Active Layout</span>
+                <span class="vstat-val">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin Editorial' : 'Bento OS' }}</span>
+              </div>
+              <div class="vstat-item">
+                <span class="vstat-lbl">Snapshots Saved</span>
+                <span class="vstat-val">{{ versionControl.snapshots().length }}</span>
+              </div>
+              <div class="vstat-item">
+                <span class="vstat-lbl">Database Sync</span>
+                <span class="vstat-val status-green">🟢 Connected</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Release Timeline / Version List -->
+          <div class="ver-timeline">
+            <div class="ver-timeline-head">
+              <div>
+                <h3 class="ver-timeline-title">Version Releases & Snapshot Archives</h3>
+                <span class="ver-timeline-sub">Click rollback on any version to restore your entire portfolio state</span>
+              </div>
+              <span class="ver-count-pill">{{ versionControl.snapshots().length }} versions</span>
+            </div>
+
+            <div class="ver-list">
+              @for (ver of versionControl.snapshots(); track ver.id) {
+                <div class="ver-card" [class.is-live]="ver.isLive">
+                  <div class="ver-card-top">
+                    <div class="ver-badge-group">
+                      <span class="ver-tag-pill">{{ ver.version }}</span>
+                      @if (ver.isLive) {
+                        <span class="ver-status-badge live">✓ CURRENT LIVE</span>
+                      } @else {
+                        <span class="ver-status-badge archived">Archived Snapshot</span>
+                      }
+                      <span class="ver-template-badge">{{ ver.template === 'marttin' ? 'Marttin' : 'Bento OS' }}</span>
+                    </div>
+
+                    <span class="ver-date">{{ ver.createdAt | date:'mediumDate' }} · {{ ver.createdAt | date:'shortTime' }}</span>
+                  </div>
+
+                  <div class="ver-card-body">
+                    <h3 class="ver-title">{{ ver.title }}</h3>
+                    <p class="ver-desc">{{ ver.description }}</p>
+
+                    @if (ver.highlights && ver.highlights.length > 0) {
+                      <div class="ver-highlights">
+                        <span class="hl-lbl">Highlights & Features:</span>
+                        <ul>
+                          @for (hl of ver.highlights; track hl) {
+                            <li>{{ hl }}</li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="ver-card-foot">
+                    <div class="ver-author-box">
+                      <span class="author-label">Author:</span>
+                      <span class="author-name">{{ ver.author || 'Arun K R' }}</span>
+                    </div>
+
+                    <div class="ver-actions">
+                      @if (!ver.isLive) {
+                        <button 
+                          type="button" 
+                          class="btn-rollback" 
+                          title="Restore all content, projects, and settings to this version"
+                          (click)="confirmRollback(ver)">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"/>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                          </svg>
+                          <span>Rollback to {{ ver.version }}</span>
+                        </button>
+                      } @else {
+                        <span class="live-lock-badge">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                          <span>Active on Live Site</span>
+                        </span>
+                      }
+
+                      <button 
+                        type="button" 
+                        class="btn-del-ver" 
+                        title="Delete this snapshot record"
+                        (click)="confirmDeleteSnapshot(ver)">
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
         </section>
       }
 
@@ -1849,6 +2030,51 @@
             💾 Save & Sync Template
           </button>
         </div>
+      </div>
+    </div>
+  }
+
+  <!-- ================= CREATE SNAPSHOT MODAL ================= -->
+  @if (isCreateSnapshotModalOpen()) {
+    <div class="modal-backdrop" (click)="closeCreateSnapshotModal()">
+      <div class="modal-dialog snapshot-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <h3 class="modal-title">📸 Create Portfolio Version Snapshot</h3>
+            <p class="modal-subtitle">Capture full portfolio data, projects, voice knowledge, and styling state.</p>
+          </div>
+          <button type="button" class="modal-close" (click)="closeCreateSnapshotModal()">✕</button>
+        </div>
+
+        <form (ngSubmit)="submitCreateSnapshot()" class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Version Tag <span class="req">*</span></label>
+              <input type="text" class="form-input" placeholder="e.g. v4.3.0" [(ngModel)]="snapshotForm.version" name="sVer" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Release Title <span class="req">*</span></label>
+              <input type="text" class="form-input" placeholder="e.g. Added FinTech Case Studies & New Hero" [(ngModel)]="snapshotForm.title" name="sTitle" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Release Notes / Description</label>
+            <textarea class="form-textarea" rows="2" placeholder="Summary of changes included in this version..." [(ngModel)]="snapshotForm.description" name="sDesc"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Key Highlights & Features</label>
+            <input type="text" class="form-input" style="margin-bottom: 8px;" placeholder="Highlight 1 (e.g. Added 3 new case studies)" [(ngModel)]="snapshotForm.highlight1" name="sHl1">
+            <input type="text" class="form-input" style="margin-bottom: 8px;" placeholder="Highlight 2 (e.g. Updated Voice AI answers)" [(ngModel)]="snapshotForm.highlight2" name="sHl2">
+            <input type="text" class="form-input" placeholder="Highlight 3 (e.g. New typography palette)" [(ngModel)]="snapshotForm.highlight3" name="sHl3">
+          </div>
+
+          <div class="modal-footer" style="padding: 16px 0 0 0; margin-top: 16px;">
+            <button type="button" class="btn-ghost" (click)="closeCreateSnapshotModal()">Cancel</button>
+            <button type="submit" class="btn-primary">📸 Save Version Snapshot</button>
+          </div>
+        </form>
       </div>
     </div>
   }

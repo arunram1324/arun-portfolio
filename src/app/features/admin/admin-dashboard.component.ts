@@ -26,10 +26,12 @@ import {
   TypographySettings,
   PortfolioTemplateMode,
   SectionVisibilitySettings,
-  AutoReplySettings
+  AutoReplySettings,
+  PortfolioVersionSnapshot
 } from '../../core/models/portfolio.model';
+import { VersionControlService } from '../../core/services/version-control.service';
 
-type AdminTab = 'analytics' | 'messages' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
+type AdminTab = 'analytics' | 'messages' | 'versions' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
 
 interface ConfirmConfig {
   title: string;
@@ -92,10 +94,22 @@ export class AdminDashboardComponent {
   public newIndustryTag = signal<string>('');
   public newProjectCat = signal<string>('');
 
+  // Version Control State
+  public isCreateSnapshotModalOpen = signal<boolean>(false);
+  public snapshotForm = {
+    version: 'v4.3.0',
+    title: '',
+    description: '',
+    highlight1: '',
+    highlight2: '',
+    highlight3: ''
+  };
+
   constructor(
     public portfolioData: PortfolioDataService,
     public analyticsService: AnalyticsService,
     public messageService: MessageService,
+    public versionControl: VersionControlService,
     private authService: AuthService,
     public themeService: ThemeService,
     private toastService: ToastService,
@@ -107,6 +121,108 @@ export class AdminDashboardComponent {
     if (!this.authService.verifyStoredSession() || !this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
     }
+  }
+
+  // --- Version Control Actions ---
+  public openCreateSnapshotModal(): void {
+    const nextVer = this.getNextSuggestedVersion();
+    this.snapshotForm = {
+      version: nextVer,
+      title: 'Release ' + nextVer,
+      description: 'Snapshot of all current portfolio data, styling, and CMS configurations.',
+      highlight1: 'Portfolio content & projects backup',
+      highlight2: 'Voice AI knowledge & Q&A state',
+      highlight3: 'Theme & Typography layout settings'
+    };
+    this.isCreateSnapshotModalOpen.set(true);
+  }
+
+  public closeCreateSnapshotModal(): void {
+    this.isCreateSnapshotModalOpen.set(false);
+  }
+
+  public getNextSuggestedVersion(): string {
+    const current = this.versionControl.currentVersion();
+    const parts = current.replace('v', '').split('.');
+    if (parts.length >= 2) {
+      const minor = parseInt(parts[1], 10) + 1;
+      return `v${parts[0]}.${minor}.0`;
+    }
+    return 'v4.3.0';
+  }
+
+  public async submitCreateSnapshot(): Promise<void> {
+    if (!this.snapshotForm.version.trim() || !this.snapshotForm.title.trim()) {
+      this.toastService.show('Please provide a version tag and title.');
+      return;
+    }
+
+    const highlights = [
+      this.snapshotForm.highlight1.trim(),
+      this.snapshotForm.highlight2.trim(),
+      this.snapshotForm.highlight3.trim()
+    ].filter(Boolean);
+
+    await this.versionControl.createSnapshot(
+      this.snapshotForm.version,
+      this.snapshotForm.title,
+      this.snapshotForm.description,
+      highlights
+    );
+
+    this.closeCreateSnapshotModal();
+  }
+
+  public confirmRollback(snapshot: PortfolioVersionSnapshot): void {
+    this.openConfirm({
+      title: `Rollback to ${snapshot.version}?`,
+      message: `Are you sure you want to restore the portfolio state to "${snapshot.title}" (${snapshot.version})? All projects, tools, profile info, and styles will be restored to this exact snapshot.`,
+      confirmBtnText: 'Restore & Rollback',
+      isDanger: true,
+      action: () => {
+        this.versionControl.restoreSnapshot(snapshot);
+      }
+    });
+  }
+
+  public confirmDeleteSnapshot(snapshot: PortfolioVersionSnapshot): void {
+    this.openConfirm({
+      title: `Delete Snapshot ${snapshot.version}?`,
+      message: `Are you sure you want to permanently delete this snapshot? This cannot be undone.`,
+      confirmBtnText: 'Delete Snapshot',
+      isDanger: true,
+      action: () => {
+        this.versionControl.deleteSnapshot(snapshot.id);
+      }
+    });
+  }
+
+  public onExportBackup(): void {
+    this.versionControl.exportBackupJson();
+  }
+
+  public onImportBackupFile(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target?.result as string;
+      if (content) {
+        this.openConfirm({
+          title: 'Restore Portfolio from JSON Backup?',
+          message: `This will overwrite current portfolio data with the backup file "${file.name}". Do you want to proceed?`,
+          confirmBtnText: 'Import & Restore',
+          isDanger: true,
+          action: () => {
+            this.versionControl.importBackupJson(content);
+          }
+        });
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
   }
 
   public setTab(tab: AdminTab): void {
