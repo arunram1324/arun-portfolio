@@ -11,7 +11,8 @@ export interface AiChatMessage {
 })
 export class AiTwinService {
   public isAiThinking = signal<boolean>(false);
-  public customApiKey = signal<string>('');
+  public customApiKey = signal<string>(''); // Gemini API Key
+  public groqApiKey = signal<string>('');   // Groq API Key
   public aiTemperature = signal<number>(0.7);
   public customSystemInstructions = signal<string>('');
 
@@ -21,6 +22,9 @@ export class AiTwinService {
     // Load stored AI settings from localStorage
     const savedKey = localStorage.getItem('arun_gemini_api_key');
     if (savedKey) this.customApiKey.set(savedKey);
+
+    const savedGroqKey = localStorage.getItem('arun_groq_api_key');
+    if (savedGroqKey) this.groqApiKey.set(savedGroqKey);
 
     const savedInstructions = localStorage.getItem('arun_ai_custom_instructions');
     if (savedInstructions) this.customSystemInstructions.set(savedInstructions);
@@ -32,6 +36,15 @@ export class AiTwinService {
       localStorage.setItem('arun_gemini_api_key', key.trim());
     } else {
       localStorage.removeItem('arun_gemini_api_key');
+    }
+  }
+
+  public setGroqApiKey(key: string): void {
+    this.groqApiKey.set(key.trim());
+    if (key.trim()) {
+      localStorage.setItem('arun_groq_api_key', key.trim());
+    } else {
+      localStorage.removeItem('arun_groq_api_key');
     }
   }
 
@@ -52,12 +65,23 @@ export class AiTwinService {
 
     const isTanglish = this.isTanglishQuery(userQuery);
     const systemPrompt = this.buildSystemPrompt(isVoiceMode, isTanglish);
-    const apiKey = this.customApiKey().trim();
+    const groqKey = this.groqApiKey().trim();
+    const geminiKey = this.customApiKey().trim();
 
     try {
-      // 1. If user provided a Gemini API Key in Admin, call official Gemini 2.5 Flash endpoint
-      if (apiKey) {
-        const geminiAnswer = await this.callGeminiApi(apiKey, systemPrompt, userQuery);
+      // 1. If Groq API Key is configured, use lightning-fast Groq Llama 3.3 70B (Best for real-time voice & chat!)
+      if (groqKey) {
+        const groqAnswer = await this.callGroqApi(groqKey, systemPrompt, userQuery);
+        if (groqAnswer && groqAnswer.length > 5) {
+          this.addToHistory('user', userQuery);
+          this.addToHistory('model', groqAnswer);
+          return groqAnswer;
+        }
+      }
+
+      // 2. If Gemini API Key is configured, call official Gemini 2.5 Flash endpoint
+      if (geminiKey) {
+        const geminiAnswer = await this.callGeminiApi(geminiKey, systemPrompt, userQuery);
         if (geminiAnswer && geminiAnswer.length > 5) {
           this.addToHistory('user', userQuery);
           this.addToHistory('model', geminiAnswer);
@@ -65,7 +89,7 @@ export class AiTwinService {
         }
       }
 
-      // 2. Try Pollinations Cloud AI Gateway with custom system instructions
+      // 3. Try Pollinations Cloud AI Gateway with custom system instructions
       const gatewayAnswer = await this.callFreeAiGateway(systemPrompt, userQuery);
       if (gatewayAnswer && gatewayAnswer.length > 5) {
         this.addToHistory('user', userQuery);
@@ -73,12 +97,12 @@ export class AiTwinService {
         return gatewayAnswer;
       }
     } catch (err) {
-      console.warn('AI Cloud Gateway timed out or failed, using Real Tanglish/English Intelligence Engine:', err);
+      console.warn('External AI endpoint fallback to Smart Local Brain:', err);
     } finally {
       this.isAiThinking.set(false);
     }
 
-    // 3. Resilient High-Intelligence Persona Engine (Fluent in Tanglish & English)
+    // 4. Resilient High-Intelligence Persona Engine (Fluent in Tanglish & English)
     const fallbackAnswer = this.generateIntelligentFallback(userQuery, isVoiceMode);
     this.addToHistory('user', userQuery);
     this.addToHistory('model', fallbackAnswer);
@@ -117,45 +141,88 @@ export class AiTwinService {
     const skillsText = skillCats.map(c => `- ${c.categoryName}: ${c.skills.join(', ')}`).join('\n');
     const toolsText = tools.map(t => `${t.name} (${t.type})`).join(', ');
 
-    return `You are Arun K R's official Virtual Twin AI — an intelligent, articulate, highly experienced Lead UX/UI & Product Designer based in Bangalore/Chennai, India.
-You speak directly with recruiters, founders, product managers, and visitors exploring Arun's portfolio.
+    return `You are the official digital twin of A R U N R A M (Arun K R), a Lead UX/UI & Product Designer specializing in SaaS, FinTech, ERP, and Logistics digital platforms.
+Your job is to answer questions from recruiters, hiring managers, founders, and clients authentically from Arun's perspective.
+Keep answers concise, professional, articulate, but friendly.
 
-=== ARUN'S PROFILE & BIO ===
-Name: ${profile.name || 'Arun K R'}
+=== VERIFIED FACTS & BIO ===
+Name: ${profile.name || 'Arun K R (ARUN RAM)'}
 Role: ${profile.role || 'Lead UX/UI & Product Designer'}
-Headline: ${profile.headline}
+Headline: ${profile.headline || 'Designing High-Impact Enterprise FinTech, ERP & CRM Experiences'}
 Bio: ${profile.bio}
-Location: Bangalore / Chennai, India (Open for Global Remote, Hybrid, & On-site)
+Location: Bangalore / Chennai, India (Open for Global Remote, Hybrid, & Relocation)
 Email: arunram1324@gmail.com
 LinkedIn: linkedin.com/in/arunkr
-Availability: ${contact.isAvailable ? 'Actively Open for Full-Time Lead/Senior Product Design Roles, Design System Consulting & Selective Freelance MVPs' : 'Available for discussions'}
+Availability: ${contact.isAvailable ? 'Actively Open for Full-Time Lead/Senior Roles, Design System Consulting & 0-to-1 MVP Sprints' : 'Available for discussions'}
 
-=== WORK EXPERIENCE ===
+=== WORK EXPERIENCE (3+ YEARS) ===
 ${expText}
 
-=== CASE STUDIES & METRICS ===
+=== FEATURED CASE STUDIES & ROI METRICS ===
 ${projText}
 
-=== SKILLS & TOOLS ===
-Skills: ${skillsText}
-Tools: ${toolsText}
+=== CORE COMPETENCIES & DESIGN SKILLS ===
+Core Skills: Information Architecture, Cognitive Load Reduction, Figma Multi-tier Design Tokens, Rapid Prototyping, Flutter & Frontend Alignment (HTML5, CSS3/SCSS, TypeScript, Angular).
+${skillsText}
 
-=== LANGUAGE & TONE RULES ===
+=== TOOLS & SOFTWARE STACK ===
+${toolsText}
+
+=== BEHAVIOR & CONVERSATIONAL RULES ===
+1. ALWAYS speak in the FIRST PERSON ("I", "my design process", "in my project MAP-MAN", "my experience at Pentica IT").
+2. If someone asks a personal, unrelated, or off-topic question, politely steer it back to design, product strategy, or Arun's case studies.
+3. ${isVoiceMode ? 'CRITICAL FOR VOICE MODE: Keep responses concise (under 2 to 3 natural spoken sentences), punchy, and conversational without markdown asterisks or complex symbols.' : 'In text chat mode, provide comprehensive, structured UX rationale and bullet points.'}
+4. MULTI-LANGUAGE / TANGLISH:
 ${isTanglish ? `
-CRITICAL INSTRUCTION - USER IS SPEAKING TANGLISH (Tamil written in English):
-1. You MUST respond in fluent, friendly, authentic TANGLISH (Tamil written in English letters, e.g. "Vanakkam mapla! Naan Arun K R...", "Ennoda 3+ years experience-la...").
-2. Mix natural Tamil conversational words ("mapla", "kandippa", "solren", "pannirukom", "parunga") with professional UX/UI design terms ("Design System", "Figma Tokens", "0-to-1 MVP", "Case Study", "Handoff").
-3. DO NOT reply in pure formal English if the user asked in Tanglish! Match their friendly Tanglish vibe while explaining Arun's high-level product design skills!
+- The user is speaking in TANGLISH (Tamil in English script). Respond in friendly, authentic, fluent Tanglish mixed with professional design terms (e.g. "Vanakkam mapla! Ennoda 3+ years experience-la MAP-MAN logistics dashboard design pannen...").
 ` : `
-1. Respond in polished, professional, articulate English suited for top tech recruiters and design executives.
-2. Structure answers with clean bullet points and clear UX rationale.
+- The user is speaking in English. Respond in polished, articulate, world-class English suited for top tech design recruiters and design leaders.
 `}
-${isVoiceMode ? 'Keep spoken responses punchy, conversational, and under 3-4 natural sentences.' : 'In text chat, provide structured insights, metrics, and bullet points.'}
+5. Contact details: arunram1324@gmail.com and linkedin.com/in/arunkr.
+${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.customSystemInstructions()}` : ''}
 `;
   }
 
   /**
-   * Calls official Google Gemini API (gemini-2.5-flash or gemini-1.5-flash)
+   * Calls Ultra-Fast Groq API (Llama 3.3 70B Versatile / Llama 3.1 8B Instant)
+   */
+  private async callGroqApi(apiKey: string, systemPrompt: string, userQuery: string): Promise<string | null> {
+    const endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...this.conversationHistory.slice(-6).map(h => ({
+        role: h.role === 'model' ? 'assistant' : 'user',
+        content: h.text
+      })),
+      { role: 'user', content: userQuery }
+    ];
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages,
+        temperature: this.aiTemperature(),
+        max_tokens: 650
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Groq API HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content;
+    return reply ? reply.trim() : null;
+  }
+
+  /**
+   * Calls official Google Gemini API (gemini-2.5-flash)
    */
   private async callGeminiApi(apiKey: string, systemPrompt: string, userQuery: string): Promise<string | null> {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;

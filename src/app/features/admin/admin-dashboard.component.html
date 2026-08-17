@@ -1052,10 +1052,30 @@
             </div>
 
             <div class="form-stack">
+              <!-- Groq API Key Input (Ultra Fast) -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label" style="margin: 0; display: flex; align-items: center; gap: 6px;">
+                    <span>⚡ Groq API Key (Recommended · Sub-200ms Latency)</span>
+                  </label>
+                  <a href="https://console.groq.com/keys" target="_blank" style="font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600;">
+                    Get Free Key from Groq Console ↗
+                  </a>
+                </div>
+                <input 
+                  type="password" 
+                  class="form-input" 
+                  placeholder="gsk_... (Paste your Groq API Key for blazing fast Llama 3.3 70B responses)..." 
+                  [(ngModel)]="groqApiKeyInput">
+                <small class="upload-hint">
+                  🚀 Groq provides instantaneous voice & chat responses at 800+ tokens/sec. 100% free tier.
+                </small>
+              </div>
+
               <!-- Gemini API Key Input -->
               <div class="form-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <label class="form-label" style="margin: 0;">Google Gemini API Key (Optional)</label>
+                  <label class="form-label" style="margin: 0;">🧠 Google Gemini API Key (Optional)</label>
                   <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600;">
                     Get Free Key from Google AI Studio ↗
                   </a>
@@ -1063,7 +1083,7 @@
                 <input 
                   type="password" 
                   class="form-input" 
-                  placeholder="Paste your Gemini API Key here (Leave blank to use the built-in free AI gateway)..." 
+                  placeholder="AIzaSy... (Paste your Gemini 2.5 Flash API Key here)..." 
                   [(ngModel)]="aiApiKeyInput">
                 <small class="upload-hint">
                   🔒 Keys are stored securely in your browser and used exclusively for your Virtual Twin responses.

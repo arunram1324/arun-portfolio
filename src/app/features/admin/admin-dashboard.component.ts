@@ -77,6 +77,7 @@ export class AdminDashboardComponent {
 
   // Generative AI Twin State
   public aiApiKeyInput: string = '';
+  public groqApiKeyInput: string = '';
   public customInstructionsInput: string = '';
   public aiTestPrompt: string = 'Explain why Arun is an exceptional Lead Product Designer and how his design system speeds up engineering delivery.';
   public aiTestResponse = signal<string>('');
@@ -134,6 +135,7 @@ export class AdminDashboardComponent {
     this.profileForm = { ...this.portfolioData.profileInfo() };
     this.contactInfoForm = { ...this.portfolioData.contactInfo() };
     this.aiApiKeyInput = this.aiTwin.customApiKey();
+    this.groqApiKeyInput = this.aiTwin.groqApiKey();
     this.customInstructionsInput = this.aiTwin.customSystemInstructions();
 
     if (!this.authService.verifyStoredSession() || !this.authService.isLoggedIn()) {
@@ -619,6 +621,7 @@ export class AdminDashboardComponent {
   // --- Generative AI Twin Settings & Sandbox Test ---
   public saveAiConfig(): void {
     this.aiTwin.setApiKey(this.aiApiKeyInput);
+    this.aiTwin.setGroqApiKey(this.groqApiKeyInput);
     this.aiTwin.setCustomInstructions(this.customInstructionsInput);
     this.toastService.show('✓ Generative AI Settings & Persona Instructions Saved! 🧠✨');
   }
@@ -632,6 +635,7 @@ export class AdminDashboardComponent {
 
     try {
       this.aiTwin.setApiKey(this.aiApiKeyInput);
+      this.aiTwin.setGroqApiKey(this.groqApiKeyInput);
       this.aiTwin.setCustomInstructions(this.customInstructionsInput);
 
       const response = await this.aiTwin.generateAiResponse(prompt, false);
