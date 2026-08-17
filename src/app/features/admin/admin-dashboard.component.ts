@@ -32,6 +32,7 @@ import {
 import { VersionControlService } from '../../core/services/version-control.service';
 
 import { ResumeService } from '../../core/services/resume.service';
+import { AiTwinService } from '../../core/services/ai-twin.service';
 
 type AdminTab = 'analytics' | 'messages' | 'versions' | 'templates' | 'visibility' | 'voice-ai' | 'projects' | 'skills' | 'tools' | 'experience' | 'profile' | 'contact' | 'typography' | 'theme';
 
@@ -74,6 +75,13 @@ export class AdminDashboardComponent {
   public replyPreviewBody = signal<string>('');
   public replyPreviewSubject = signal<string>('');
 
+  // Generative AI Twin State
+  public aiApiKeyInput: string = '';
+  public customInstructionsInput: string = '';
+  public aiTestPrompt: string = 'Explain why Arun is an exceptional Lead Product Designer and how his design system speeds up engineering delivery.';
+  public aiTestResponse = signal<string>('');
+  public isTestingAi = signal<boolean>(false);
+
   public filteredMessages = computed(() => {
     const list = this.messageService.messages();
     const filter = this.messageFilter();
@@ -82,9 +90,13 @@ export class AdminDashboardComponent {
 
   // Form Models
   public voiceForm: VoiceQAItem = this.getEmptyVoiceQA();
+  public voiceEditIndex = -1;
   public projectForm: Project = this.getEmptyProject();
+  public projectEditIndex = -1;
   public toolForm: ToolItem = this.getEmptyTool();
+  public toolEditIndex = -1;
   public skillCatForm: SkillCategory = this.getEmptySkillCat();
+  public skillCatEditIndex = -1;
   public newSkillName = signal<string>('');
   public selectedSkillCatId = signal<string>('ux-ui');
   public expForm: WorkExperience = this.getEmptyExp();
@@ -113,6 +125,7 @@ export class AdminDashboardComponent {
     public messageService: MessageService,
     public versionControl: VersionControlService,
     public resumeService: ResumeService,
+    public aiTwin: AiTwinService,
     private authService: AuthService,
     public themeService: ThemeService,
     private toastService: ToastService,
@@ -120,6 +133,8 @@ export class AdminDashboardComponent {
   ) {
     this.profileForm = { ...this.portfolioData.profileInfo() };
     this.contactInfoForm = { ...this.portfolioData.contactInfo() };
+    this.aiApiKeyInput = this.aiTwin.customApiKey();
+    this.customInstructionsInput = this.aiTwin.customSystemInstructions();
 
     if (!this.authService.verifyStoredSession() || !this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
@@ -599,6 +614,35 @@ export class AdminDashboardComponent {
 
   public closeModal(): void {
     this.isModalOpen.set(false);
+  }
+
+  // --- Generative AI Twin Settings & Sandbox Test ---
+  public saveAiConfig(): void {
+    this.aiTwin.setApiKey(this.aiApiKeyInput);
+    this.aiTwin.setCustomInstructions(this.customInstructionsInput);
+    this.toastService.show('✓ Generative AI Settings & Persona Instructions Saved! 🧠✨');
+  }
+
+  public async runAiTest(): Promise<void> {
+    const prompt = this.aiTestPrompt.trim();
+    if (!prompt || this.isTestingAi()) return;
+
+    this.isTestingAi.set(true);
+    this.aiTestResponse.set('Arun AI is thinking and generating response...');
+
+    try {
+      this.aiTwin.setApiKey(this.aiApiKeyInput);
+      this.aiTwin.setCustomInstructions(this.customInstructionsInput);
+
+      const response = await this.aiTwin.generateAiResponse(prompt, false);
+      this.aiTestResponse.set(response);
+      this.toastService.show('AI response generated successfully! 🚀');
+    } catch (err: any) {
+      this.aiTestResponse.set('Error generating response: ' + (err?.message || err));
+      this.toastService.show('AI Test Error. Check console or API key.');
+    } finally {
+      this.isTestingAi.set(false);
+    }
   }
 
   // --- Save & Delete Actions with Custom UI Confirmations ---

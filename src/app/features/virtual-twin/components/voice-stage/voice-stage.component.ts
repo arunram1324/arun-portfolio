@@ -80,9 +80,20 @@ export class VoiceStageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleUserInput(text: string): void {
-    const reply = this.vtService.getVoiceAnswer(text);
-    this.speakResponse(reply);
+  private async handleUserInput(text: string): Promise<void> {
+    this.speechRec.pause();
+    this.statusText.set('Arun AI Thinking… 🧠');
+    this.badgeText.set('Thinking…');
+    this.isBlobListening.set(false);
+    this.isBlobSpeaking.set(false);
+
+    try {
+      const reply = await this.vtService.getVoiceAnswerAsync(text);
+      this.speakResponse(reply);
+    } catch (err) {
+      const fallback = this.vtService.getVoiceAnswer(text);
+      this.speakResponse(fallback);
+    }
   }
 
   private speakResponse(replyText: string): void {

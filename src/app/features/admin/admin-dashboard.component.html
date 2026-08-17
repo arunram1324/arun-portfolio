@@ -1019,18 +1019,125 @@
         </section>
       }
 
-      <!-- ================= 1. VOICE AI Q&A TAB ================= -->
+      <!-- ================= 1. VIRTUAL TWIN GENERATIVE AI TAB ================= -->
       @if (activeTab() === 'voice-ai') {
         <section class="cms-sec">
           <div class="sec-header">
             <div>
-              <h2 class="sec-title">Voice AI Knowledge Base</h2>
+              <div class="sec-title-row">
+                <h2 class="sec-title">Virtual Twin Generative AI Engine</h2>
+                <span class="live-tag-pill">
+                  <span class="pulse-dot"></span>
+                  Real-time LLM Active
+                </span>
+              </div>
               <p class="sec-desc">
-                Add trigger keywords and custom spoken answers for recruiters, clients, and interviewers.
+                Powered by Gemini & Open LLM streaming. Your Virtual Twin dynamically speaks, reasons, and answers recruiter questions in real-time.
               </p>
             </div>
-            <button type="button" class="btn-primary" (click)="openAddVoice()">
-              + Add New Voice Q&A
+            
+            <button type="button" class="btn-primary" (click)="saveAiConfig()">
+              💾 Save AI Settings
+            </button>
+          </div>
+
+          <!-- AI Engine Settings Box -->
+          <div class="contact-settings-box" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+              <h4 class="cm-title" style="margin: 0;">⚡ Generative AI Model & Brain Settings</h4>
+              <span style="font-size: 12px; font-weight: 600; color: #10B981; display: inline-flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot" style="background: #10B981;"></span>
+                Live Context Injected (Projects, Experience & Skills)
+              </span>
+            </div>
+
+            <div class="form-stack">
+              <!-- Gemini API Key Input -->
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label" style="margin: 0;">Google Gemini API Key (Optional)</label>
+                  <a href="https://aistudio.google.com/app/apikey" target="_blank" style="font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600;">
+                    Get Free Key from Google AI Studio ↗
+                  </a>
+                </div>
+                <input 
+                  type="password" 
+                  class="form-input" 
+                  placeholder="Paste your Gemini API Key here (Leave blank to use the built-in free AI gateway)..." 
+                  [(ngModel)]="aiApiKeyInput">
+                <small class="upload-hint">
+                  🔒 Keys are stored securely in your browser and used exclusively for your Virtual Twin responses.
+                </small>
+              </div>
+
+              <!-- Custom System Prompt Instructions -->
+              <div class="form-group">
+                <label class="form-label">Custom AI Personality & Persona Instructions</label>
+                <textarea 
+                  class="form-textarea" 
+                  rows="3" 
+                  placeholder="e.g. Emphasize my passion for FinTech micro-interactions, Figma design system tokens, and 0-to-1 MVP delivery speed..." 
+                  [(ngModel)]="customInstructionsInput">
+                </textarea>
+                <small class="upload-hint">
+                  💡 Additional instructions injected directly into Arun AI's conversational brain.
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live AI Test Playground Sandbox -->
+          <div class="typo-sandbox-card" style="margin-bottom: 32px;">
+            <div class="typo-sandbox-badge">🧪 Live AI Sandbox & Simulation</div>
+            <h4 style="margin: 0 0 10px 0; font-family: var(--fd); font-size: 16px; color: var(--tx);">
+              Test Live Generative AI Response
+            </h4>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <input 
+                type="text" 
+                class="form-input" 
+                style="flex: 1; min-width: 260px;" 
+                placeholder="Ask Arun AI anything (e.g. 'How do you handle WCAG AAA in Figma?')..." 
+                [(ngModel)]="aiTestPrompt"
+                (keydown.enter)="runAiTest()">
+              
+              <button 
+                type="button" 
+                class="btn-primary" 
+                (click)="runAiTest()" 
+                [disabled]="isTestingAi() || !aiTestPrompt.trim()">
+                @if (isTestingAi()) {
+                  <span class="rt-spinner"></span>
+                  <span>Generating AI...</span>
+                } @else {
+                  <span>🚀 Test AI Generation</span>
+                }
+              </button>
+            </div>
+
+            @if (aiTestResponse()) {
+              <div style="padding: 14px 18px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); margin-top: 8px;">
+                <span style="font-size: 11.5px; font-weight: 700; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 6px;">
+                  🤖 Arun AI Generated Response:
+                </span>
+                <p style="font-size: 13.5px; line-height: 1.6; color: var(--tx); margin: 0; white-space: pre-wrap;">
+                  {{ aiTestResponse() }}
+                </p>
+              </div>
+            }
+          </div>
+
+          <!-- Specific Custom Q&A Knowledge Overrides -->
+          <div class="sec-header" style="margin-top: 24px;">
+            <div>
+              <h3 class="sec-title" style="font-size: 18px;">Custom Q&A Overrides (Guaranteed Trigger Answers)</h3>
+              <p class="sec-desc">
+                Explicit keywords and custom spoken answers that take priority over general AI generation.
+              </p>
+            </div>
+            <button type="button" class="btn-secondary" (click)="openAddVoice()">
+              + Add Custom Q&A Override
             </button>
           </div>
 

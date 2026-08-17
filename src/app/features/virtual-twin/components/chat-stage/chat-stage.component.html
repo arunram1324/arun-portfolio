@@ -2,20 +2,54 @@
   <!-- Initial State when no messages yet (Restored Original Clean UI) -->
   @if (vtService.messages().length === 0 && !vtService.isTyping() && !vtService.isStreaming()) {
     <div class="vt-init">
+      <div class="vt-ai-live-badge">
+        <span class="pulse-dot"></span>
+        <span>Generative AI Virtual Twin · Live & Interactive</span>
+      </div>
       <p class="vt-sub">
-        I'm Arun K R — a UX/UI & Product Designer passionately crafting enterprise FinTech, ERP, and design systems for over 3+ years.
+        I'm Arun K R — a Lead UX/UI & Product Designer passionately crafting enterprise FinTech, ERP, and design systems for over 3+ years.
       </p>
       <h2 class="vt-hl">What would you like to know about my work?</h2>
+
+      <div class="vt-chat-prompts">
+        <button type="button" class="vt-cp-chip" (click)="sendPrompt('How do you approach a 0 to 1 product design sprint?')">
+          🚀 0 to 1 Design Process
+        </button>
+        <button type="button" class="vt-cp-chip" (click)="sendPrompt('Tell me about your MAP-MAN logistics dashboard case study')">
+          📦 MAP-MAN Case Study
+        </button>
+        <button type="button" class="vt-cp-chip" (click)="sendPrompt('How do you structure Figma tokens for light and dark modes?')">
+          🎨 Design Tokens & Systems
+        </button>
+        <button type="button" class="vt-cp-chip" (click)="sendPrompt('How do you collaborate with frontend developers?')">
+          ⚙️ Developer Handoff
+        </button>
+        <button type="button" class="vt-cp-chip" (click)="sendPrompt('Vanakkam mapla! Unga background pathi sollunga')">
+          🗣️ Tamil / Tanglish Chat
+        </button>
+      </div>
     </div>
   }
 
   <!-- Messages scrollable area -->
   <div class="vt-msgs" #messagesContainer>
+    @if (vtService.messages().length > 0) {
+      <div class="vt-chat-top-acts">
+        <button type="button" class="btn-clear-chat" (click)="vtService.clearMessages()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          </svg>
+          <span>Clear Chat</span>
+        </button>
+      </div>
+    }
+
     @for (msg of vtService.messages(); track msg.id) {
       <div class="msg" [class.u]="msg.sender === 'user'" [class.ai]="msg.sender === 'ai'">
         <div class="m-av">{{ msg.sender === 'user' ? 'U' : 'A' }}</div>
         <div class="m-body">
-          <div class="bub">{{ msg.text }}</div>
+          <div class="bub" style="white-space: pre-line;">{{ msg.text }}</div>
           <div class="m-time">{{ msg.timestamp }}</div>
         </div>
       </div>
@@ -27,6 +61,7 @@
         <div class="m-av">A</div>
         <div class="m-body">
           <div class="typ-bub">
+            <span style="font-size: 12px; margin-right: 6px; font-weight: 600; color: var(--accent);">Arun AI is thinking</span>
             <div class="td"></div>
             <div class="td"></div>
             <div class="td"></div>
@@ -40,7 +75,7 @@
       <div class="msg ai">
         <div class="m-av">A</div>
         <div class="m-body">
-          <div class="bub">
+          <div class="bub" style="white-space: pre-line;">
             {{ vtService.streamingChunk() }}<span class="cur">●</span>
           </div>
         </div>
@@ -54,7 +89,7 @@
       <textarea 
         #inputField
         class="vt-inp" 
-        placeholder="Ask Arun's AI assistant anything..." 
+        placeholder="Ask Arun's AI anything (e.g. design process, case study metrics, Tanglish chat)..." 
         rows="1"
         [(ngModel)]="inputText"
         (keydown)="onKeyDown($event)"
@@ -66,7 +101,7 @@
           type="button"
           class="btn-sd" 
           (click)="onSend()" 
-          [disabled]="!inputText.trim() || vtService.isStreaming()"
+          [disabled]="!inputText.trim() || vtService.isStreaming() || vtService.isTyping()"
           aria-label="Send Message">
           
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
