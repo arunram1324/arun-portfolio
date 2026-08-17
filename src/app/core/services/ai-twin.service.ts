@@ -256,18 +256,35 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
   }
 
   /**
-   * Free Client-Side AI Gateway (Pollinations with dynamic persona)
+   * Free Client-Side AI Gateway (Pollinations OpenAI-compatible JSON POST endpoint)
    */
   private async callFreeAiGateway(systemPrompt: string, userQuery: string): Promise<string | null> {
-    const promptCombined = `${systemPrompt}\n\nUser Question: ${userQuery}\n\nYour Answer as Arun Virtual Twin:`;
-    const endpoint = `https://text.pollinations.ai/${encodeURIComponent(promptCombined)}?model=openai&temperature=${this.aiTemperature()}&seed=${Date.now()}`;
+    const endpoint = 'https://text.pollinations.ai/openai';
+
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...this.conversationHistory.slice(-4).map(h => ({
+        role: h.role === 'model' ? 'assistant' : 'user',
+        content: h.text
+      })),
+      { role: 'user', content: userQuery }
+    ];
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5s fast timeout
 
     try {
       const response = await fetch(endpoint, {
-        method: 'GET',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages,
+          model: 'openai',
+          temperature: this.aiTemperature(),
+          seed: 42
+        }),
         signal: controller.signal
       });
 
@@ -277,8 +294,9 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
         throw new Error(`Free Gateway HTTP ${response.status}`);
       }
 
-      const text = await response.text();
-      return text && text.trim().length > 10 ? text.trim() : null;
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content;
+      return text && text.trim().length > 5 ? text.trim() : null;
     } catch (e) {
       clearTimeout(timeoutId);
       throw e;
