@@ -80,7 +80,12 @@ export class VoiceStageComponent implements OnInit, OnDestroy {
     }
   }
 
+  private isProcessingInput = false;
+
   private async handleUserInput(text: string): Promise<void> {
+    if (!text || text.trim().length < 2 || this.isProcessingInput) return;
+    this.isProcessingInput = true;
+
     this.speechRec.pause();
     this.statusText.set('Arun AI Thinking… 🧠');
     this.badgeText.set('Thinking…');
@@ -113,6 +118,7 @@ export class VoiceStageComponent implements OnInit, OnDestroy {
       () => {
         // onEnd -> Resume microphone if session is active
         this.isBlobSpeaking.set(false);
+        this.isProcessingInput = false;
         if (this.speechRec.isListening()) {
           this.isBlobListening.set(true);
           this.statusText.set('Listening…');

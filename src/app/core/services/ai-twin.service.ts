@@ -312,6 +312,34 @@ ${isVoiceMode ? 'Keep spoken responses punchy, conversational, and under 3-4 nat
     }
 
     // ================= ENGLISH INTENT ENGINE =================
+    // 0. Greetings & Casual Pleasantries
+    if (/^(hi|hello|hallo|hey|sup|yo|good morning|good afternoon|good evening)\b|\b(hi|hello|hallo|hey)\b/i.test(q)) {
+      return isVoiceMode
+        ? "Hey there! Great to meet you. I'm Arun's Virtual Twin AI. Feel free to ask me anything about my design case studies, Figma systems, or full-time opportunities!"
+        : "Hey there! 👋 Great to meet you.\n\nI'm Arun K R's official Virtual Twin AI. As a Lead UX/UI & Product Designer with 3+ years of experience, I can walk you through:\n• 🚀 **Featured Case Studies** (MAP-MAN, GYM-POS, ShopFlow)\n• 🎨 **Figma Design Systems & Multi-Tier Tokens**\n• 🛠️ **Figma to Code Developer Collaboration (HTML/CSS/Angular)**\n• 💼 **Full-Time Availability & Freelance MVP Sprints**\n\nWhat would you like to explore?";
+    }
+
+    // 0B. How Are You
+    if (/how are you|how do you do|how's it going|how are things/i.test(q)) {
+      return isVoiceMode
+        ? "I'm doing great, thank you! Excited to show you around Arun's portfolio and design work."
+        : "I'm doing fantastic, thank you! 😊\n\nI'm ready to walk you through Arun's enterprise FinTech case studies, design system frameworks, or availability. What would you like to dive into?";
+    }
+
+    // 0C. Who Are You / About Arun / Bio
+    if (/who are you|tell me about yourself|about arun|who is arun|about you|intro|bio|background/i.test(q)) {
+      return isVoiceMode
+        ? "I'm Arun K R's Virtual Twin AI! Arun is a Lead UX and Product Designer with 3+ years of experience designing high-impact FinTech, ERP, and CRM enterprise platforms."
+        : "Hi! I'm Arun K R's official Virtual Twin AI.\n\nArun is a **Lead UX/UI & Product Designer with 3+ years of experience** specializing in complex enterprise FinTech, ERP, and SaaS platforms. He bridges user behavioral research with engineering-ready Figma design systems to deliver measurable conversion and operational velocity.";
+    }
+
+    // 0D. Thanks & Appreciation
+    if (/thanks|thank you|awesome|great|cool|nice|super/i.test(q)) {
+      return isVoiceMode
+        ? "You're very welcome! Feel free to ask more about my projects or reach out via email at arunram1324 at gmail dot com."
+        : "You're very welcome! 😊 Feel free to explore more case studies in the Projects tab, or drop a message to Arun directly at `arunram1324@gmail.com`.";
+    }
+
     // 1. Contact / Hire / Email
     if (/contact|email|reach|hire|get in touch|talk to arun|phone|call|interview/.test(q)) {
       return isVoiceMode
@@ -361,7 +389,7 @@ ${isVoiceMode ? 'Keep spoken responses punchy, conversational, and under 3-4 nat
 
     // Default Fallback
     return isVoiceMode
-      ? `I'm Arun's Virtual Twin AI. I specialize in enterprise FinTech, ERP, and CRM product design, scalable Figma design systems, and rapid prototyping. What would you like to explore about my experience or case studies?`
+      ? `Hey! I'm Arun K R's Virtual Twin AI. I specialize in enterprise FinTech, ERP product design, and scalable Figma design systems. What would you like to explore about my projects or process?`
       : `Hi! I'm Arun K R's official Virtual Twin AI.\n\nI can share detailed insights about:\n• 🚀 **Case Studies & Measurable ROI** (MAP-MAN, GYM-POS, ShopFlow)\n• 🎨 **Nexus Design System & Token Architecture**\n• 🛠️ **Figma to Code Developer Collaboration**\n• 💼 **Full-Time Availability & Freelance MVP Sprints**\n\nWhat would you like to explore next?`;
   }
 

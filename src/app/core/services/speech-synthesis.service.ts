@@ -44,11 +44,26 @@ export class SpeechSynthesisService {
 
     this.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    // Clean text: strip markdown, asterisks, bullet points, and urls for natural spoken voice
+    const cleanText = text
+      .replace(/https?:\/\/\S+/g, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/[•\-\#\`\>]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!cleanText) {
+      if (onEnd) onEnd();
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     if (this.selectedVoice) {
       utterance.voice = this.selectedVoice;
     }
-    utterance.rate = 0.96;
+    utterance.rate = 1.0;
     utterance.pitch = 1.0;
 
     utterance.onstart = () => {
