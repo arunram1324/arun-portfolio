@@ -384,7 +384,19 @@ export class AdminDashboardComponent {
   // --- Multi-Template Switcher ---
   public selectTemplate(template: PortfolioTemplateMode): void {
     this.portfolioData.setActiveTemplate(template);
-    this.toastService.show(`Live Portfolio layout switched to "${template === 'marttin' ? 'Marttin (Framer Minimalist)' : 'Bento OS Multi-Panel App'}"!`);
+    const names: Record<PortfolioTemplateMode, string> = {
+      bento: 'Bento OS Multi-Panel App',
+      nitro: 'Nitro (Framer Floating Cards & Grid)',
+      marttin: 'Marttin (Framer Editorial)'
+    };
+    this.toastService.show(`Live Portfolio layout switched to "${names[template]}"! 🚀`);
+  }
+
+  public getActiveTemplateLabel(): string {
+    const t = this.portfolioData.activeTemplate();
+    if (t === 'nitro') return 'Nitro Framer';
+    if (t === 'marttin') return 'Marttin Framer';
+    return 'Bento OS';
   }
 
   // --- Granular Section Visibility & Privacy Controls ---

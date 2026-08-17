@@ -1,6 +1,6 @@
 export type NavPage = 'vt' | 'intro' | 'exp' | 'proj' | 'tools' | 'skills' | 'contact';
 
-export type PortfolioTemplateMode = 'bento' | 'marttin';
+export type PortfolioTemplateMode = 'bento' | 'marttin' | 'nitro';
 
 export interface SectionVisibilitySettings {
   showHero: boolean;
@@ -168,7 +168,7 @@ export interface PortfolioVersionSnapshot {
   createdAt: string;
   isLive?: boolean;
   author: string;
-  template: 'bento' | 'marttin';
+  template: PortfolioTemplateMode;
   highlights: string[];
   dataSnapshot?: any;
 }

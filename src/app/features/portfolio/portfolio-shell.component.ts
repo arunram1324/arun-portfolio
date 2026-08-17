@@ -14,6 +14,7 @@ import { ToolsComponent } from '../tools/tools.component';
 import { SkillsComponent } from '../skills/skills.component';
 import { ContactComponent } from '../contact/contact.component';
 import { MarttinTemplateComponent } from '../templates/marttin-template/marttin-template.component';
+import { NitroTemplateComponent } from '../templates/nitro-template/nitro-template.component';
 
 @Component({
   selector: 'app-portfolio-shell',
@@ -31,7 +32,8 @@ import { MarttinTemplateComponent } from '../templates/marttin-template/marttin-
     ToolsComponent,
     SkillsComponent,
     ContactComponent,
-    MarttinTemplateComponent
+    MarttinTemplateComponent,
+    NitroTemplateComponent
   ],
   templateUrl: './portfolio-shell.component.html',
   styleUrls: ['./portfolio-shell.component.scss']

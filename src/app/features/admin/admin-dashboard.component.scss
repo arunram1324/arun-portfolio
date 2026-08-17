@@ -1916,6 +1916,52 @@
   }
 }
 
+/* Nitro Preview Graphic */
+.nitro-preview {
+  flex-direction: column;
+  gap: 10px;
+  background: radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.08), transparent 70%);
+
+  .tpl-mini-navbar-pill {
+    height: 18px;
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    margin: 0 auto;
+    width: 75%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  .tpl-mini-nitro-hero {
+    height: 36px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .tpl-mini-nitro-cards {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    div {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .nitro-mini-c1 {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+  }
+}
+
 /* Marttin Preview Graphic */
 .marttin-preview {
   flex-direction: column;

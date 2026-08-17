@@ -1,0 +1,559 @@
+<div class="nitro-wrapper" [attr.data-theme]="themeService.theme()">
+  
+  <!-- ================= 1. NITRO FLOATING NAVBAR ================= -->
+  <header class="nitro-navbar">
+    <div class="nitro-nav-container">
+      <a class="nitro-brand" (click)="scrollToSection('hero')">
+        <div class="nitro-avatar">
+          <img [src]="portfolioData.profileInfo().photoUrl || 'assets/images/arun.jpg'" [alt]="portfolioData.profileInfo().name">
+          <span class="online-indicator"></span>
+        </div>
+        <div class="nitro-brand-meta">
+          <span class="nitro-brand-name">{{ portfolioData.profileInfo().name || 'ARUN RAM' }}</span>
+          <span class="nitro-brand-role">{{ portfolioData.profileInfo().role || 'Lead Product Designer' }}</span>
+        </div>
+      </a>
+
+      <nav class="nitro-nav-links">
+        <button type="button" class="n-link" (click)="scrollToSection('works')">Selected Works</button>
+        <button type="button" class="n-link" (click)="scrollToSection('process')">Design Process</button>
+        <button type="button" class="n-link" (click)="scrollToSection('services')">Services</button>
+        <button type="button" class="n-link" (click)="scrollToSection('experience')">Experience</button>
+        <button type="button" class="n-link" (click)="scrollToSection('ai-twin')">AI Twin 🧠</button>
+      </nav>
+
+      <div class="nitro-nav-actions">
+        <button 
+          type="button" 
+          class="btn-nitro-cv" 
+          (click)="resumeService.openResumeModal()"
+          title="View & Download ATS-Compliant PDF Resume">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span>CV / Resume</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="btn-nitro-theme" 
+          (click)="themeService.toggleTheme()" 
+          [attr.aria-label]="themeService.isDark() ? 'Switch to Light Theme' : 'Switch to Dark Theme'">
+          @if (themeService.isDark()) {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          } @else {
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          }
+        </button>
+
+        <button type="button" class="btn-nitro-talk" (click)="scrollToSection('contact')">
+          <span>Let's Talk</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 2. HERO SECTION ================= -->
+  <section id="hero" class="nitro-hero-sec">
+    <div class="nitro-container">
+      <div class="hero-status-pill">
+        <span class="h-dot"></span>
+        <span>{{ portfolioData.contactInfo().isAvailable ? 'Available for Full-Time Roles & 0-to-1 MVP Sprints' : 'Available for Senior Design Roles' }}</span>
+      </div>
+
+      <h1 class="nitro-hero-title">
+        Designing <span class="highlight">High-Velocity</span> Digital Experiences for FinTech, SaaS & Enterprise Platforms.
+      </h1>
+
+      <p class="nitro-hero-bio">
+        {{ portfolioData.profileInfo().bio || "I'm Arun K R — a Lead UX/UI & Product Designer with 3+ years of experience transforming complex multi-step workflows into intuitive, conversion-driven digital products with scalable Figma design systems." }}
+      </p>
+
+      <div class="nitro-hero-cta-group">
+        <button type="button" class="btn-nitro-primary" (click)="scrollToSection('works')">
+          <span>Explore Featured Works</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <polyline points="19 12 12 19 5 12"/>
+          </svg>
+        </button>
+
+        <button type="button" class="btn-nitro-secondary" (click)="resumeService.openResumeModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <span>Curriculum Vitae</span>
+        </button>
+
+        <button type="button" class="btn-nitro-secondary" (click)="scrollToSection('ai-twin')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="10" rx="2"/>
+            <circle cx="12" cy="5" r="2"/>
+            <path d="M12 7v4"/>
+            <line x1="8" y1="16" x2="8" y2="16"/>
+            <line x1="16" y1="16" x2="16" y2="16"/>
+          </svg>
+          <span>Converse with AI Twin</span>
+        </button>
+      </div>
+
+      <!-- Floating KPI Metrics Ribbon -->
+      <div class="nitro-kpi-ribbon">
+        <div class="kpi-block">
+          <span class="kpi-num">3+</span>
+          <span class="kpi-lbl">Years Product Design</span>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block">
+          <span class="kpi-num">14+</span>
+          <span class="kpi-lbl">Enterprise Projects</span>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block">
+          <span class="kpi-num">99.4%</span>
+          <span class="kpi-lbl">Dev Handoff Accuracy</span>
+        </div>
+        <div class="kpi-divider"></div>
+        <div class="kpi-block">
+          <span class="kpi-num">-22%</span>
+          <span class="kpi-lbl">Dispatch Latency Drop</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. FEATURED WORKS (NITRO SIGNATURE FLOATING CARDS) ================= -->
+  <section id="works" class="nitro-works-sec">
+    <div class="nitro-container">
+      <div class="sec-header-row">
+        <div>
+          <div class="sec-pill-tag">PORTFOLIO CASE STUDIES</div>
+          <h2 class="sec-headline">Crafted with Purpose. Built for Scale.</h2>
+          <p class="sec-sub">Every project combines deep user behavioral research, tokenized Figma architecture, and measurable ROI metrics.</p>
+        </div>
+
+        <!-- Filter Category Tabs -->
+        <div class="nitro-filter-pills">
+          <button 
+            type="button" 
+            class="n-filter-pill" 
+            [class.active]="selectedCategory() === 'All'"
+            (click)="selectCategory('All')">
+            All Works ({{ portfolioData.projects().length }})
+          </button>
+          @for (cat of portfolioData.projectCategories(); track cat) {
+            <button 
+              type="button" 
+              class="n-filter-pill" 
+              [class.active]="selectedCategory() === cat"
+              (click)="selectCategory(cat)">
+              {{ cat }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- The Nitro Floating Cards Grid -->
+      <div class="nitro-grid">
+        @for (proj of filteredProjects(); track proj.id; let idx = $index) {
+          <div class="nitro-card" (click)="openProject(proj)">
+            <div class="nitro-card-media-box">
+              @if (isVideoProject(proj)) {
+                <video 
+                  [src]="proj.videoUrl || proj.image" 
+                  class="nitro-card-img" 
+                  muted 
+                  playsinline 
+                  loop 
+                  onmouseover="this.play()" 
+                  onmouseout="this.pause()">
+                </video>
+                <div class="media-video-badge">▶ Video Preview</div>
+              } @else {
+                <img 
+                  [src]="proj.image || 'assets/images/project-placeholder.jpg'" 
+                  [alt]="proj.name" 
+                  class="nitro-card-img" 
+                  loading="lazy">
+              }
+
+              <div class="nitro-card-overlay">
+                <span class="btn-card-action">
+                  <span>View Case Study</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="7" y1="17" x2="17" y2="7"/>
+                    <polyline points="7 7 17 7 17 17"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <div class="nitro-card-content">
+              <div class="nitro-card-meta-row">
+                <span class="card-cat-badge">{{ proj.category }}</span>
+                @if (proj.metrics) {
+                  <span class="card-metric-pill">⚡ {{ proj.metrics }}</span>
+                }
+              </div>
+
+              <h3 class="nitro-card-title">{{ proj.name }}</h3>
+              <p class="nitro-card-desc">{{ proj.description }}</p>
+
+              <div class="nitro-card-tags">
+                @for (tag of proj.tags.slice(0, 3); track tag) {
+                  <span class="tag-chip">{{ tag }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. DESIGN METHODOLOGY (NITRO BENTO FRAMEWORK) ================= -->
+  <section id="process" class="nitro-process-sec">
+    <div class="nitro-container">
+      <div class="sec-center-header">
+        <div class="sec-pill-tag">SYSTEMATIC PROCESS</div>
+        <h2 class="sec-headline">The 5-Stage Double Diamond Framework</h2>
+        <p class="sec-sub">Bridging user empathy with engineering feasibility to deliver flawless digital experiences.</p>
+      </div>
+
+      <div class="process-cards-grid">
+        @for (item of designPrinciples; track item.step) {
+          <div class="process-card">
+            <div class="proc-top">
+              <span class="proc-num">{{ item.step }}</span>
+              <span class="proc-tag">{{ item.tag }}</span>
+            </div>
+            <h3 class="proc-title">{{ item.title }}</h3>
+            <p class="proc-desc">{{ item.desc }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 5. SERVICES & DELIVERABLES ================= -->
+  <section id="services" class="nitro-services-sec">
+    <div class="nitro-container">
+      <div class="sec-center-header">
+        <div class="sec-pill-tag">WHAT I BRING TO THE TABLE</div>
+        <h2 class="sec-headline">Specialized Design Capabilities</h2>
+        <p class="sec-sub">From 0-to-1 MVP architecture to multi-brand design system scaling.</p>
+      </div>
+
+      <div class="services-grid">
+        @for (srv of services; track srv.title) {
+          <div class="service-card">
+            <div class="srv-ico">{{ srv.icon }}</div>
+            <h3 class="srv-title">{{ srv.title }}</h3>
+            <p class="srv-desc">{{ srv.desc }}</p>
+            <ul class="srv-deliverables">
+              @for (d of srv.deliverables; track d) {
+                <li>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  <span>{{ d }}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 6. VIRTUAL TWIN AI SPOTLIGHT CARD ================= -->
+  <section id="ai-twin" class="nitro-ai-sec">
+    <div class="nitro-container">
+      <div class="ai-spotlight-card">
+        <div class="ai-card-glow"></div>
+        <div class="ai-card-content">
+          <div class="ai-badge-row">
+            <span class="live-ai-badge">
+              <span class="pulse-dot"></span>
+              Live Conversational AI Brain · Grounded with Arun's Real Experience
+            </span>
+          </div>
+
+          <h2 class="ai-headline">Have a Question for Arun? Ask his Virtual Twin.</h2>
+          <p class="ai-desc">
+            Experience real-time AI reasoning. Ask about design processes, case study metrics, developer handoffs, or full-time availability (English or Tanglish!).
+          </p>
+
+          <!-- Prompt Starters -->
+          <div class="ai-starters">
+            <button type="button" class="ai-starter-pill" (click)="askQuickAi('Tell me about your MAP-MAN logistics dashboard case study')">
+              📦 MAP-MAN Metrics
+            </button>
+            <button type="button" class="ai-starter-pill" (click)="askQuickAi('How do you structure Figma tokens for light and dark themes?')">
+              🎨 Design Tokens
+            </button>
+            <button type="button" class="ai-starter-pill" (click)="askQuickAi('How do you collaborate with frontend engineers?')">
+              ⚙️ Developer Handoff
+            </button>
+            <button type="button" class="ai-starter-pill" (click)="askQuickAi('Vanakkam mapla, unga experience pathi sollunga')">
+              🗣️ Tanglish Chat
+            </button>
+          </div>
+
+          <!-- Quick AI Input Bar -->
+          <div class="ai-input-bar">
+            <input 
+              type="text" 
+              class="ai-txt-input" 
+              placeholder="Ask Arun's AI anything (e.g. 'Why should we hire you as Lead Designer?')..." 
+              [(ngModel)]="quickAiPrompt"
+              (keydown.enter)="askQuickAi()"
+              [disabled]="isAiThinking()">
+            <button 
+              type="button" 
+              class="btn-ai-submit" 
+              (click)="askQuickAi()"
+              [disabled]="isAiThinking() || !quickAiPrompt().trim()">
+              @if (isAiThinking()) {
+                <span class="ai-spinner"></span>
+                <span>Thinking...</span>
+              } @else {
+                <span>Send</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              }
+            </button>
+          </div>
+
+          @if (aiQuickResponse()) {
+            <div class="ai-response-box">
+              <div class="ai-resp-header">
+                <span class="ai-avatar-tag">🤖 Arun AI Response:</span>
+              </div>
+              <p class="ai-resp-text">{{ aiQuickResponse() }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7. EXPERIENCE TIMELINE ================= -->
+  <section id="experience" class="nitro-exp-sec">
+    <div class="nitro-container">
+      <div class="sec-header-row">
+        <div>
+          <div class="sec-pill-tag">TRACK RECORD</div>
+          <h2 class="sec-headline">Work Experience</h2>
+          <p class="sec-sub">3+ years leading product design for enterprise SaaS and agile software products.</p>
+        </div>
+      </div>
+
+      <div class="exp-timeline-list">
+        @for (exp of portfolioData.experiences(); track $index) {
+          <div class="exp-row-card">
+            <div class="exp-left">
+              <span class="exp-period-pill">{{ exp.period }}</span>
+              <span class="exp-company">{{ exp.company }}</span>
+            </div>
+            <div class="exp-right">
+              <h3 class="exp-role">{{ exp.role }}</h3>
+              <p class="exp-desc">{{ exp.description }}</p>
+              @if (exp.highlights && exp.highlights.length > 0) {
+                <ul class="exp-achieve-list">
+                  @for (ach of exp.highlights; track ach) {
+                    <li>{{ ach }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8. TOOLS & TECH STACK ================= -->
+  <section class="nitro-tools-sec">
+    <div class="nitro-container">
+      <div class="sec-center-header">
+        <div class="sec-pill-tag">TOOLKIT</div>
+        <h2 class="sec-headline">Design & Prototyping Arsenal</h2>
+        <p class="sec-sub">Industry-grade software powering production-ready design systems and micro-interactions.</p>
+      </div>
+
+      <div class="tools-pill-grid">
+        @for (tool of portfolioData.tools(); track tool.id) {
+          <div class="tool-nitro-chip">
+            <span class="tool-icon">🛠️</span>
+            <span class="tool-name">{{ tool.name }}</span>
+            <span class="tool-type">{{ tool.type }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 9. CONTACT & FOOTER ================= -->
+  <section id="contact" class="nitro-contact-sec">
+    <div class="nitro-container">
+      <div class="contact-nitro-box">
+        <div class="contact-left">
+          <div class="sec-pill-tag">GET IN TOUCH</div>
+          <h2 class="contact-headline">Let's build something extraordinary together.</h2>
+          <p class="contact-sub">
+            Available for Senior / Lead Product Designer roles, Design System architecture, and selective freelance MVP sprints.
+          </p>
+
+          <div class="contact-quick-links">
+            <div class="contact-link-item" (click)="copyEmail()">
+              <span class="c-ico">✉️</span>
+              <span class="c-val">arunram1324&#64;gmail.com</span>
+              <span class="c-hint">(Click to copy)</span>
+            </div>
+            
+            <a href="https://linkedin.com/in/arun-ram" target="_blank" class="contact-link-item">
+              <span class="c-ico">💼</span>
+              <span class="c-val">LinkedIn Profile</span>
+              <span class="c-hint">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-right">
+          <form class="nitro-form" (ngSubmit)="onSubmitMessage()">
+            <h3 class="form-title">Send a Direct Inquiry</h3>
+
+            <div class="form-row">
+              <div class="form-field">
+                <label>Your Name *</label>
+                <input type="text" placeholder="John Doe" [(ngModel)]="messageForm.name" name="name" required>
+              </div>
+              <div class="form-field">
+                <label>Your Email *</label>
+                <input type="email" placeholder="john@company.com" [(ngModel)]="messageForm.email" name="email" required>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label>Subject</label>
+              <input type="text" placeholder="Project inquiry / Full-time role" [(ngModel)]="messageForm.subject" name="subject">
+            </div>
+
+            <div class="form-field">
+              <label>Message *</label>
+              <textarea rows="4" placeholder="Tell me about your product, timeline, or job scope..." [(ngModel)]="messageForm.message" name="message" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-nitro-submit" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="btn-spinner"></span>
+                <span>Sending Message...</span>
+              } @else {
+                <span>Send Inquiry</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              }
+            </button>
+
+            @if (isSuccess()) {
+              <div class="form-success-banner">
+                ✓ Message sent successfully! I'll reply within 24 hours.
+              </div>
+            }
+          </form>
+        </div>
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <footer class="nitro-footer-bottom">
+        <div class="footer-copy">
+          © {{ portfolioData.profileInfo().name || 'Arun K R' }} · Lead UX/UI & Product Designer. All rights reserved.
+        </div>
+        <div class="footer-links">
+          <a (click)="scrollToSection('hero')">Back to Top ↑</a>
+          <a (click)="resumeService.openResumeModal()">Curriculum Vitae</a>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ================= 10. PROJECT LIGHTBOX MODAL ================= -->
+  @if (activeModalProject(); as p) {
+    <div class="nitro-modal-backdrop" (click)="closeModal()">
+      <div class="nitro-modal-card" (click)="$event.stopPropagation()">
+        <button type="button" class="btn-close-modal" (click)="closeModal()" aria-label="Close modal">✕</button>
+
+        <div class="modal-media-wrap">
+          @if (isVideoProject(p)) {
+            <div class="modal-video-box">
+              <video 
+                #videoPlayer
+                [src]="p.videoUrl || p.image" 
+                class="modal-video" 
+                controls 
+                autoplay 
+                (error)="onVideoError()">
+              </video>
+            </div>
+          } @else {
+            <img [src]="p.image || 'assets/images/project-placeholder.jpg'" [alt]="p.name" class="modal-img">
+          }
+        </div>
+
+        <div class="modal-info">
+          <div class="modal-meta-row">
+            <span class="modal-cat-tag">{{ p.category }}</span>
+            @if (p.metrics) {
+              <span class="modal-metric-badge">⚡ {{ p.metrics }}</span>
+            }
+          </div>
+
+          <h2 class="modal-title">{{ p.name }}</h2>
+          <p class="modal-desc">{{ p.description }}</p>
+
+          <div class="modal-tags-row">
+            @for (t of p.tags; track t) {
+              <span class="m-tag">{{ t }}</span>
+            }
+          </div>
+
+          @if (p.link && p.link !== '#') {
+            <div class="modal-actions">
+              <a [href]="p.link" target="_blank" class="btn-modal-link">
+                <span>View Live Interactive Prototype ↗</span>
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

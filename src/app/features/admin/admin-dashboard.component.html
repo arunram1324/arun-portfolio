@@ -115,7 +115,7 @@
             </svg>
           </span>
           <span class="nav-txt">Templates & Layouts</span>
-          <span class="nav-badge-pill">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin' : 'Bento' }}</span>
+          <span class="nav-badge-pill">{{ getActiveTemplateLabel() }}</span>
         </button>
 
         <button 
@@ -355,7 +355,7 @@
               </div>
               <div class="kpi-info">
                 <span class="kpi-label">ACTIVE TEMPLATE</span>
-                <span class="kpi-value tpl-name">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin' : 'Bento OS' }}</span>
+                <span class="kpi-value tpl-name">{{ getActiveTemplateLabel() }}</span>
                 <span class="kpi-trend">Live presentation mode</span>
               </div>
             </div>
@@ -663,7 +663,7 @@
             <div class="live-banner-stats">
               <div class="vstat-item">
                 <span class="vstat-lbl">Active Layout</span>
-                <span class="vstat-val">{{ portfolioData.activeTemplate() === 'marttin' ? 'Marttin Editorial' : 'Bento OS' }}</span>
+                <span class="vstat-val">{{ getActiveTemplateLabel() }}</span>
               </div>
               <div class="vstat-item">
                 <span class="vstat-lbl">Snapshots Saved</span>
@@ -807,7 +807,39 @@
               </div>
             </div>
 
-            <!-- Template 2: Marttin Framer Template -->
+            <!-- Template 2: Nitro Framer Template (Floating Cards & Advanced Grid) -->
+            <div class="template-card" [class.selected]="portfolioData.activeTemplate() === 'nitro'">
+              <div class="tpl-preview-box nitro-preview">
+                <div class="tpl-mini-navbar-pill"></div>
+                <div class="tpl-mini-nitro-hero"></div>
+                <div class="tpl-mini-nitro-cards">
+                  <div class="nitro-mini-c1"></div>
+                  <div class="nitro-mini-c2"></div>
+                </div>
+                @if (portfolioData.activeTemplate() === 'nitro') {
+                  <span class="tpl-active-badge">✓ ACTIVE ON LIVE SITE</span>
+                }
+              </div>
+
+              <div class="tpl-info">
+                <div class="tpl-header">
+                  <h3 class="tpl-title">Nitro — Floating Cards & Advanced Grid</h3>
+                  <span class="tpl-type-tag" style="background: rgba(16, 185, 129, 0.15); color: #10B981;">Framer Nitro</span>
+                </div>
+                <p class="tpl-desc">
+                  Pixel-perfect implementation of the iconic Nitro Framer portfolio template with floating depth cards, 5-stage Double Diamond framework, Manrope typography, and interactive AI Twin widget.
+                </p>
+                <button 
+                  type="button" 
+                  class="btn-select-tpl" 
+                  [class.active]="portfolioData.activeTemplate() === 'nitro'"
+                  (click)="selectTemplate('nitro')">
+                  {{ portfolioData.activeTemplate() === 'nitro' ? 'Active Template' : 'Switch to Nitro (Framer)' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Template 3: Marttin Framer Template -->
             <div class="template-card" [class.selected]="portfolioData.activeTemplate() === 'marttin'">
               <div class="tpl-preview-box marttin-preview">
                 <div class="tpl-mini-header"></div>

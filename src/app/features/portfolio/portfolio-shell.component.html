@@ -1,5 +1,8 @@
-<!-- ================= 1. FRAMER MARTTIN TEMPLATE ================= -->
-@if (portfolioData.activeTemplate() === 'marttin') {
+<!-- ================= 1. FRAMER NITRO FLOATING CARDS TEMPLATE ================= -->
+@if (portfolioData.activeTemplate() === 'nitro') {
+  <app-nitro-template></app-nitro-template>
+} @else if (portfolioData.activeTemplate() === 'marttin') {
+  <!-- ================= 2. FRAMER MARTTIN TEMPLATE ================= -->
   <app-marttin-template></app-marttin-template>
 } @else {
 
