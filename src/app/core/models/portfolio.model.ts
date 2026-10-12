@@ -60,6 +60,7 @@ export interface SkillCategory {
   icon: string;
   description: string;
   skills: string[];
+  enabled?: boolean;
 }
 
 export interface ContactLink {

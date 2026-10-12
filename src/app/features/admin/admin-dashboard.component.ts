@@ -795,6 +795,32 @@ export class AdminDashboardComponent {
   }
 
   // --- Skills Manager ---
+  public isSavingSkills = signal<boolean>(false);
+
+  public async toggleSkillCategory(id: string): Promise<void> {
+    this.portfolioData.toggleSkillCategory(id);
+    const cat = this.portfolioData.skillCategories().find(c => c.id === id);
+    const status = cat?.enabled !== false ? 'Enabled (Visible on Portfolio & PDF)' : 'Disabled (Hidden from Portfolio, PDF & AI)';
+    this.toastService.show(`"${cat?.categoryName || id}" is now ${status}`);
+    await this.portfolioData.forceSyncToFirestore();
+  }
+
+  public async saveSkills(): Promise<void> {
+    this.isSavingSkills.set(true);
+    try {
+      const ok = await this.portfolioData.forceSyncToFirestore();
+      if (ok) {
+        this.toastService.show('Skills & Competencies saved & permanently synced! 💾✨');
+      } else {
+        this.toastService.show('Skills saved locally to browser storage! 💾');
+      }
+    } catch (e) {
+      this.toastService.show('Skills saved to local cache.');
+    } finally {
+      this.isSavingSkills.set(false);
+    }
+  }
+
   public addSkillToSelected(): void {
     const name = this.newSkillName().trim();
     if (!name) return;
@@ -809,9 +835,10 @@ export class AdminDashboardComponent {
       message: `Are you sure you want to remove this skill badge?`,
       confirmBtnText: 'Remove Skill',
       isDanger: true,
-      action: () => {
+      action: async () => {
         this.portfolioData.removeSkillFromCategory(catId, skill);
-        this.toastService.show('Skill removed.');
+        await this.portfolioData.forceSyncToFirestore();
+        this.toastService.show('Skill removed & synced.');
       }
     });
   }

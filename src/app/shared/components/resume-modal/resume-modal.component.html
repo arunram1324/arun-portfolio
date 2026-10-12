@@ -95,7 +95,7 @@
           <section class="rs-sec">
             <h2 class="rs-sec-title">CORE COMPETENCIES & SKILLS</h2>
             <div class="rs-skills-list">
-              @for (cat of portfolioData.skillCategories(); track cat.id) {
+              @for (cat of portfolioData.visibleSkillCategories(); track cat.id) {
                 <div class="rs-skill-row">
                   <strong class="rs-cat-name">{{ cat.categoryName }}:</strong>
                   <span class="rs-skill-names">

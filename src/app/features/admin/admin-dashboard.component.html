@@ -986,6 +986,24 @@
                   <p class="vis-desc">
                     Figma, ProtoPie, Adobe CC, Frontend skills, and UX research methodologies.
                   </p>
+
+                  <!-- Granular Category Toggles -->
+                  <div class="vis-sub-categories">
+                    <span class="vis-sub-label">Active Competency Categories:</span>
+                    <div class="vis-sub-chips">
+                      @for (cat of portfolioData.skillCategories(); track cat.id) {
+                        <button 
+                          type="button" 
+                          class="vis-sub-chip" 
+                          [class.chip-active]="cat.enabled !== false" 
+                          (click)="toggleSkillCategory(cat.id)"
+                          [title]="cat.enabled !== false ? 'Click to hide ' + cat.categoryName : 'Click to show ' + cat.categoryName">
+                          <span class="chip-status">{{ cat.enabled !== false ? '✓' : '✕' }}</span>
+                          <span class="chip-name">{{ cat.icon }} {{ cat.categoryName }}</span>
+                        </button>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
               <label class="toggle-switch">
@@ -1315,8 +1333,30 @@
         <section class="cms-sec">
           <div class="sec-header">
             <div>
-              <h2 class="sec-title">Skills & Core Competencies</h2>
-              <p class="sec-desc">Add new skill badges or remove existing skills from each category.</p>
+              <div class="sec-title-row">
+                <h2 class="sec-title">Skills & Core Competencies</h2>
+                <span class="count-pill">{{ portfolioData.visibleSkillCategories().length }} / {{ portfolioData.skillCategories().length }} Active</span>
+              </div>
+              <p class="sec-desc">Toggle categories ON/OFF (e.g. Web Development), add new skill badges or remove existing skills.</p>
+            </div>
+            <div class="sec-actions">
+              <button 
+                type="button" 
+                class="btn-primary btn-save-toolkit" 
+                (click)="saveSkills()" 
+                [disabled]="isSavingSkills()">
+                @if (isSavingSkills()) {
+                  <span class="btn-spinner"></span>
+                  <span>Saving & Syncing...</span>
+                } @else {
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                  </svg>
+                  <span>Save Skills Changes</span>
+                }
+              </button>
             </div>
           </div>
 
@@ -1350,12 +1390,25 @@
           <!-- Categories List -->
           <div class="cats-stack">
             @for (cat of portfolioData.skillCategories(); track cat.id) {
-              <div class="cat-box">
+              <div class="cat-box" [class.is-disabled]="cat.enabled === false">
                 <div class="cat-top">
                   <div class="cat-head">
                     <span class="cat-ico">{{ cat.icon }}</span>
                     <h3 class="cat-name">{{ cat.categoryName }}</h3>
                     <span class="cat-pill">{{ cat.skills.length }} Skills</span>
+                    <span class="status-toggle-pill" [class.on]="cat.enabled !== false">
+                      {{ cat.enabled !== false ? '● VISIBLE' : '○ HIDDEN (OFF)' }}
+                    </span>
+                  </div>
+
+                  <div class="cat-actions">
+                    <label class="toggle-switch-compact" [title]="cat.enabled !== false ? 'Turn OFF to hide from portfolio, PDF & AI' : 'Turn ON to show on portfolio, PDF & AI'">
+                      <input 
+                        type="checkbox" 
+                        [checked]="cat.enabled !== false" 
+                        (change)="toggleSkillCategory(cat.id)">
+                      <span class="slider"></span>
+                    </label>
                   </div>
                 </div>
 

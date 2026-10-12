@@ -175,7 +175,7 @@ export class ResumeService {
 
       // ================= 4. CORE SKILLS & EXPERTISE =================
       addSectionHeader('Core Competencies & Skills');
-      const skillCats = this.portfolioData.skillCategories();
+      const skillCats = this.portfolioData.visibleSkillCategories();
 
       for (const cat of skillCats) {
         checkPageBreak(10);

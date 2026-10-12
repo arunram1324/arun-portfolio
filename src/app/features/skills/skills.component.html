@@ -8,7 +8,7 @@
 
     <!-- Categorized Skills Grid -->
     <div class="categories-grid">
-      @for (category of portfolioData.skillCategories(); track category.id; let i = $index) {
+      @for (category of portfolioData.visibleSkillCategories(); track category.id; let i = $index) {
         <div class="cat-card" [style.animation-delay]="(i * 0.08) + 's'" tabindex="0" role="region" [attr.aria-label]="category.categoryName">
           
           <!-- Category Header -->

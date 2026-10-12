@@ -132,7 +132,7 @@ export class AiTwinService {
     const profile = this.portfolioData.profileInfo();
     const experiences = this.portfolioData.experiences();
     const projects = this.portfolioData.projects();
-    const skillCats = this.portfolioData.skillCategories();
+    const skillCats = this.portfolioData.visibleSkillCategories();
     const tools = this.portfolioData.tools();
     const contact = this.portfolioData.contactInfo();
 
