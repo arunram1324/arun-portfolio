@@ -378,12 +378,12 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
       // 5. Tanglish: Skills & Tools
       if (/skills|tools|software|theriyum|stack|enna enna|figma|protopie/.test(q)) {
         return isVoiceMode
-          ? "Ennoda core tools Figma, ProtoPie, Adobe XD, Illustrator, Spline 3D, and frontend-la HTML, CSS, TypeScript, Angular mapla! Design to code zero friction handoff panren."
+          ? "Ennoda core tools Figma, ProtoPie, Adobe XD, Illustrator, Spline 3D, and frontend-la HTML, CSS, TypeScript, Angular, Flutter mapla! Design to code zero friction handoff panren."
           : "Ennoda primary design & tech stack idho mapla:\n\n" +
             "• 🎨 **UI/UX & Design Systems**: Figma (Tokens & Variables), Adobe XD, Framer\n" +
             "• ⚡ **Advanced Prototyping**: ProtoPie, Principle, After Effects\n" +
             "• 📐 **Visual Design**: Adobe Illustrator, Photoshop, Spline 3D\n" +
-            "• 💻 **Frontend Knowledge**: HTML5, CSS3/SCSS, TypeScript, Angular (helps in 100% accurate dev handoffs!)\n" +
+            "• 💻 **Frontend & Mobile Knowledge**: HTML5, CSS3/SCSS, TypeScript, Angular, Flutter (helps in 100% accurate dev handoffs!)\n" +
             "• 🧪 **Research & Validation**: Miro, FigJam, Maze usability testing";
       }
 

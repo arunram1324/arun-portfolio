@@ -92,7 +92,7 @@ export class ResumeService {
         tools: ['Adobe After Effects', 'Adobe Premiere Pro', 'DaVinci Resolve', 'Principle']
       },
       {
-        name: 'Frontend & Engineering',
+        name: 'Frontend & Mobile Engineering',
         tools: allTools
           .filter(t => t.category === 'dev')
           .map(t => t.name)

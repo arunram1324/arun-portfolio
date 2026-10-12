@@ -195,6 +195,7 @@ const DEFAULT_TOOLS: ToolItem[] = [
   { id: 'javascript', name: 'JavaScript ES6+', type: 'Frontend Logic', category: 'dev' },
   { id: 'typescript', name: 'TypeScript', type: 'Type-Safe Development', category: 'dev' },
   { id: 'angular', name: 'Angular 19', type: 'Component Framework', category: 'dev' },
+  { id: 'flutter', name: 'Flutter', type: 'Cross-Platform Mobile & Web UI', category: 'dev' },
   { id: 'vscode', name: 'VS Code / Cursor', type: 'Development Environment', category: 'dev' },
   { id: 'github', name: 'GitHub', type: 'Version Control', category: 'dev' }
 ];
@@ -256,7 +257,8 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
       'Visual Hierarchy',
       'ProtoPie Advanced Sensor & Micro-Prototyping',
       'Touch & Haptic Feedback Architecture',
-      'Cross-Platform Adaptive UI Patterns'
+      'Cross-Platform Adaptive UI Patterns',
+      'Flutter Cross-Platform UI'
     ]
   },
   {
@@ -428,6 +430,11 @@ export class PortfolioDataService {
       }
       if (!updated.some(t => t.id === 'davinciresolve' || t.name.toLowerCase().includes('davinci'))) {
         updated.splice(7, 0, { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' });
+      }
+      if (!updated.some(t => t.id === 'flutter' || t.name.toLowerCase().includes('flutter'))) {
+        const angIdx = updated.findIndex(t => t.id === 'angular');
+        const insertIdx = angIdx !== -1 ? angIdx + 1 : updated.length;
+        updated.splice(insertIdx, 0, { id: 'flutter', name: 'Flutter', type: 'Cross-Platform Mobile & Web UI', category: 'dev' });
       }
       return updated;
     });
