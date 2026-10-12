@@ -20,7 +20,7 @@
         </div>
 
         <div class="rt-actions">
-          <button type="button" class="btn-rt-secondary" (click)="onPrint()">
+          <button type="button" class="btn-rt-secondary" (click)="onPrint()" title="Print Resume">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 6 2 18 2 18 9"/>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
@@ -29,7 +29,21 @@
             <span>Print</span>
           </button>
 
-          <button type="button" class="btn-rt-primary" (click)="onDownload()" [disabled]="resumeService.isGeneratingPdf()">
+          <!-- Word (.docx) Download Button -->
+          <button type="button" class="btn-rt-docx" (click)="onDownloadDocx()" [disabled]="resumeService.isGeneratingDocx()" title="Download as Microsoft Word (.docx)">
+            @if (resumeService.isGeneratingDocx()) {
+              <span class="rt-spinner"></span>
+              <span>Generating Word...</span>
+            } @else {
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1.8 15.5l-1.3-4.9-1.3 4.9h-1.4l-1.7-6.5h1.4l1 4.5 1.3-4.5h1.4l1.3 4.5 1-4.5h1.4l-1.7 6.5h-1.4zM13 9V3.5L18.5 9H13z"/>
+              </svg>
+              <span>Download Word</span>
+            }
+          </button>
+
+          <!-- PDF Download Button -->
+          <button type="button" class="btn-rt-primary" (click)="onDownload()" [disabled]="resumeService.isGeneratingPdf()" title="Download as ATS PDF">
             @if (resumeService.isGeneratingPdf()) {
               <span class="rt-spinner"></span>
               <span>Generating PDF...</span>
@@ -53,7 +67,7 @@
           <!-- 1. Header -->
           <header class="rs-header">
             <div class="rs-header-main">
-              <h1 class="rs-name">{{ portfolioData.profileInfo().name }}</h1>
+              <h1 class="rs-name">{{ portfolioData.profileInfo().name || 'ARUN K R' }}</h1>
               <span class="rs-role">{{ portfolioData.profileInfo().role || 'Lead UX/UI & Product Designer' }}</span>
             </div>
 
@@ -93,7 +107,14 @@
                     </div>
                     <span class="rs-exp-period">{{ exp.period }}</span>
                   </div>
-                  <p class="rs-exp-desc">{{ exp.description }}</p>
+                  <div class="rs-exp-bullets">
+                    @for (bullet of getExperienceBullets(exp.description); track bullet) {
+                      <div class="rs-exp-bullet-item">
+                        <span class="rs-bullet-dot">•</span>
+                        <span class="rs-exp-text">{{ bullet }}</span>
+                      </div>
+                    }
+                  </div>
                 </div>
               }
             </div>
@@ -102,13 +123,18 @@
           <!-- 4. Core Competencies & Skills -->
           <section class="rs-sec">
             <h2 class="rs-sec-title">CORE COMPETENCIES & SKILLS</h2>
-            <div class="rs-skills-list">
+            <div class="rs-skills-categories">
               @for (cat of portfolioData.visibleSkillCategories(); track cat.id) {
-                <div class="rs-skill-row">
-                  <strong class="rs-cat-name">{{ cat.categoryName }}:</strong>
-                  <span class="rs-skill-names">
-                    {{ cat.skills.join('  •  ') }}
-                  </span>
+                <div class="rs-skill-cat-block">
+                  <h4 class="rs-cat-title">{{ cat.categoryName }}</h4>
+                  <div class="rs-skills-bullet-grid">
+                    @for (skill of getUniqueSkills(cat.skills); track skill) {
+                      <div class="rs-skill-bullet-item">
+                        <span class="rs-bullet-dot">•</span>
+                        <span class="rs-skill-label">{{ skill }}</span>
+                      </div>
+                    }
+                  </div>
                 </div>
               }
             </div>
@@ -117,9 +143,13 @@
           <!-- 5. Tools & Software -->
           <section class="rs-sec">
             <h2 class="rs-sec-title">TOOLS & TECHNOLOGIES</h2>
-            <div class="rs-tools-row">
-              @for (tool of portfolioData.tools(); track tool.id; let last = $last) {
-                <span class="rs-tool-tag">{{ tool.name }} ({{ tool.type }}){{ last ? '' : ' • ' }}</span>
+            <div class="rs-tools-categories">
+              @for (grp of getCategorizedTools(); track grp.name) {
+                <div class="rs-tool-cat-item">
+                  <span class="rs-bullet-dot">•</span>
+                  <strong class="rs-tool-grp-name">{{ grp.name }}:</strong>
+                  <span class="rs-tool-grp-list">{{ grp.tools.join(', ') }}</span>
+                </div>
               }
             </div>
           </section>

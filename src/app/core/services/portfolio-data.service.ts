@@ -447,7 +447,17 @@ export class PortfolioDataService {
       if (pIdx === -1) {
         list.unshift(penticaItem);
       } else {
-        list[pIdx] = { ...penticaItem, ...list[pIdx], current: true, period: 'Present' };
+        const existing = list[pIdx];
+        const hasValidDesc = existing.description && existing.description.trim().length > 15;
+        list[pIdx] = {
+          ...penticaItem,
+          ...existing,
+          company: 'Pentica IT Service (OPC) Pvt.Ltd',
+          role: existing.role || penticaItem.role,
+          current: true,
+          period: 'Present',
+          description: hasValidDesc ? existing.description : penticaItem.description
+        };
       }
 
       // Mark Pentica as current, and ensure past companies have current: false

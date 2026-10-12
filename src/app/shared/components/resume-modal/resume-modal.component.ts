@@ -22,6 +22,10 @@ export class ResumeModalComponent {
     this.resumeService.downloadPdfResume();
   }
 
+  public onDownloadDocx(): void {
+    this.resumeService.downloadDocxResume();
+  }
+
   public onPrint(): void {
     window.print();
   }
@@ -30,32 +34,35 @@ export class ResumeModalComponent {
     this.resumeService.closeResumeModal();
   }
 
+  public getUniqueSkills(skills: string[]): string[] {
+    return this.resumeService.getUniqueSkills(skills);
+  }
+
+  public getExperienceBullets(description: string): string[] {
+    return this.resumeService.getExperienceBullets(description);
+  }
+
+  public getCategorizedTools(): { name: string; tools: string[] }[] {
+    return this.resumeService.getCategorizedTools();
+  }
+
   public getContactEmail(): string {
-    const links = this.portfolioData.contactLinks();
-    const mailLink = links.find(l => l.icon === 'mail' || (l.label && l.label.toLowerCase().includes('email')));
-    if (mailLink && mailLink.value) return mailLink.value;
-    return 'arunram1324@gmail.com';
+    return this.resumeService.getContactEmail();
   }
 
   public getContactPhone(): string {
-    const links = this.portfolioData.contactLinks();
-    const phoneLink = links.find(l => l.icon === 'phone' || (l.label && l.label.toLowerCase().includes('phone')));
-    if (phoneLink && phoneLink.value) return phoneLink.value;
-    return '+91 98765 43210';
+    return this.resumeService.getContactPhone();
   }
 
   public getLinkedIn(): string {
-    const links = this.portfolioData.contactLinks();
-    const li = links.find(l => l.icon === 'linkedin' || (l.label && l.label.toLowerCase().includes('linkedin')));
-    if (li && li.value) return li.value;
-    return 'linkedin.com/in/arunkr';
+    return this.resumeService.getLinkedIn();
   }
 
   public getLocation(): string {
-    return 'Bangalore, India';
+    return this.resumeService.getLocation();
   }
 
   public getWebsite(): string {
-    return 'arunram1324.github.io/arun-portfolio';
+    return this.resumeService.getWebsite();
   }
 }

@@ -1,5 +1,17 @@
 import { Injectable, signal } from '@angular/core';
 import { jsPDF } from 'jspdf';
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  Table,
+  TableRow,
+  TableCell,
+  WidthType,
+  BorderStyle,
+  AlignmentType
+} from 'docx';
 import { PortfolioDataService } from './portfolio-data.service';
 import { ToastService } from '../../shared/services/toast.service';
 
@@ -9,6 +21,7 @@ import { ToastService } from '../../shared/services/toast.service';
 export class ResumeService {
   public isResumeModalOpen = signal<boolean>(false);
   public isGeneratingPdf = signal<boolean>(false);
+  public isGeneratingDocx = signal<boolean>(false);
 
   constructor(
     private portfolioData: PortfolioDataService,
@@ -21,6 +34,77 @@ export class ResumeService {
 
   public closeResumeModal(): void {
     this.isResumeModalOpen.set(false);
+  }
+
+  public getUniqueSkills(skills: string[]): string[] {
+    if (!skills || !skills.length) return [];
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const s of skills) {
+      if (!s) continue;
+      const clean = s.trim();
+      const lower = clean.toLowerCase();
+      if (clean && !seen.has(lower)) {
+        seen.add(lower);
+        result.push(clean);
+      }
+    }
+    return result;
+  }
+
+  public getExperienceBullets(description: string): string[] {
+    if (!description || !description.trim()) return [];
+    const text = description.trim();
+
+    if (text.includes('\n')) {
+      return text
+        .split('\n')
+        .map(s => s.replace(/^[\s•\-\*]+/, '').trim())
+        .filter(s => s.length > 0);
+    }
+
+    if (text.includes('•')) {
+      return text
+        .split('•')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+    }
+
+    const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g);
+    if (sentences && sentences.length > 1) {
+      return sentences.map(s => s.trim()).filter(s => s.length > 0);
+    }
+
+    return [text];
+  }
+
+  public getCategorizedTools(): { name: string; tools: string[] }[] {
+    const allTools = this.portfolioData.tools();
+    const categories: { name: string; tools: string[] }[] = [
+      {
+        name: 'UI/UX Design & Prototyping',
+        tools: allTools
+          .filter(t => (t.category === 'design' || t.category === '3d') && !['premierepro', 'davinciresolve', 'aftereffects'].includes(t.id))
+          .map(t => t.name)
+      },
+      {
+        name: 'Motion & Video Production',
+        tools: ['Adobe After Effects', 'Adobe Premiere Pro', 'DaVinci Resolve', 'Principle']
+      },
+      {
+        name: 'Frontend & Engineering',
+        tools: allTools
+          .filter(t => t.category === 'dev')
+          .map(t => t.name)
+      },
+      {
+        name: 'User Research & Strategy',
+        tools: allTools
+          .filter(t => t.category === 'research')
+          .map(t => t.name)
+      }
+    ];
+    return categories.filter(c => c.tools.length > 0);
   }
 
   // --- 1-Click Dynamic ATS-Compliant PDF Resume Generator ---
@@ -109,11 +193,10 @@ export class ResumeService {
       doc.setFontSize(8.5);
       doc.setTextColor(colorMuted[0], colorMuted[1], colorMuted[2]);
 
-      const contactInfo = this.portfolioData.contactInfo();
       const email = this.getContactEmail();
       const phone = this.getContactPhone();
-      const location = 'Bangalore, India';
-      const webUrl = 'arunram1324.github.io/arun-portfolio';
+      const location = this.getLocation();
+      const webUrl = this.getWebsite();
       const linkedin = this.getLinkedIn();
 
       const contactBar = `${location}  |  ${email}  |  ${phone}  |  ${webUrl}  |  ${linkedin}`;
@@ -134,7 +217,7 @@ export class ResumeService {
       const summaryText = profile.bio || 'Product Designer with 3+ years of experience leading UI/UX for FinTech, ERP, and CRM platforms. Proven track record in user research, complex workflow simplification, and scalable multi-brand design systems that accelerate product delivery.';
       const splitSummary = doc.splitTextToSize(summaryText, contentWidth);
       doc.text(splitSummary, margin, y);
-      y += (splitSummary.length * 4.5) + 1;
+      y += (splitSummary.length * 4.3) + 2;
 
       // ================= 3. WORK EXPERIENCE =================
       addSectionHeader('Work Experience');
@@ -164,13 +247,23 @@ export class ResumeService {
 
         y += 4.5;
 
-        // Description
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-        const splitDesc = doc.splitTextToSize(exp.description, contentWidth);
-        doc.text(splitDesc, margin, y);
-        y += (splitDesc.length * 4.2) + 3;
+        // Clean Bulleted Description
+        const bullets = this.getExperienceBullets(exp.description);
+        for (const bullet of bullets) {
+          checkPageBreak(8);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
+          doc.text('•', margin + 1.5, y);
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8.5);
+          doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+          const splitBullet = doc.splitTextToSize(bullet, contentWidth - 6);
+          doc.text(splitBullet, margin + 5.5, y);
+          y += (splitBullet.length * 4) + 1.2;
+        }
+        y += 2.2;
       }
 
       // ================= 4. CORE SKILLS & EXPERTISE =================
@@ -178,34 +271,83 @@ export class ResumeService {
       const skillCats = this.portfolioData.visibleSkillCategories();
 
       for (const cat of skillCats) {
-        checkPageBreak(10);
+        const uniqueSkills = this.getUniqueSkills(cat.skills || []);
+        if (!uniqueSkills.length) continue;
+
+        checkPageBreak(14);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(8.5);
-        doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-        
-        const catTitle = `${cat.categoryName}: `;
-        doc.text(catTitle, margin, y);
-        const titleWidth = doc.getTextWidth(catTitle);
+        doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
+        doc.text(cat.categoryName.toUpperCase(), margin, y);
+        y += 4;
 
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(colorMuted[0], colorMuted[1], colorMuted[2]);
-        const skillsList = (cat.skills || []).join('  •  ');
-        const splitSkills = doc.splitTextToSize(skillsList, contentWidth - titleWidth);
-        doc.text(splitSkills, margin + titleWidth, y);
-        y += (splitSkills.length * 4.2) + 1.5;
+        // Balanced 2-Column Bullet Grid
+        const half = Math.ceil(uniqueSkills.length / 2);
+        const col1 = uniqueSkills.slice(0, half);
+        const col2 = uniqueSkills.slice(half);
+        const col1X = margin;
+        const col2X = margin + (contentWidth / 2) + 2;
+
+        const maxRows = Math.max(col1.length, col2.length);
+        for (let r = 0; r < maxRows; r++) {
+          checkPageBreak(6);
+          const s1 = col1[r];
+          const s2 = col2[r];
+
+          if (s1) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
+            doc.text('•', col1X + 1.5, y);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+            doc.text(s1, col1X + 4.5, y);
+          }
+
+          if (s2) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
+            doc.text('•', col2X + 1.5, y);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+            doc.text(s2, col2X + 4.5, y);
+          }
+          y += 3.7;
+        }
+        y += 2.2;
       }
 
       // ================= 5. TOOLS & TECHNOLOGIES =================
       addSectionHeader('Tools & Software');
-      const tools = this.portfolioData.tools();
-      const toolNames = tools.map(t => `${t.name} (${t.type})`).join('  •  ');
+      const toolGroups = this.getCategorizedTools();
 
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8.5);
-      doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-      const splitTools = doc.splitTextToSize(toolNames, contentWidth);
-      doc.text(splitTools, margin, y);
-      y += (splitTools.length * 4.2) + 2;
+      for (const grp of toolGroups) {
+        checkPageBreak(8);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
+        doc.text('•', margin + 1.5, y);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+        const grpLabel = `${grp.name}: `;
+        doc.text(grpLabel, margin + 5.5, y);
+        const grpLabelWidth = doc.getTextWidth(grpLabel);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+        const splitTools = doc.splitTextToSize(grp.tools.join(', '), contentWidth - 6 - grpLabelWidth);
+        doc.text(splitTools, margin + 5.5 + grpLabelWidth, y);
+        y += (splitTools.length * 3.8) + 1.4;
+      }
+      y += 1.5;
 
       // ================= 6. EDUCATION & LANGUAGES =================
       checkPageBreak(16);
@@ -262,24 +404,426 @@ export class ResumeService {
     }
   }
 
-  private getContactEmail(): string {
+  // --- 1-Click ATS-Compliant Word (.docx) Resume Generator ---
+  public async downloadDocxResume(): Promise<void> {
+    this.isGeneratingDocx.set(true);
+    try {
+      const profile = this.portfolioData.profileInfo();
+      const experiences = this.portfolioData.experiences();
+      const skillCats = this.portfolioData.visibleSkillCategories();
+
+      const noBorder = {
+        top: { style: BorderStyle.NONE, size: 0, color: 'auto' },
+        bottom: { style: BorderStyle.NONE, size: 0, color: 'auto' },
+        left: { style: BorderStyle.NONE, size: 0, color: 'auto' },
+        right: { style: BorderStyle.NONE, size: 0, color: 'auto' }
+      };
+
+      const createSectionHeading = (title: string): Paragraph => {
+        return new Paragraph({
+          children: [
+            new TextRun({
+              text: title.toUpperCase(),
+              bold: true,
+              size: 21, // 10.5pt
+              color: '1A56F0',
+              font: 'Calibri'
+            })
+          ],
+          border: {
+            bottom: { style: BorderStyle.SINGLE, size: 4, color: 'E2E8F0' }
+          },
+          spacing: { before: 240, after: 120 }
+        });
+      };
+
+      const children: (Paragraph | Table)[] = [];
+
+      // 1. Header
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: profile.name || 'ARUN K R',
+              bold: true,
+              size: 34, // 17pt
+              color: '1E293B',
+              font: 'Calibri'
+            })
+          ],
+          spacing: { after: 40 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: profile.role ? profile.role.toUpperCase() : 'LEAD UX/UI & PRODUCT DESIGNER',
+              bold: true,
+              size: 20, // 10pt
+              color: '1A56F0',
+              font: 'Calibri'
+            })
+          ],
+          spacing: { after: 60 }
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: `${this.getLocation()}   |   ${this.getContactEmail()}   |   ${this.getContactPhone()}   |   ${this.getWebsite()}   |   ${this.getLinkedIn()}`,
+              size: 17, // 8.5pt
+              color: '64748B',
+              font: 'Calibri'
+            })
+          ],
+          spacing: { after: 160 }
+        })
+      );
+
+      // 2. Professional Summary
+      children.push(createSectionHeading('Professional Summary'));
+      const summaryText = profile.bio || 'Product Designer with 3+ years of experience leading UI/UX for FinTech, ERP, and CRM platforms. Proven track record in user research, complex workflow simplification, and scalable multi-brand design systems that accelerate product delivery.';
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: summaryText,
+              size: 19, // 9.5pt
+              color: '1E293B',
+              font: 'Calibri'
+            })
+          ],
+          spacing: { after: 120 }
+        })
+      );
+
+      // 3. Work Experience
+      children.push(createSectionHeading('Work Experience'));
+      for (const exp of experiences) {
+        const expHeaderTable = new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          borders: noBorder,
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: { size: 70, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: exp.role,
+                          bold: true,
+                          size: 20, // 10pt
+                          color: '1E293B',
+                          font: 'Calibri'
+                        }),
+                        new TextRun({
+                          text: `  ·  ${exp.company}`,
+                          bold: true,
+                          size: 19, // 9.5pt
+                          color: '1A56F0',
+                          font: 'Calibri'
+                        })
+                      ]
+                    })
+                  ]
+                }),
+                new TableCell({
+                  width: { size: 30, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: [
+                    new Paragraph({
+                      alignment: AlignmentType.RIGHT,
+                      children: [
+                        new TextRun({
+                          text: exp.period,
+                          bold: true,
+                          size: 18, // 9pt
+                          color: '64748B',
+                          font: 'Calibri'
+                        })
+                      ]
+                    })
+                  ]
+                })
+              ]
+            })
+          ]
+        });
+        children.push(expHeaderTable);
+
+        const bullets = this.getExperienceBullets(exp.description);
+        for (const b of bullets) {
+          children.push(
+            new Paragraph({
+              bullet: { level: 0 },
+              children: [
+                new TextRun({
+                  text: b,
+                  size: 18, // 9pt
+                  color: '1E293B',
+                  font: 'Calibri'
+                })
+              ],
+              spacing: { after: 40 }
+            })
+          );
+        }
+
+        children.push(
+          new Paragraph({
+            spacing: { after: 80 }
+          })
+        );
+      }
+
+      // 4. Core Competencies & Skills
+      children.push(createSectionHeading('Core Competencies & Skills'));
+      for (const cat of skillCats) {
+        const unique = this.getUniqueSkills(cat.skills || []);
+        if (!unique.length) continue;
+
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: cat.categoryName,
+                bold: true,
+                size: 19, // 9.5pt
+                color: '1A56F0',
+                font: 'Calibri'
+              })
+            ],
+            spacing: { before: 80, after: 40 }
+          })
+        );
+
+        const half = Math.ceil(unique.length / 2);
+        const col1 = unique.slice(0, half);
+        const col2 = unique.slice(half);
+        const maxRows = Math.max(col1.length, col2.length);
+
+        const rows: TableRow[] = [];
+        for (let r = 0; r < maxRows; r++) {
+          const s1 = col1[r] || '';
+          const s2 = col2[r] || '';
+
+          rows.push(
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: { size: 50, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: s1 ? [
+                    new Paragraph({
+                      bullet: { level: 0 },
+                      children: [
+                        new TextRun({ text: s1, size: 18, color: '1E293B', font: 'Calibri' })
+                      ]
+                    })
+                  ] : [new Paragraph({})]
+                }),
+                new TableCell({
+                  width: { size: 50, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: s2 ? [
+                    new Paragraph({
+                      bullet: { level: 0 },
+                      children: [
+                        new TextRun({ text: s2, size: 18, color: '1E293B', font: 'Calibri' })
+                      ]
+                    })
+                  ] : [new Paragraph({})]
+                })
+              ]
+            })
+          );
+        }
+
+        children.push(
+          new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            borders: noBorder,
+            rows
+          })
+        );
+      }
+
+      // 5. Tools & Software
+      children.push(createSectionHeading('Tools & Software'));
+      const toolGroups = this.getCategorizedTools();
+      for (const grp of toolGroups) {
+        children.push(
+          new Paragraph({
+            bullet: { level: 0 },
+            children: [
+              new TextRun({
+                text: `${grp.name}: `,
+                bold: true,
+                size: 18,
+                color: '1E293B',
+                font: 'Calibri'
+              }),
+              new TextRun({
+                text: grp.tools.join(', '),
+                size: 18,
+                color: '475569',
+                font: 'Calibri'
+              })
+            ],
+            spacing: { after: 40 }
+          })
+        );
+      }
+
+      // 6. Education & Languages
+      children.push(createSectionHeading('Education & Languages'));
+      children.push(
+        new Table({
+          width: { size: 100, type: WidthType.PERCENTAGE },
+          borders: noBorder,
+          rows: [
+            new TableRow({
+              children: [
+                new TableCell({
+                  width: { size: 70, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: [
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "Master's Degree in Computer Science",
+                          bold: true,
+                          size: 19,
+                          color: '1E293B',
+                          font: 'Calibri'
+                        })
+                      ]
+                    })
+                  ]
+                }),
+                new TableCell({
+                  width: { size: 30, type: WidthType.PERCENTAGE },
+                  borders: noBorder,
+                  children: [
+                    new Paragraph({
+                      alignment: AlignmentType.RIGHT,
+                      children: [
+                        new TextRun({
+                          text: '2021 – 2023',
+                          bold: true,
+                          size: 18,
+                          color: '64748B',
+                          font: 'Calibri'
+                        })
+                      ]
+                    })
+                  ]
+                })
+              ]
+            })
+          ]
+        }),
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Languages: ', bold: true, size: 18, color: '1E293B', font: 'Calibri' }),
+            new TextRun({ text: 'English (B2)  •  Tamil (Native)', size: 18, color: '64748B', font: 'Calibri' })
+          ],
+          spacing: { before: 60, after: 120 }
+        })
+      );
+
+      // 7. Domain Expertise
+      if (profile.industries && profile.industries.length) {
+        children.push(createSectionHeading('Domain & Industry Expertise'));
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: profile.industries.join('   •   '),
+                size: 18,
+                color: '1E293B',
+                font: 'Calibri'
+              })
+            ],
+            spacing: { after: 120 }
+          })
+        );
+      }
+
+      // Footer
+      children.push(
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          children: [
+            new TextRun({
+              text: `Generated dynamically from Arun K R Live Portfolio (${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})`,
+              italics: true,
+              size: 16,
+              color: '94A3B8',
+              font: 'Calibri'
+            })
+          ],
+          spacing: { before: 240 }
+        })
+      );
+
+      const doc = new Document({
+        sections: [{
+          properties: {
+            page: {
+              margin: { top: 720, right: 720, bottom: 720, left: 720 }
+            }
+          },
+          children
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Arun_K_R_Product_Designer_Resume_${new Date().getFullYear()}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      this.toastService.show('Word Document (.docx) downloaded successfully!');
+    } catch (e) {
+      console.error('Word Generation Error:', e);
+      this.toastService.show('Failed to generate Word document. Please try again.');
+    } finally {
+      this.isGeneratingDocx.set(false);
+    }
+  }
+
+  public getContactEmail(): string {
     const links = this.portfolioData.contactLinks();
     const mailLink = links.find(l => l.icon === 'mail' || (l.label && l.label.toLowerCase().includes('email')));
     if (mailLink && mailLink.value) return mailLink.value;
-    return 'arunram1324@gmail.com';
+    return 'arunuxuidesigner2411@gmail.com';
   }
 
-  private getContactPhone(): string {
+  public getContactPhone(): string {
     const links = this.portfolioData.contactLinks();
     const phoneLink = links.find(l => l.icon === 'phone' || (l.label && l.label.toLowerCase().includes('phone')));
     if (phoneLink && phoneLink.value) return phoneLink.value;
-    return '+91 98765 43210';
+    return '+91 9585585107';
   }
 
-  private getLinkedIn(): string {
+  public getLinkedIn(): string {
     const links = this.portfolioData.contactLinks();
     const li = links.find(l => l.icon === 'linkedin' || (l.label && l.label.toLowerCase().includes('linkedin')));
     if (li && li.value) return li.value;
     return 'linkedin.com/in/arunkr';
+  }
+
+  public getLocation(): string {
+    return 'Bangalore, India';
+  }
+
+  public getWebsite(): string {
+    return 'arunram1324.github.io/arun-portfolio';
   }
 }
