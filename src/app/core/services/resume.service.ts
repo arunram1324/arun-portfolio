@@ -820,7 +820,7 @@ export class ResumeService {
   }
 
   public getLocation(): string {
-    return 'Bangalore, India';
+    return 'Chennai, India';
   }
 
   public getWebsite(): string {

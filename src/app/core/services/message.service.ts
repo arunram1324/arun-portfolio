@@ -91,7 +91,7 @@ export class MessageService {
     }
 
     // 2. Dispatch Email directly to arunram1324@gmail.com + Trigger Instant Auto-Reply to sender
-    const defaultAutoReply = `Hi ${trimmedPayload.name},\n\nThank you for reaching out through my portfolio regarding "${trimmedPayload.subject}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer\nBangalore, India`;
+    const defaultAutoReply = `Hi ${trimmedPayload.name},\n\nThank you for reaching out through my portfolio regarding "${trimmedPayload.subject}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nBest regards,\nArun K R\nLead Product Designer\nChennai, India`;
 
     const autoResponseContent = autoReplyText || defaultAutoReply;
 

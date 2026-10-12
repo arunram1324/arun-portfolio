@@ -10,7 +10,7 @@ const STORAGE_PREFIX = 'ak_portfolio_v4_';
 const DEFAULT_AUTO_REPLY: AutoReplySettings = {
   enabled: true,
   subjectTemplate: 'Thank you for connecting, {{name}}! — Arun K R',
-  bodyTemplate: `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nIn the meantime, feel free to check out more of my work on Dribbble (dribbble.com/arunkr) or connect with me on LinkedIn (linkedin.com/in/arunkr).\n\nBest regards,\nArun K R\nLead Product Designer\nBangalore, India`
+  bodyTemplate: `Hi {{name}},\n\nThank you for reaching out through my portfolio regarding "{{subject}}".\n\nI have received your message and will review the details. You can expect to hear back from me within 24 hours.\n\nIn the meantime, feel free to check out more of my work on Dribbble (dribbble.com/arunkr) or connect with me on LinkedIn (linkedin.com/in/arunkr).\n\nBest regards,\nArun K R\nLead Product Designer\nChennai, India`
 };
 
 const DEFAULT_SECTION_VISIBILITY: SectionVisibilitySettings = {

@@ -152,7 +152,7 @@ Headline: ${profile.headline || 'Jr. UX UI Designer | User Research & Interface 
 Bio: ${profile.bio}
 Education: Master's Degree in Computer Science (2021–2023)
 Languages: English (B2), Tamil (Native)
-Location: Bangalore / Chennai, India (Open for Remote, Hybrid, & Relocation)
+Location: Chennai, Tamil Nadu, India (Open for Remote, Hybrid, & Relocation)
 Email: arunuxuidesigner2411@gmail.com
 Phone: +91 9585585107
 Portfolio: http://arunram-portfolio.framer.website/
@@ -371,7 +371,7 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
             "• ✉️ **Email**: `arunram1324@gmail.com`\n" +
             "• 💼 **LinkedIn**: [linkedin.com/in/arunkr](https://linkedin.com/in/arunkr)\n" +
             "• ⏱️ **Turnaround**: 2 to 4 weeks for complete interactive prototypes\n" +
-            "• 📍 **Location**: Bangalore / Chennai (Open for Remote, Hybrid & Relocation)\n\n" +
+            "• 📍 **Location**: Chennai, Tamil Nadu, India (Open for Remote, Hybrid & Relocation)\n\n" +
             "Unga project brief or job details anupunga mapla, quick intro call arrange panniduvom!";
       }
 
