@@ -43,4 +43,19 @@ export class ResumeModalComponent {
     if (phoneLink && phoneLink.value) return phoneLink.value;
     return '+91 98765 43210';
   }
+
+  public getLinkedIn(): string {
+    const links = this.portfolioData.contactLinks();
+    const li = links.find(l => l.icon === 'linkedin' || (l.label && l.label.toLowerCase().includes('linkedin')));
+    if (li && li.value) return li.value;
+    return 'linkedin.com/in/arunkr';
+  }
+
+  public getLocation(): string {
+    return 'Bangalore, India';
+  }
+
+  public getWebsite(): string {
+    return 'arunram1324.github.io/arun-portfolio';
+  }
 }

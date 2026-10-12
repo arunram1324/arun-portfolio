@@ -172,34 +172,43 @@
 /* Resume Sheet Styling */
 .resume-sheet-wrap {
   overflow-y: auto;
-  padding: 24px;
-  background: #E5E7EB;
+  flex: 1;
+  padding: 36px 24px 64px;
+  background: #E2E8F0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
 
   [data-theme="dark"] & {
     background: #0B0F17;
   }
 
   @media (max-width: 600px) {
-    padding: 12px;
+    padding: 16px 12px 48px;
   }
 }
 
 .resume-sheet {
-  background: #FFFFFF;
+  background: #FFFFFF !important;
   color: #1E293B;
   width: 100%;
-  max-width: 760px;
-  padding: 40px 44px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border-radius: 4px;
+  max-width: 780px;
+  min-height: 1050px;
+  padding: 48px 52px 60px;
+  margin: 0 auto;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.45;
+  line-height: 1.48;
   box-sizing: border-box;
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 
   @media (max-width: 600px) {
-    padding: 24px 18px;
+    padding: 28px 20px 40px;
+    min-height: auto;
   }
 }
 
@@ -340,35 +349,7 @@
   line-height: 1.5;
 }
 
-.rs-proj-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
-.rs-proj-head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.rs-proj-name {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #0F172A;
-}
-
-.rs-proj-metric {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #1A56F0;
-}
-
-.rs-proj-desc {
-  font-size: 12px;
-  color: #475569;
-  margin: 2px 0 0 0;
-}
 
 .rs-industries-text {
   font-size: 12px;
@@ -378,8 +359,21 @@
 
 /* Native Print Styles */
 @media print {
+  html, body {
+    background: #FFFFFF !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   body * {
     visibility: hidden;
+  }
+
+  .resume-sheet-wrap {
+    padding: 0 !important;
+    background: #FFFFFF !important;
+    overflow: visible !important;
+    display: block !important;
   }
 
   #printable-resume, #printable-resume * {
@@ -387,12 +381,18 @@
   }
 
   #printable-resume {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    box-shadow: none;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 16mm 20mm !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    background: #FFFFFF !important;
+    box-sizing: border-box !important;
+    page-break-after: avoid;
+    break-after: avoid;
   }
 }

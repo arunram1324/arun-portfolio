@@ -38,7 +38,7 @@ export class ResumeService {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        this.toastService.show('Custom PDF Resume downloaded successfully! 📄✨');
+        this.toastService.show('Custom PDF Resume downloaded successfully!');
         return;
       } else if (url.startsWith('http')) {
         window.open(url, '_blank');
@@ -114,9 +114,9 @@ export class ResumeService {
       const phone = this.getContactPhone();
       const location = 'Bangalore, India';
       const webUrl = 'arunram1324.github.io/arun-portfolio';
-      const linkedin = 'linkedin.com/in/arunkr';
+      const linkedin = this.getLinkedIn();
 
-      const contactBar = `📍 ${location}  |  ✉️ ${email}  |  📞 ${phone}  |  🌐 ${webUrl}  |  💼 ${linkedin}`;
+      const contactBar = `${location}  |  ${email}  |  ${phone}  |  ${webUrl}  |  ${linkedin}`;
       doc.text(contactBar, margin, y);
 
       y += 3;
@@ -207,35 +207,7 @@ export class ResumeService {
       doc.text(splitTools, margin, y);
       y += (splitTools.length * 4.2) + 2;
 
-      // ================= 6. KEY FEATURED PROJECTS =================
-      addSectionHeader('Featured Case Studies & Key Projects');
-      const projects = this.portfolioData.projects().slice(0, 3);
-
-      for (const proj of projects) {
-        checkPageBreak(15);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
-        doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
-        doc.text(proj.name, margin, y);
-
-        if (proj.metrics) {
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8.5);
-          doc.setTextColor(colorAccent[0], colorAccent[1], colorAccent[2]);
-          doc.text(`[${proj.metrics}]`, pageWidth - margin, y, { align: 'right' });
-        }
-
-        y += 4;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(colorMuted[0], colorMuted[1], colorMuted[2]);
-        const pDesc = `${proj.description} (Tech/Tools: ${proj.tags.join(', ')})`;
-        const splitPDesc = doc.splitTextToSize(pDesc, contentWidth);
-        doc.text(splitPDesc, margin, y);
-        y += (splitPDesc.length * 4.2) + 2.5;
-      }
-
-      // ================= 7. DOMAINS & INDUSTRIES =================
+      // ================= 6. DOMAINS & INDUSTRIES =================
       if (profile.industries && profile.industries.length) {
         checkPageBreak(12);
         addSectionHeader('Domain & Industry Expertise');
@@ -257,7 +229,7 @@ export class ResumeService {
       // Save PDF
       const filename = `Arun_K_R_Product_Designer_Resume_${new Date().getFullYear()}.pdf`;
       doc.save(filename);
-      this.toastService.show('ATS-Compliant Resume downloaded successfully! 📄✨');
+      this.toastService.show('ATS-Compliant Resume downloaded successfully!');
     } catch (e) {
       console.error('PDF Generation Error:', e);
       this.toastService.show('Failed to generate PDF. Please try again.');
@@ -278,5 +250,12 @@ export class ResumeService {
     const phoneLink = links.find(l => l.icon === 'phone' || (l.label && l.label.toLowerCase().includes('phone')));
     if (phoneLink && phoneLink.value) return phoneLink.value;
     return '+91 98765 43210';
+  }
+
+  private getLinkedIn(): string {
+    const links = this.portfolioData.contactLinks();
+    const li = links.find(l => l.icon === 'linkedin' || (l.label && l.label.toLowerCase().includes('linkedin')));
+    if (li && li.value) return li.value;
+    return 'linkedin.com/in/arunkr';
   }
 }
