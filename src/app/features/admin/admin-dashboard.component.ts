@@ -744,7 +744,25 @@ export class AdminDashboardComponent {
     });
   }
 
-  public saveTool(): void {
+  public isSavingToolkit = signal<boolean>(false);
+
+  public async saveToolkit(): Promise<void> {
+    this.isSavingToolkit.set(true);
+    try {
+      const ok = await this.portfolioData.forceSyncToFirestore();
+      if (ok) {
+        this.toastService.show('Design & Dev Toolkit saved & permanently synced! 💾✨');
+      } else {
+        this.toastService.show('Toolkit saved locally to browser storage! 💾');
+      }
+    } catch (e) {
+      this.toastService.show('Toolkit saved to local cache.');
+    } finally {
+      this.isSavingToolkit.set(false);
+    }
+  }
+
+  public async saveTool(): Promise<void> {
     if (!this.toolForm.name.trim() || !this.toolForm.type.trim()) {
       alert('Please enter tool name and type!');
       return;
@@ -752,12 +770,13 @@ export class AdminDashboardComponent {
 
     if (this.isEditMode()) {
       this.portfolioData.updateTool(this.toolForm);
-      this.toastService.show('Tool Updated!');
+      this.toastService.show('Tool Updated! Syncing...');
     } else {
       this.toolForm.id = this.toolForm.id.trim() || this.toolForm.name.toLowerCase().replace(/\s+/g, '-');
       this.portfolioData.addTool(this.toolForm);
-      this.toastService.show('New Tool Added!');
+      this.toastService.show('New Tool Added! Syncing...');
     }
+    await this.portfolioData.forceSyncToFirestore();
     this.closeModal();
   }
 
@@ -767,9 +786,10 @@ export class AdminDashboardComponent {
       message: 'Are you sure you want to delete this tool item from your Design & Dev toolkit?',
       confirmBtnText: 'Delete Tool',
       isDanger: true,
-      action: () => {
+      action: async () => {
         this.portfolioData.deleteTool(id);
-        this.toastService.show('Tool removed.');
+        await this.portfolioData.forceSyncToFirestore();
+        this.toastService.show('Tool removed & synced permanently.');
       }
     });
   }

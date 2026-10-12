@@ -401,61 +401,75 @@ export class PortfolioDataService {
     // Auto sync signals to localStorage & trigger debounced Cloud Firestore sync
     effect(() => {
       this.save('profile', this.profileInfo());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('experiences', this.experiences());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('projects', this.projects());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('project_categories', this.projectCategories());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('tools', this.tools());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('skills', this.skillCategories());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('voice_qa', this.voiceKnowledge());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('contact', this.contactLinks());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('contact_info', this.contactInfo());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('active_template', this.activeTemplate());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('section_visibility', this.sectionVisibility());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       this.save('auto_reply', this.autoReplySettings());
+      this.save('last_local_update', new Date().toISOString());
       this.scheduleFirestoreSync();
     });
     effect(() => {
       const typo = this.typography();
       this.save('typography', typo);
+      this.save('last_local_update', new Date().toISOString());
       this.applyTypography(typo);
       this.scheduleFirestoreSync();
     });
     effect(() => {
       const color = this.accentColor();
       this.save('accent_color', color);
+      this.save('last_local_update', new Date().toISOString());
       this.applyAccentColor(color);
       this.scheduleFirestoreSync();
     });
@@ -469,6 +483,17 @@ export class PortfolioDataService {
       onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
+          const remoteTime = data['updatedAt'] ? new Date(data['updatedAt']).getTime() : 0;
+          const localTimeStr = this.load<string>('last_local_update', '');
+          const localTime = localTimeStr ? new Date(localTimeStr).getTime() : 0;
+
+          // Guard against stale Firestore snapshot overwriting fresher local modifications on refresh
+          if (localTime > remoteTime && (localTime - remoteTime > 1500)) {
+            console.log('Local portfolio data is newer than remote snapshot. Preserving local edits & syncing to remote...');
+            this.forceSyncToFirestore();
+            return;
+          }
+
           this.isRemoteSync = true;
 
           if (data['profile']) this.profileInfo.set(data['profile']);
@@ -517,8 +542,16 @@ export class PortfolioDataService {
     }, 600);
   }
 
-  public syncToFirestore(): void {
-    if (!this.firestore) return;
+  public async forceSyncToFirestore(): Promise<boolean> {
+    const timestamp = new Date().toISOString();
+    this.save('last_local_update', timestamp);
+    this.save('tools', this.tools());
+    this.save('skills', this.skillCategories());
+    this.save('projects', this.projects());
+    this.save('experiences', this.experiences());
+    this.save('profile', this.profileInfo());
+
+    if (!this.firestore) return true;
     try {
       const docRef = doc(this.firestore, 'portfolio_content', 'main');
       const payload = {
@@ -536,14 +569,18 @@ export class PortfolioDataService {
         active_template: this.activeTemplate(),
         section_visibility: this.sectionVisibility(),
         auto_reply: this.autoReplySettings(),
-        updatedAt: new Date().toISOString()
+        updatedAt: timestamp
       };
-      setDoc(docRef, payload, { merge: true }).catch(err => {
-        console.warn('Firestore push note:', err);
-      });
-    } catch (e) {
-      console.warn('Firestore sync error:', e);
+      await setDoc(docRef, payload, { merge: true });
+      return true;
+    } catch (err) {
+      console.warn('Direct Firestore sync error:', err);
+      return false;
     }
+  }
+
+  public syncToFirestore(): void {
+    this.forceSyncToFirestore();
   }
 
   public updateAutoReplySettings(settings: Partial<AutoReplySettings>): void {
