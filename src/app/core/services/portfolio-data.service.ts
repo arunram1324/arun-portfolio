@@ -22,33 +22,35 @@ const DEFAULT_SECTION_VISIBILITY: SectionVisibilitySettings = {
 };
 
 const DEFAULT_PROFILE: ProfileInfo = {
-  name: 'ARUN K R',
-  role: 'UX UI Designer / Product Designer',
-  headline: 'UX/UI Designer | 3+ Years Experience',
-  bio: 'I specialize in designing high-impact FinTech, ERP, and CRM solutions where task efficiency and system clarity drive business results. From onboarding flows to complex reporting modules, I bridge the gap between user behavior and technical feasibility.',
+  name: 'Arun K R',
+  role: 'Jr. UX UI Designer',
+  headline: 'Jr. UX UI Designer | User Research & Interface Design',
+  bio: 'Become a user champion! Learn research, wireframing to design experiences that flow. Master UI with color, layout to create stunning interfaces. Build a portfolio with personal projects, design challenges. Balancing the needs of editorial, the business, and the user across responsive web platforms.',
   photoUrl: 'arun-profile.jpg',
-  industries: ['Fintech', 'HealthTech', 'EdTech', 'AgriTech', 'E-commerce', 'TravelTech']
+  industries: ['Fintech', 'SaaS', 'Mobile Apps', 'Web Platforms', 'HealthTech', 'E-commerce']
 };
 
 const DEFAULT_EXPERIENCES: WorkExperience[] = [
   {
-    period: 'Present',
-    company: 'Pentica IT Service (OPC) Pvt.Ltd',
-    role: 'UX/UI & Product Designer',
+    period: 'Feb, 2024 – Present',
+    company: 'Azotos Software Technologie',
+    role: 'Jr. UX UI Designer',
     current: true,
-    description: 'Leading end-to-end product design for high-scale enterprise FinTech and ERP platforms. Conducting in-depth user journey mapping, usability testing, and architecting multi-brand design systems that reduced engineering handoff cycles by 40%.'
+    description: 'Become a user champion! Learn research, wireframing to design experiences that flow. Master UI with color, layout to create stunning interfaces. Build a portfolio with personal projects, design challenges. An understanding balance the needs of editorial, the business, and the user. Experience designing for responsive web platforms.'
   },
   {
-    period: 'Feb 2024 – Feb 2025',
-    company: 'Azotos Software Technology Pvt.Ltd',
-    role: 'UI/UX Designer',
-    description: 'Spearheaded the redesign of complex SaaS workflows and data visualization dashboards. Streamlined multi-tier approval flows and onboarding wizards, resulting in a 28% increase in daily task completion rates.'
+    period: 'Jun, 2023 – Jan, 2024',
+    company: '2KD2 Solutions',
+    role: 'UX/UI Designer Intern',
+    current: false,
+    description: 'Experience designing Android and iOS apps. An understanding of layout, typography and visual hierarchy. Experienced UX/UI designer internship: Cover principles, processes, tools, and industry trends. Emphasize hands-on projects, user research, wireframing, visual & interaction design, collaboration, and portfolio development for comprehensive learning in a real-world setting.'
   },
   {
-    period: 'Jun 2023 – Jan 2024',
-    company: 'Azotos Software Technology Pvt.Ltd',
-    role: 'Junior UI/UX Designer',
-    description: 'Collaborated closely with product managers and engineers to build responsive web apps and cross-platform mobile interfaces. Created interactive micro-prototypes in ProtoPie and maintained atomic Figma design components.'
+    period: 'Aug, 2022 – May, 2023',
+    company: 'Digii Express',
+    role: 'UX/UI Design Intern',
+    current: false,
+    description: 'UX/UI design internship dives deep into design principles, cutting-edge tools, and the latest trends, offering hands-on projects, user research, wireframing, and a strong focus on portfolio-building.'
   }
 ];
 
@@ -198,14 +200,24 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     description: 'Human-centered product design, user research methodologies, and scalable design token systems.',
     enabled: true,
     skills: [
-      'UX Research & User Personas',
-      'User Journey Mapping & Flows',
-      'Wireframing & Information Architecture',
-      'Design Systems (Variables & Tokens)',
-      'High-Fidelity Interactive Prototyping',
-      'Usability Testing & A/B Testing',
-      'WCAG Accessibility (AA/AAA)',
-      'Design-to-Dev Handoff & Specs'
+      'User Research',
+      'User Experience Design',
+      'Interaction Design',
+      'Visual Design',
+      'Wireframing',
+      'Design Thinking',
+      'Information Architecture',
+      'Heuristic evaluations',
+      'Card sorting',
+      'System guidelines',
+      'A/B testing',
+      'Responsive Design',
+      'Documentation',
+      'Presentation',
+      'Collaboration',
+      'Project management',
+      'Metrics reporting',
+      'Problem-solving'
     ]
   },
   {
@@ -232,10 +244,10 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     description: 'Native mobile design standards, gesture-driven touch interactions, and high-fidelity device prototypes.',
     enabled: true,
     skills: [
-      'iOS Human Interface Guidelines (HIG)',
-      'Android Material Design 3',
+      'Android & iOS App Design',
+      'Layout & Typography',
+      'Visual Hierarchy',
       'ProtoPie Advanced Sensor & Micro-Prototyping',
-      'Principle Motion & Transition Design',
       'Touch & Haptic Feedback Architecture',
       'Cross-Platform Adaptive UI Patterns'
     ]
@@ -247,12 +259,12 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     description: 'Dynamic UI motion graphics, animated micro-interactions, and engaging product showcase videos.',
     enabled: true,
     skills: [
-      'Adobe After Effects (Motion Design)',
-      'Adobe Premiere Pro (Video Editing)',
-      'Lottie / JSON Micro-Interactions',
-      'Product Walkthrough & Demo Videos',
-      'Social Media Reels & Promo Edits',
-      'Keyframe Transitions & Visual Storytelling'
+      'Adobe Photoshop',
+      'Adobe Illustrator',
+      'Adobe Premiere Pro',
+      'Adobe After Effects',
+      'DaVinci Resolve',
+      'Visual Storytelling & Keyframes'
     ]
   }
 ];
@@ -309,11 +321,11 @@ const DEFAULT_VOICE_QA: VoiceQAItem[] = [
 ];
 
 const DEFAULT_CONTACTS: ContactLink[] = [
-  { icon: 'mail', label: 'Email', value: 'arunram1324@gmail.com', href: 'mailto:arunram1324@gmail.com', action: 'copy' },
-  { icon: 'phone', label: 'Phone', value: '+91 98765 43210', href: 'tel:+919876543210', action: 'copy' },
+  { icon: 'mail', label: 'Email', value: 'arunuxuidesigner2411@gmail.com', href: 'mailto:arunuxuidesigner2411@gmail.com', action: 'copy' },
+  { icon: 'phone', label: 'Phone', value: '+91 9585585107', href: 'tel:+919585585107', action: 'copy' },
+  { icon: 'globe', label: 'Portfolio', value: 'arunram-portfolio.framer.website', href: 'http://arunram-portfolio.framer.website/', action: 'link' },
   { icon: 'linkedin', label: 'LinkedIn', value: 'linkedin.com/in/arunkr', href: 'https://linkedin.com/in/arunkr', action: 'link' },
-  { icon: 'dribbble', label: 'Dribbble', value: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' },
-  { icon: 'globe', label: 'Website / Social', value: '@arunkr_design', href: 'https://twitter.com/arunkr_design', action: 'link' }
+  { icon: 'dribbble', label: 'Dribbble', value: 'dribbble.com/arunkr', href: 'https://dribbble.com/arunkr', action: 'link' }
 ];
 
 const DEFAULT_CONTACT_INFO: ContactInfo = {
@@ -412,6 +424,49 @@ export class PortfolioDataService {
       }
       return updated;
     });
+
+    // Sync official resume experiences if still on legacy placeholder
+    this.experiences.update(exps => {
+      if (!exps || exps.length === 0 || exps.some(e => e.company.includes('Pentica'))) {
+        return [...DEFAULT_EXPERIENCES];
+      }
+      return exps;
+    });
+
+    // Ensure all 18 core competencies from official resume are present in ux-ui category
+    this.skillCategories.update(cats => {
+      return cats.map(cat => {
+        if (cat.id === 'ux-ui') {
+          const resumeSkills = DEFAULT_SKILL_CATEGORIES[0].skills;
+          const merged = Array.from(new Set([...cat.skills, ...resumeSkills]));
+          return { ...cat, skills: merged };
+        }
+        return cat;
+      });
+    });
+
+    // Update contacts with official resume contact info if on placeholder
+    this.contactLinks.update(links => {
+      let updated = [...links];
+      const mailIdx = updated.findIndex(l => l.icon === 'mail');
+      if (mailIdx !== -1 && (!updated[mailIdx].value || updated[mailIdx].value.includes('arunram1324'))) {
+        updated[mailIdx] = { ...updated[mailIdx], value: 'arunuxuidesigner2411@gmail.com', href: 'mailto:arunuxuidesigner2411@gmail.com' };
+      }
+      const phoneIdx = updated.findIndex(l => l.icon === 'phone');
+      if (phoneIdx !== -1 && (!updated[phoneIdx].value || updated[phoneIdx].value.includes('43210'))) {
+        updated[phoneIdx] = { ...updated[phoneIdx], value: '+91 9585585107', href: 'tel:+919585585107' };
+      }
+      const globeIdx = updated.findIndex(l => l.icon === 'globe');
+      if (globeIdx !== -1) {
+        updated[globeIdx] = { ...updated[globeIdx], label: 'Portfolio', value: 'arunram-portfolio.framer.website', href: 'http://arunram-portfolio.framer.website/' };
+      }
+      return updated;
+    });
+
+    // Update profile title/role if on generic placeholder
+    if (!this.profileInfo().role || this.profileInfo().role.includes('Lead UX/UI')) {
+      this.profileInfo.update(p => ({ ...p, role: 'Jr. UX UI Designer' }));
+    }
 
     // Apply dynamic theme color & typography immediately
     this.applyAccentColor(this.accentColor());

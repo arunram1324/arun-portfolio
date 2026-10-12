@@ -207,7 +207,31 @@ export class ResumeService {
       doc.text(splitTools, margin, y);
       y += (splitTools.length * 4.2) + 2;
 
-      // ================= 6. DOMAINS & INDUSTRIES =================
+      // ================= 6. EDUCATION & LANGUAGES =================
+      checkPageBreak(16);
+      addSectionHeader('Education & Languages');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+      doc.text("Master's Degree in Computer Science", margin, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(colorMuted[0], colorMuted[1], colorMuted[2]);
+      doc.text('2021 – 2023', pageWidth - margin, y, { align: 'right' });
+      y += 4.5;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(colorDark[0], colorDark[1], colorDark[2]);
+      doc.text('Languages: ', margin, y);
+      const langLabelWidth = doc.getTextWidth('Languages: ');
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(colorMuted[0], colorMuted[1], colorMuted[2]);
+      doc.text('English (B2)  •  Tamil (Native)', margin + langLabelWidth, y);
+      y += 6;
+
+      // ================= 7. DOMAINS & INDUSTRIES =================
       if (profile.industries && profile.industries.length) {
         checkPageBreak(12);
         addSectionHeader('Domain & Industry Expertise');

@@ -349,7 +349,40 @@
   line-height: 1.5;
 }
 
+.rs-edu-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
 
+.rs-edu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.rs-edu-degree {
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.rs-edu-period {
+  font-weight: 600;
+  color: #64748B;
+}
+
+.rs-lang-item {
+  color: #475569;
+}
+
+.rs-lang-label {
+  font-weight: 700;
+  color: #0F172A;
+  margin-right: 4px;
+}
 
 .rs-industries-text {
   font-size: 12px;
