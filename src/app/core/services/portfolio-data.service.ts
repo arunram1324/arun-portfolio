@@ -171,7 +171,9 @@ const DEFAULT_TOOLS: ToolItem[] = [
   { id: 'adobexd', name: 'Adobe XD', type: 'Wireframing & UI', category: 'design' },
   { id: 'illustrator', name: 'Adobe Illustrator', type: 'Vector & Iconography', category: 'design' },
   { id: 'photoshop', name: 'Adobe Photoshop', type: 'Photo & Asset Editing', category: 'design' },
-  { id: 'aftereffects', name: 'After Effects', type: 'Motion & Micro-interactions', category: 'design' },
+  { id: 'aftereffects', name: 'Adobe After Effects', type: 'Motion & Micro-interactions', category: 'design' },
+  { id: 'premierepro', name: 'Adobe Premiere Pro', type: 'Video Editing & Storyboarding', category: 'design' },
+  { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' },
   { id: 'spline', name: 'Spline 3D', type: '3D Web Experiences', category: '3d' },
   { id: 'framer', name: 'Framer', type: 'Interactive Web & No-Code', category: 'dev' },
   { id: 'principle', name: 'Principle', type: 'Timeline Animation', category: 'design' },
@@ -393,6 +395,18 @@ export class PortfolioDataService {
     // Normalize any legacy emoji icons to modern SVG icon keys & upgrade contact structure
     this.contactLinks.update(links => links.map(l => this.normalizeContact(l)));
     this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
+
+    // Ensure Adobe Premiere Pro and DaVinci Resolve are present in active toolkit
+    this.tools.update(toolsList => {
+      let updated = [...toolsList];
+      if (!updated.some(t => t.id === 'premierepro' || t.name.toLowerCase().includes('premiere'))) {
+        updated.splice(6, 0, { id: 'premierepro', name: 'Adobe Premiere Pro', type: 'Video Editing & Storyboarding', category: 'design' });
+      }
+      if (!updated.some(t => t.id === 'davinciresolve' || t.name.toLowerCase().includes('davinci'))) {
+        updated.splice(7, 0, { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' });
+      }
+      return updated;
+    });
 
     // Apply dynamic theme color & typography immediately
     this.applyAccentColor(this.accentColor());
