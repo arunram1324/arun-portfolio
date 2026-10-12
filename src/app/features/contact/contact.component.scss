@@ -54,7 +54,7 @@
 
   @media (max-width: 600px) {
     padding: 22px 16px;
-    border-radius: 18px;
+    border-radius: var(--radius-md);
   }
 }
 
@@ -277,14 +277,14 @@
 .btn-send-pill {
   margin-top: 6px;
   width: 100%;
-  padding: 15px 28px;
-  border-radius: 999px;
+  padding: 13px 24px;
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: #FFFFFF;
   border: none;
   font-family: var(--fb);
-  font-size: 14.5px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -294,14 +294,18 @@
   transition: transform 0.18s ease, filter 0.2s ease, background 0.2s ease;
   @include tap-friendly;
 
+  [data-theme="dark"] & {
+    color: #0F0F0F;
+  }
+
   &:hover:not(:disabled) {
-    transform: translateY(-2px) scale(1.01);
-    filter: brightness(1.08);
+    transform: translateY(-1px);
+    filter: brightness(1.05);
     box-shadow: none !important;
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0) scale(0.99);
+    transform: translateY(0);
   }
 
   &:disabled {

@@ -96,14 +96,14 @@ app-panel-card {
 .tl-badge {
   display: inline-flex;
   align-items: center;
-  font-family: var(--fb);
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
   font-weight: 600;
   color: var(--body);
   background: var(--bg);
   border: 1px solid var(--border);
-  padding: 4px 14px;
-  border-radius: 20px;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
   margin-bottom: 12px;
   transition: background 0.25s, border-color 0.25s, color 0.25s;
 

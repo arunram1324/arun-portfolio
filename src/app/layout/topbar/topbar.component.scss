@@ -103,7 +103,7 @@
   align-items: center;
   gap: 6px;
   padding: 7px 14px;
-  border-radius: 20px;
+  border-radius: var(--radius-sm);
   background: var(--card);
   border: 1px solid var(--border);
   color: var(--tx);
@@ -156,14 +156,14 @@
   @include tap-friendly;
 
   &:hover {
-    transform: scale(1.08);
+    transform: translateY(-1px);
     border-color: var(--accent);
     color: var(--accent);
     background: var(--accent-subtle);
   }
 
   &:active {
-    transform: scale(0.92);
+    transform: translateY(0);
   }
 }
 
@@ -173,7 +173,7 @@
   border-radius: 50%;
   overflow: hidden;
   background: #12121A;
-  border: 2px solid var(--accent);
+  border: 1.5px solid var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,11 +184,11 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: border-color 0.25s, transform 0.15s;
-  box-shadow: 0 2px 8px var(--shadow);
+  box-shadow: none;
   @include tap-friendly;
 
   &:hover {
-    transform: scale(1.08);
+    transform: scale(1.04);
   }
 }
 

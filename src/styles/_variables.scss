@@ -1,56 +1,70 @@
 // ==========================================
 // DESIGN SYSTEM TOKENS & CSS VARIABLES
+// Precision Architectural Palette (Linear / Vercel Grade)
 // ==========================================
 
 :root {
-  // Light Theme Tokens
-  --bg: #F2F2F5;
+  // Light Theme Tokens (Crisp Gallery White & Hairline Precision)
+  --bg: #F8F9FA;
   --sb: #FFFFFF;
   --card: #FFFFFF;
-  --accent: #2B5CE6;
-  --accent-dark: #1E4BC8;
-  --accent-subtle: rgba(43, 92, 230, 0.10);
-  --tx: #0F0F0F;
-  --body: #6B6B80;
-  --nav: #1A1A1A;
-  --muted: #B0B0C0;
+  --card-elevated: #FFFFFF;
+  --card-hover: #F8F9FA;
+  --accent: #1A56F0;
+  --accent-dark: #1243C2;
+  --accent-subtle: rgba(26, 86, 240, 0.08);
+  --tx: #0A0A0C;
+  --body: #4A4A5A;
+  --nav: #141416;
+  --muted: #8E8E9F;
   --border: rgba(0, 0, 0, 0.08);
-  --shadow: rgba(0, 0, 0, 0.06);
-  --purple-accent: #9B51E0;
-  --success: #22C55E;
-  --topbar-bg: rgba(242, 242, 245, 0.95);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-hover: rgba(0, 0, 0, 0.16);
+  --shadow: none;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --purple-accent: #8B5CF6;
+  --success: #10B981;
+  --topbar-bg: rgba(248, 249, 250, 0.85);
 
   // Typography
   --fd: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --fb: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   // Dimensions & Transitions
-  --sbw: 296px;
+  --sbw: 280px;
   --icw: 64px;
   --toph: 58px;
-  --both: 68px;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --radius-lg: 28px;
-  --radius-md: 20px;
-  --radius-sm: 12px;
+  --both: 64px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
 }
 
 [data-theme="dark"] {
-  // Dark Theme Tokens
-  --bg: #0F0F0F;
-  --sb: #161616;
-  --card: #1C1C1C;
-  --accent: #D9F21A;
-  --accent-dark: #B8CC10;
-  --accent-subtle: rgba(217, 242, 26, 0.10);
-  --tx: #F0F0F0;
-  --body: #8A8A9F;
-  --nav: #DEDEDE;
-  --muted: #484860;
+  // Dark Theme Tokens (Deep Obsidian Ink & Zero Muddy Shadows)
+  --bg: #09090B;
+  --sb: #0E0E11;
+  --card: #121215;
+  --card-elevated: #16161A;
+  --card-hover: #19191E;
+  --accent: #E2F952;
+  --accent-dark: #C4DE31;
+  --accent-subtle: rgba(226, 249, 82, 0.09);
+  --tx: #EDEDEF;
+  --body: #9494A3;
+  --nav: #D4D4D8;
+  --muted: #52525B;
   --border: rgba(255, 255, 255, 0.08);
-  --shadow: rgba(0, 0, 0, 0.4);
-  --purple-accent: #B37BF2;
-  --topbar-bg: rgba(15, 15, 15, 0.95);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-hover: rgba(255, 255, 255, 0.18);
+  --shadow: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --purple-accent: #A78BFA;
+  --topbar-bg: rgba(9, 9, 11, 0.85);
 }
 
 // SCSS Variables for mixins & media breakpoints

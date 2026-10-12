@@ -32,10 +32,17 @@ const DEFAULT_PROFILE: ProfileInfo = {
 
 const DEFAULT_EXPERIENCES: WorkExperience[] = [
   {
-    period: 'Feb, 2024 – Present',
+    period: 'Present',
+    company: 'Pentica IT Service (OPC) Pvt.Ltd',
+    role: 'UX/UI & Product Designer',
+    current: true,
+    description: 'Leading end-to-end product design for high-scale enterprise FinTech and ERP platforms. Conducting in-depth user journey mapping, usability testing, and architecting multi-brand design systems that reduced engineering handoff cycles by 40%.'
+  },
+  {
+    period: 'Feb, 2024 – Feb, 2025',
     company: 'Azotos Software Technologie',
     role: 'Jr. UX UI Designer',
-    current: true,
+    current: false,
     description: 'Become a user champion! Learn research, wireframing to design experiences that flow. Master UI with color, layout to create stunning interfaces. Build a portfolio with personal projects, design challenges. An understanding balance the needs of editorial, the business, and the user. Experience designing for responsive web platforms.'
   },
   {
@@ -425,12 +432,26 @@ export class PortfolioDataService {
       return updated;
     });
 
-    // Sync official resume experiences if still on legacy placeholder
+    // Ensure Pentica is included as current company at the top of experiences
     this.experiences.update(exps => {
-      if (!exps || exps.length === 0 || exps.some(e => e.company.includes('Pentica'))) {
-        return [...DEFAULT_EXPERIENCES];
+      let list = exps && exps.length > 0 ? [...exps] : [...DEFAULT_EXPERIENCES];
+      const penticaItem: WorkExperience = {
+        period: 'Present',
+        company: 'Pentica IT Service (OPC) Pvt.Ltd',
+        role: 'UX/UI & Product Designer',
+        current: true,
+        description: 'Leading end-to-end product design for high-scale enterprise FinTech and ERP platforms. Conducting in-depth user journey mapping, usability testing, and architecting multi-brand design systems that reduced engineering handoff cycles by 40%.'
+      };
+
+      const pIdx = list.findIndex(e => e.company.toLowerCase().includes('pentica'));
+      if (pIdx === -1) {
+        list.unshift(penticaItem);
+      } else {
+        list[pIdx] = { ...penticaItem, ...list[pIdx], current: true, period: 'Present' };
       }
-      return exps;
+
+      // Mark Pentica as current, and ensure past companies have current: false
+      return list.map(e => e.company.toLowerCase().includes('pentica') ? { ...e, current: true } : { ...e, current: false });
     });
 
     // Ensure all 18 core competencies from official resume are present in ux-ui category

@@ -43,7 +43,7 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
-  box-shadow: 0 4px 28px var(--shadow);
+  box-shadow: var(--shadow-sm);
   padding: 32px 36px 36px;
   display: flex;
   flex-direction: column;
@@ -112,8 +112,8 @@
 }
 
 .cat-tab-btn {
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--body);
@@ -134,7 +134,11 @@
     border-color: var(--accent);
     color: #FFFFFF;
     font-weight: 700;
-    box-shadow: 0 2px 8px var(--shadow);
+    box-shadow: none;
+
+    [data-theme="dark"] & {
+      color: #0F0F0F;
+    }
   }
 }
 
@@ -219,11 +223,11 @@
   @include tap-friendly;
 
   &:hover:not(:disabled) {
-    transform: scale(1.08);
+    transform: translateY(-1px);
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.92);
+    transform: translateY(0);
   }
 
   &:disabled {
@@ -278,9 +282,9 @@
 }
 
 .pcard {
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: radial-gradient(circle at 50% 120%, #153CB0 0%, #0C1226 50%, #06070B 100%);
+  background: var(--card);
   position: relative;
   cursor: pointer;
   min-height: 0;
@@ -288,19 +292,19 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease), border-color 0.2s ease, box-shadow 0.2s ease;
   animation: fu 0.35s ease both;
   @include tap-friendly;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
-    border-color: rgba(26, 86, 240, 0.5);
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
 
     .pcard-img {
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
   }
 
@@ -372,30 +376,30 @@
 }
 
 .play-btn-circle {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: rgba(10, 10, 14, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s var(--ease), background 0.2s ease, border-color 0.2s ease;
 
   svg {
     transform: translateX(1.5px);
   }
 
   .pcard:hover & {
-    transform: scale(1.16);
-    background: var(--accent);
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.95);
     border-color: #FFFFFF;
-    color: #FFFFFF;
-    box-shadow: 0 0 24px var(--accent);
+    color: #0A0A0C;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -522,25 +526,30 @@
 }
 
 .center-play-disc {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: var(--accent);
+  background: rgba(10, 10, 14, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 32px rgba(26, 86, 240, 0.8), 0 8px 24px rgba(0, 0, 0, 0.6);
-  border: 2px solid #FFFFFF;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.2s var(--ease), background 0.2s ease, border-color 0.2s ease;
 
   svg {
     transform: translateX(2px);
   }
 
   .pmodal-center-play:hover & {
-    transform: scale(1.14);
-    box-shadow: 0 0 42px rgba(26, 86, 240, 1), 0 12px 30px rgba(0, 0, 0, 0.7);
+    transform: scale(1.06);
+    background: rgba(255, 255, 255, 0.95);
+    color: #0A0A0C;
+    border-color: #FFFFFF;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
   }
 }
 
@@ -615,7 +624,7 @@
   color: var(--accent);
   background: var(--accent-subtle);
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 
 .pmodal-vid-tag {
@@ -625,7 +634,7 @@
   color: #FFFFFF;
   background: rgba(26, 86, 240, 0.85);
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 
 .pmodal-metric-badge {

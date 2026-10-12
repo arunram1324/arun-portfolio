@@ -70,18 +70,19 @@ app-panel-card {
 .cat-card {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: 24px 22px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 10px var(--shadow);
+  box-shadow: var(--shadow-sm);
   animation: fu 0.35s ease both;
-  transition: transform 0.2s ease, border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
+  transition: transform 0.2s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), background 0.25s var(--ease);
 
   &:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-    box-shadow: 0 8px 24px var(--shadow);
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    background: var(--card-hover);
+    box-shadow: var(--shadow-md);
   }
 
   @media (max-width: 767px) {
@@ -125,13 +126,13 @@ app-panel-card {
 }
 
 .cat-count {
-  font-family: var(--fb);
+  font-family: var(--mono);
   font-size: 11px;
   font-weight: 600;
   color: var(--accent);
   background: var(--accent-subtle);
-  padding: 3px 10px;
-  border-radius: 16px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--accent);
   white-space: nowrap;
   flex-shrink: 0;
@@ -159,8 +160,8 @@ app-panel-card {
   gap: 6px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
   font-family: var(--fb);
   font-size: 12px;
   font-weight: 500;
@@ -177,13 +178,12 @@ app-panel-card {
 
     .s-dot {
       background: var(--accent);
-      transform: scale(1.2);
     }
   }
 
   @media (max-width: 767px) {
     font-size: 11.5px;
-    padding: 5px 10px;
+    padding: 4px 8px;
   }
 }
 

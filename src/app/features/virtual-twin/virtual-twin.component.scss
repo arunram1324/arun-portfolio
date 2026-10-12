@@ -37,8 +37,8 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 18px;
-  border-radius: 24px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
   font-family: var(--fb);
@@ -57,7 +57,11 @@
   &.on {
     background: var(--accent);
     color: #FFFFFF;
-    box-shadow: 0 4px 14px var(--accent);
+    box-shadow: none;
+
+    [data-theme="dark"] & {
+      color: #0F0F0F;
+    }
   }
 }
 
@@ -70,12 +74,40 @@
   width: 100%;
   position: relative;
 
-  app-voice-stage, app-chat-stage {
+  app-voice-stage,
+  app-chat-stage {
     display: flex;
     flex-direction: column;
     flex: 1;
     height: 100%;
     width: 100%;
     min-height: 0;
+  }
+}
+
+.intro-card {
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  animation: fu 0.38s ease both;
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+
+  @media (max-width: 767px) {
+    flex: none;
+    height: auto;
+    min-height: unset;
+    border-radius: var(--radius-md);
+    margin-bottom: 28px;
   }
 }

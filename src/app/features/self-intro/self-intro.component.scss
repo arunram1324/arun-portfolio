@@ -43,7 +43,7 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
-  box-shadow: 0 4px 28px var(--shadow);
+  box-shadow: var(--shadow-sm);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -104,8 +104,8 @@
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 18px;
-  box-shadow: 0 8px 32px var(--shadow);
-  transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease);
+  box-shadow: none;
+  transition: background 0.25s var(--ease);
 
   @media (max-width: 767px) {
     width: 150px;
@@ -121,8 +121,8 @@
   height: 196px;
   border-radius: 80px;
   overflow: hidden;
-  border: 3.5px solid var(--border);
-  box-shadow: 0 10px 28px var(--shadow);
+  border: 1.5px solid var(--border);
+  box-shadow: none;
   background: var(--bg);
   display: flex;
   align-items: center;
@@ -134,7 +134,7 @@
     width: 120px;
     height: 160px;
     border-radius: 64px;
-    border-width: 2.5px;
+    border-width: 1.5px;
   }
 }
 
@@ -217,8 +217,8 @@
   font-family: var(--fb);
   font-size: 13px;
   font-weight: 600;
-  padding: 8px 22px;
-  border-radius: 24px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
   background: var(--accent-subtle);
   color: var(--accent);
   border: 1px solid var(--border);
@@ -227,12 +227,12 @@
   @include tap-friendly;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--shadow);
+    transform: translateY(-1px);
+    border-color: var(--accent);
   }
 
   @media (max-width: 767px) {
     font-size: 12px;
-    padding: 6px 16px;
+    padding: 5px 12px;
   }
 }

@@ -32,8 +32,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
   background: var(--accent-subtle);
   color: var(--accent);
   font-family: var(--fb);
@@ -79,8 +79,8 @@
   font-family: var(--fb);
   font-size: 12.5px;
   font-weight: 600;
-  padding: 7px 16px;
-  border-radius: 20px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--tx);
@@ -93,7 +93,7 @@
     background: var(--accent-subtle);
     border-color: var(--accent);
     color: var(--accent);
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   &:active {
@@ -204,7 +204,7 @@
       background: var(--card);
       color: var(--tx);
       border-bottom-left-radius: 4px;
-      box-shadow: 0 2px 8px var(--shadow);
+      box-shadow: none;
       border: 1px solid var(--border);
       transition: background 0.25s, color 0.25s;
     }
@@ -248,7 +248,7 @@
 
 .bub {
   padding: 12px 18px;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   font-family: var(--fb);
   font-size: 14px;
   line-height: 1.65;
@@ -265,10 +265,10 @@
 
 .typ-bub {
   background: var(--card);
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   border-bottom-left-radius: 4px;
   padding: 13px 18px;
-  box-shadow: 0 2px 8px var(--shadow);
+  box-shadow: none;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -310,15 +310,17 @@
 .vt-bar {
   background: var(--card);
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 16px var(--shadow), 0 0 0 1px var(--border);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   padding: 16px 16px 12px 20px;
   min-height: 80px;
-  transition: background 0.25s, box-shadow 0.25s;
+  transition: background 0.25s, border-color 0.2s, box-shadow 0.2s;
 
   &:focus-within {
-    box-shadow: 0 4px 24px var(--accent-subtle), 0 0 0 2px var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
   }
 }
 
@@ -350,9 +352,9 @@
 }
 
 .btn-sd {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
   background: var(--accent);
@@ -369,11 +371,11 @@
 
   &:hover:not(:disabled) {
     background: var(--accent-dark);
-    transform: scale(1.06);
+    transform: translateY(-1px);
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.92);
+    transform: translateY(0);
   }
 
   &:disabled {
