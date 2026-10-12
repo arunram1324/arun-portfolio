@@ -1,5 +1,6 @@
 import { Injectable, signal, effect, computed } from '@angular/core';
 import { WorkExperience, Project, ToolItem, SkillCategory, ContactLink, ContactInfo, TypographySettings, VoiceQAItem, ProfileInfo, PortfolioTemplateMode, SectionVisibilitySettings, AutoReplySettings } from '../models/portfolio.model';
+export type { ToolItem, SkillCategory, WorkExperience, Project };
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, doc, onSnapshot, setDoc, Firestore } from 'firebase/firestore';
 import { FIREBASE_CONFIG } from '../config/firebase.config';
@@ -422,7 +423,7 @@ export class PortfolioDataService {
     this.contactLinks.update(links => links.map(l => this.normalizeContact(l)));
     this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
 
-    // Ensure Adobe Premiere Pro and DaVinci Resolve are present in active toolkit
+    // Ensure Adobe Premiere Pro, DaVinci Resolve, and Flutter are present in active toolkit with correct IDs
     this.tools.update(toolsList => {
       let updated = [...toolsList];
       if (!updated.some(t => t.id === 'premierepro' || t.name.toLowerCase().includes('premiere'))) {
@@ -431,10 +432,20 @@ export class PortfolioDataService {
       if (!updated.some(t => t.id === 'davinciresolve' || t.name.toLowerCase().includes('davinci'))) {
         updated.splice(7, 0, { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' });
       }
-      if (!updated.some(t => t.id === 'flutter' || t.name.toLowerCase().includes('flutter'))) {
+      const fIdx = updated.findIndex(t => t.id === 'flutter' || t.name.toLowerCase().includes('flutter'));
+      if (fIdx === -1) {
         const angIdx = updated.findIndex(t => t.id === 'angular');
         const insertIdx = angIdx !== -1 ? angIdx + 1 : updated.length;
         updated.splice(insertIdx, 0, { id: 'flutter', name: 'Flutter', type: 'Cross-Platform Mobile & Web UI', category: 'dev' });
+      } else {
+        // Guarantee id is 'flutter' so vector SVG matches perfectly
+        updated[fIdx] = {
+          ...updated[fIdx],
+          id: 'flutter',
+          name: 'Flutter',
+          type: updated[fIdx].type || 'Cross-Platform Mobile & Web UI',
+          category: 'dev'
+        };
       }
       return updated;
     });
@@ -471,15 +482,77 @@ export class PortfolioDataService {
       return list.map(e => e.company.toLowerCase().includes('pentica') ? { ...e, current: true } : { ...e, current: false });
     });
 
-    // Ensure all 18 core competencies from official resume are present in ux-ui category
+    // Ensure all categories have full, balanced, and deduplicated skill sets
     this.skillCategories.update(cats => {
       return cats.map(cat => {
-        if (cat.id === 'ux-ui') {
-          const resumeSkills = DEFAULT_SKILL_CATEGORIES[0].skills;
-          const merged = Array.from(new Set([...cat.skills, ...resumeSkills]));
-          return { ...cat, skills: merged };
+        const defaultCat = DEFAULT_SKILL_CATEGORIES.find(d => d.id === cat.id);
+        const defaultSkills = defaultCat ? defaultCat.skills : [];
+        
+        const seen = new Set<string>();
+        const merged: string[] = [];
+
+        for (const s of [...(cat.skills || []), ...defaultSkills]) {
+          const clean = s.trim();
+          const lower = clean.toLowerCase();
+          if (clean && !seen.has(lower)) {
+            seen.add(lower);
+            merged.push(clean);
+          }
         }
-        return cat;
+
+        let finalSkills = merged;
+        if (cat.id === 'ux-ui') {
+          if (seen.has('ux research & user personas')) {
+            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'user research');
+          }
+          if (seen.has('wireframing & information architecture')) {
+            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'wireframing' && s.toLowerCase() !== 'information architecture');
+          }
+          if (seen.has('usability testing & a/b testing')) {
+            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'a/b testing');
+          }
+          if (seen.has('design systems (variables & tokens)')) {
+            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'system guidelines');
+          }
+        }
+
+        if (cat.id === 'web-dev') {
+          const webEssentials = [
+            'HTML5 Semantic Markup',
+            'CSS3 & Modern SCSS Architecture',
+            'JavaScript (ES6+) & Modern Web APIs',
+            'TypeScript & Typed Architecture',
+            'Angular Framework (Standalone & Signals)',
+            'Responsive & Mobile-First Layouts',
+            'REST API Integration & State Handling',
+            'Git & Version Control Workflows'
+          ];
+          for (const item of webEssentials) {
+            if (!finalSkills.some(s => s.toLowerCase().includes(item.toLowerCase().slice(0, 8)))) {
+              finalSkills.push(item);
+            }
+          }
+        }
+
+        if (cat.id === 'mobile-dev') {
+          const mobileEssentials = [
+            'Android & iOS App Design',
+            'Flutter Cross-Platform UI',
+            'Dart Language',
+            'ProtoPie Sensor & Micro-Prototyping',
+            'Layout & Typography Hierarchy',
+            'Touch & Haptic Feedback Architecture',
+            'Cross-Platform Adaptive UI Patterns',
+            'REST API Integration & State Handling'
+          ];
+          for (const item of mobileEssentials) {
+            if (!finalSkills.some(s => s.toLowerCase().includes(item.toLowerCase().slice(0, 8)))) {
+              finalSkills.push(item);
+            }
+          }
+        }
+
+        return { ...cat, skills: finalSkills };
       });
     });
 

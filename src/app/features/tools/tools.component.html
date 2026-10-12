@@ -12,7 +12,7 @@
           
           <!-- Tool Official Vector Logo -->
           <div class="tool-logo-box">
-            @switch (tool.id) {
+            @switch (getToolIconKey(tool)) {
               @case ('figma') {
                 <svg width="24" height="24" viewBox="0 0 38 57" fill="none">
                   <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38C23.2533 38 19 33.7467 19 28.5Z" fill="#1ABCFE"/>
