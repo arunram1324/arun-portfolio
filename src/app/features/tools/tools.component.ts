@@ -24,6 +24,7 @@ export class ToolsComponent {
     if (id === 'adobexd' || name.includes('xd')) return 'adobexd';
     if (id === 'illustrator' || name.includes('illustrator')) return 'illustrator';
     if (id === 'photoshop' || name.includes('photoshop')) return 'photoshop';
+    if (id === 'affinity' || id.includes('affinity') || name.includes('affinity')) return 'affinity';
     if (id === 'aftereffects' || name.includes('after effects')) return 'aftereffects';
     if (id === 'premierepro' || name.includes('premiere')) return 'premierepro';
     if (id === 'davinciresolve' || name.includes('davinci')) return 'davinciresolve';

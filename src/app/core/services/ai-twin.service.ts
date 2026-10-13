@@ -376,13 +376,13 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
       }
 
       // 5. Tanglish: Skills & Tools
-      if (/skills|tools|software|theriyum|stack|enna enna|figma|protopie/.test(q)) {
+      if (/skills|tools|software|theriyum|stack|enna enna|figma|protopie|affinity/.test(q)) {
         return isVoiceMode
-          ? "Ennoda core tools Figma, ProtoPie, Adobe XD, Illustrator, Spline 3D, and frontend-la HTML, CSS, TypeScript, Angular, Flutter mapla! Design to code zero friction handoff panren."
+          ? "Ennoda core tools Figma, ProtoPie, Affinity Designer, Adobe XD, Illustrator, Spline 3D, and frontend-la HTML, CSS, TypeScript, Angular, Flutter mapla! Design to code zero friction handoff panren."
           : "Ennoda primary design & tech stack idho mapla:\n\n" +
-            "• 🎨 **UI/UX & Design Systems**: Figma (Tokens & Variables), Adobe XD, Framer\n" +
+            "• 🎨 **UI/UX & Design Systems**: Figma (Tokens & Variables), Affinity Designer, Adobe XD, Framer\n" +
             "• ⚡ **Advanced Prototyping**: ProtoPie, Principle, After Effects\n" +
-            "• 📐 **Visual Design**: Adobe Illustrator, Photoshop, Spline 3D\n" +
+            "• 📐 **Visual Design**: Affinity Designer, Adobe Illustrator, Photoshop, Spline 3D\n" +
             "• 💻 **Frontend & Mobile Knowledge**: HTML5, CSS3/SCSS, TypeScript, Angular, Flutter (helps in 100% accurate dev handoffs!)\n" +
             "• 🧪 **Research & Validation**: Miro, FigJam, Maze usability testing";
       }
@@ -426,6 +426,18 @@ ${this.customSystemInstructions() ? `\n=== CUSTOM INSTRUCTIONS ===\n${this.custo
       return isVoiceMode
         ? "You're very welcome! Feel free to ask more about my projects or reach out via email at arunram1324 at gmail dot com."
         : "You're very welcome! 😊 Feel free to explore more case studies in the Projects tab, or drop a message to Arun directly at `arunram1324@gmail.com`.";
+    }
+
+    // 0E. Skills, Tools & Stack
+    if (/skill|tool|software|stack|tech|figma|protopie|affinity|technolog/i.test(q)) {
+      return isVoiceMode
+        ? "My core toolkit includes Figma, ProtoPie, Affinity Designer, Adobe Creative Cloud, Spline 3D, and frontend technologies like Angular, TypeScript, and Flutter for seamless developer handoff."
+        : "Here is an overview of my core tools & technical stack:\n\n" +
+          "• 🎨 **UI/UX & Design Systems**: Figma (Tokens, Auto-layout, Variables), Affinity Designer, Adobe XD, Framer\n" +
+          "• ⚡ **Prototyping & Motion**: ProtoPie, Principle, Adobe After Effects\n" +
+          "• 📐 **Visual & Vector**: Affinity Designer, Adobe Illustrator, Photoshop, Spline 3D\n" +
+          "• 💻 **Frontend & Engineering**: Angular 19, TypeScript, Flutter, HTML5, SCSS/CSS3\n" +
+          "• 🧪 **Research & Testing**: FigJam, Miro, Maze usability testing";
     }
 
     // 1. Contact / Hire / Email

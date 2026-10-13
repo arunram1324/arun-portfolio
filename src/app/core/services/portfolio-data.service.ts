@@ -181,6 +181,7 @@ const DEFAULT_TOOLS: ToolItem[] = [
   { id: 'adobexd', name: 'Adobe XD', type: 'Wireframing & UI', category: 'design' },
   { id: 'illustrator', name: 'Adobe Illustrator', type: 'Vector & Iconography', category: 'design' },
   { id: 'photoshop', name: 'Adobe Photoshop', type: 'Photo & Asset Editing', category: 'design' },
+  { id: 'affinity', name: 'Affinity Designer', type: 'Vector & UI Design', category: 'design' },
   { id: 'aftereffects', name: 'Adobe After Effects', type: 'Motion & Micro-interactions', category: 'design' },
   { id: 'premierepro', name: 'Adobe Premiere Pro', type: 'Video Editing & Storyboarding', category: 'design' },
   { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' },
@@ -420,14 +421,28 @@ export class PortfolioDataService {
     this.contactLinks.update(links => links.map(l => this.normalizeContact(l)));
     this.skillCategories.update(skills => skills.map(s => ({ ...s, icon: this.normalizeIcon(s.icon) })));
 
-    // Ensure Adobe Premiere Pro, DaVinci Resolve, and Flutter are present in active toolkit with correct IDs
+    // Ensure Adobe Premiere Pro, DaVinci Resolve, Flutter, and Affinity Designer are present in active toolkit with correct IDs
     this.tools.update(toolsList => {
       let updated = [...toolsList];
+      if (!updated.some(t => t.id === 'affinity' || t.name.toLowerCase().includes('affinity'))) {
+        const psIdx = updated.findIndex(t => t.id === 'photoshop');
+        const insertIdx = psIdx !== -1 ? psIdx + 1 : 5;
+        updated.splice(insertIdx, 0, { id: 'affinity', name: 'Affinity Designer', type: 'Vector & UI Design', category: 'design' });
+      } else {
+        const affIdx = updated.findIndex(t => t.id === 'affinity' || t.name.toLowerCase().includes('affinity'));
+        updated[affIdx] = {
+          ...updated[affIdx],
+          id: 'affinity',
+          name: 'Affinity Designer',
+          type: updated[affIdx].type || 'Vector & UI Design',
+          category: 'design'
+        };
+      }
       if (!updated.some(t => t.id === 'premierepro' || t.name.toLowerCase().includes('premiere'))) {
-        updated.splice(6, 0, { id: 'premierepro', name: 'Adobe Premiere Pro', type: 'Video Editing & Storyboarding', category: 'design' });
+        updated.splice(7, 0, { id: 'premierepro', name: 'Adobe Premiere Pro', type: 'Video Editing & Storyboarding', category: 'design' });
       }
       if (!updated.some(t => t.id === 'davinciresolve' || t.name.toLowerCase().includes('davinci'))) {
-        updated.splice(7, 0, { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' });
+        updated.splice(8, 0, { id: 'davinciresolve', name: 'DaVinci Resolve', type: 'Color Grading & Post-Production', category: 'design' });
       }
       const fIdx = updated.findIndex(t => t.id === 'flutter' || t.name.toLowerCase().includes('flutter'));
       if (fIdx === -1) {
