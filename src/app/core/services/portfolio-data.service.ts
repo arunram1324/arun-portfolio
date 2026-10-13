@@ -213,6 +213,7 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
       'User Experience Design',
       'Interaction Design',
       'Visual Design',
+      'Graphic Design',
       'Wireframing',
       'Design Thinking',
       'Information Architecture',
@@ -238,12 +239,8 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     skills: [
       'HTML5 Semantic Markup',
       'CSS3 & Modern SCSS Architecture',
-      'JavaScript (ES6+) & Modern Web APIs',
-      'TypeScript & Typed Architecture',
-      'Angular Framework (Standalone & Signals)',
       'Responsive & Mobile-First Layouts',
-      'REST API Integration & State Handling',
-      'Git & Version Control Workflows'
+      'REST API Integration & State Handling'
     ]
   },
   {
@@ -253,13 +250,13 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     description: 'Native mobile design standards, gesture-driven touch interactions, and high-fidelity device prototypes.',
     enabled: true,
     skills: [
+      'Android Material Design 3',
       'Android & iOS App Design',
       'Layout & Typography',
       'Visual Hierarchy',
-      'ProtoPie Advanced Sensor & Micro-Prototyping',
-      'Touch & Haptic Feedback Architecture',
-      'Cross-Platform Adaptive UI Patterns',
-      'Flutter Cross-Platform UI'
+      'Flutter Cross-Platform UI',
+      'Dart Language',
+      'REST API Integration & State Handling'
     ]
   },
   {
@@ -269,11 +266,10 @@ const DEFAULT_SKILL_CATEGORIES: SkillCategory[] = [
     description: 'Dynamic UI motion graphics, animated micro-interactions, and engaging product showcase videos.',
     enabled: true,
     skills: [
-      'Adobe Photoshop',
-      'Adobe Illustrator',
-      'Adobe Premiere Pro',
-      'Adobe After Effects',
-      'DaVinci Resolve',
+      'Adobe After Effects (Motion Design)',
+      'Adobe Premiere Pro (Video Editing)',
+      'Lottie / JSON Micro-Interactions',
+      'Social Media Reels & Promo Edits',
       'Visual Storytelling & Keyframes'
     ]
   }
@@ -407,6 +403,7 @@ export class PortfolioDataService {
   // Firebase Firestore instance & synchronization flags
   private firestore: Firestore | null = null;
   private isRemoteSync = false;
+  private isInitialized = false;
   private syncDebounceTimer: any = null;
 
   constructor() {
@@ -482,79 +479,21 @@ export class PortfolioDataService {
       return list.map(e => e.company.toLowerCase().includes('pentica') ? { ...e, current: true } : { ...e, current: false });
     });
 
-    // Ensure all categories have full, balanced, and deduplicated skill sets
-    this.skillCategories.update(cats => {
-      return cats.map(cat => {
-        const defaultCat = DEFAULT_SKILL_CATEGORIES.find(d => d.id === cat.id);
-        const defaultSkills = defaultCat ? defaultCat.skills : [];
-        
-        const seen = new Set<string>();
-        const merged: string[] = [];
-
-        for (const s of [...(cat.skills || []), ...defaultSkills]) {
-          const clean = s.trim();
-          const lower = clean.toLowerCase();
-          if (clean && !seen.has(lower)) {
-            seen.add(lower);
-            merged.push(clean);
-          }
-        }
-
-        let finalSkills = merged;
-        if (cat.id === 'ux-ui') {
-          if (seen.has('ux research & user personas')) {
-            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'user research');
-          }
-          if (seen.has('wireframing & information architecture')) {
-            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'wireframing' && s.toLowerCase() !== 'information architecture');
-          }
-          if (seen.has('usability testing & a/b testing')) {
-            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'a/b testing');
-          }
-          if (seen.has('design systems (variables & tokens)')) {
-            finalSkills = finalSkills.filter(s => s.toLowerCase() !== 'system guidelines');
-          }
-        }
-
+    // Ensure user modifications to skills are fully respected and never reverted on refresh.
+    // Clean legacy forced Angular item once if still lingering from past versions.
+    const skillMigrationKey = 'skills_v5_customized';
+    if (!localStorage.getItem(STORAGE_PREFIX + skillMigrationKey)) {
+      this.skillCategories.update(cats => cats.map(cat => {
         if (cat.id === 'web-dev') {
-          const webEssentials = [
-            'HTML5 Semantic Markup',
-            'CSS3 & Modern SCSS Architecture',
-            'JavaScript (ES6+) & Modern Web APIs',
-            'TypeScript & Typed Architecture',
-            'Angular Framework (Standalone & Signals)',
-            'Responsive & Mobile-First Layouts',
-            'REST API Integration & State Handling',
-            'Git & Version Control Workflows'
-          ];
-          for (const item of webEssentials) {
-            if (!finalSkills.some(s => s.toLowerCase().includes(item.toLowerCase().slice(0, 8)))) {
-              finalSkills.push(item);
-            }
-          }
+          return {
+            ...cat,
+            skills: cat.skills.filter(s => !s.toLowerCase().includes('angular'))
+          };
         }
-
-        if (cat.id === 'mobile-dev') {
-          const mobileEssentials = [
-            'Android & iOS App Design',
-            'Flutter Cross-Platform UI',
-            'Dart Language',
-            'ProtoPie Sensor & Micro-Prototyping',
-            'Layout & Typography Hierarchy',
-            'Touch & Haptic Feedback Architecture',
-            'Cross-Platform Adaptive UI Patterns',
-            'REST API Integration & State Handling'
-          ];
-          for (const item of mobileEssentials) {
-            if (!finalSkills.some(s => s.toLowerCase().includes(item.toLowerCase().slice(0, 8)))) {
-              finalSkills.push(item);
-            }
-          }
-        }
-
-        return { ...cat, skills: finalSkills };
-      });
-    });
+        return cat;
+      }));
+      localStorage.setItem(STORAGE_PREFIX + skillMigrationKey, 'true');
+    }
 
     // Update contacts with official resume contact info if on placeholder
     this.contactLinks.update(links => {
@@ -583,80 +522,113 @@ export class PortfolioDataService {
     this.applyAccentColor(this.accentColor());
     this.applyTypography(this.typography());
 
+    // Allow initial load and setup to complete before tracking reactive effects
+    setTimeout(() => {
+      this.isInitialized = true;
+    }, 1000);
+
     // Auto sync signals to localStorage & trigger debounced Cloud Firestore sync
     effect(() => {
       this.save('profile', this.profileInfo());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('experiences', this.experiences());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('projects', this.projects());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('project_categories', this.projectCategories());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('tools', this.tools());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('skills', this.skillCategories());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('voice_qa', this.voiceKnowledge());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('contact', this.contactLinks());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('contact_info', this.contactInfo());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('active_template', this.activeTemplate());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('section_visibility', this.sectionVisibility());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       this.save('auto_reply', this.autoReplySettings());
-      this.save('last_local_update', new Date().toISOString());
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       const typo = this.typography();
       this.save('typography', typo);
-      this.save('last_local_update', new Date().toISOString());
       this.applyTypography(typo);
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
     effect(() => {
       const color = this.accentColor();
       this.save('accent_color', color);
-      this.save('last_local_update', new Date().toISOString());
       this.applyAccentColor(color);
-      this.scheduleFirestoreSync();
+      if (this.isInitialized && !this.isRemoteSync) {
+        this.save('last_local_update', new Date().toISOString());
+        this.scheduleFirestoreSync();
+      }
     });
   }
 
@@ -873,18 +845,21 @@ export class PortfolioDataService {
 
   // --- Skills CRUD ---
   public addSkillToCategory(categoryId: string, skillName: string): void {
+    const clean = skillName.trim();
+    if (!clean) return;
     this.skillCategories.update(cats => cats.map(c => {
-      if (c.id === categoryId && !c.skills.includes(skillName.trim())) {
-        return { ...c, skills: [...c.skills, skillName.trim()] };
+      if (c.id === categoryId && !c.skills.some(s => s.trim().toLowerCase() === clean.toLowerCase())) {
+        return { ...c, skills: [...c.skills, clean] };
       }
       return c;
     }));
   }
 
   public removeSkillFromCategory(categoryId: string, skillName: string): void {
+    const target = skillName.trim().toLowerCase();
     this.skillCategories.update(cats => cats.map(c => {
       if (c.id === categoryId) {
-        return { ...c, skills: c.skills.filter(s => s !== skillName) };
+        return { ...c, skills: c.skills.filter(s => s.trim().toLowerCase() !== target) };
       }
       return c;
     }));

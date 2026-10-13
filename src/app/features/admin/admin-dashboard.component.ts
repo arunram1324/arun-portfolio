@@ -821,12 +821,13 @@ export class AdminDashboardComponent {
     }
   }
 
-  public addSkillToSelected(): void {
+  public async addSkillToSelected(): Promise<void> {
     const name = this.newSkillName().trim();
     if (!name) return;
     this.portfolioData.addSkillToCategory(this.selectedSkillCatId(), name);
     this.newSkillName.set('');
-    this.toastService.show('Skill added to category!');
+    await this.portfolioData.forceSyncToFirestore();
+    this.toastService.show('Skill added & permanently synced! 💾✨');
   }
 
   public removeSkill(catId: string, skill: string): void {
