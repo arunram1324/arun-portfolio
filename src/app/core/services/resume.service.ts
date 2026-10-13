@@ -5,10 +5,6 @@ import {
   Packer,
   Paragraph,
   TextRun,
-  Table,
-  TableRow,
-  TableCell,
-  WidthType,
   BorderStyle,
   AlignmentType
 } from 'docx';
@@ -412,13 +408,6 @@ export class ResumeService {
       const experiences = this.portfolioData.experiences();
       const skillCats = this.portfolioData.visibleSkillCategories();
 
-      const noBorder = {
-        top: { style: BorderStyle.NONE, size: 0, color: 'auto' },
-        bottom: { style: BorderStyle.NONE, size: 0, color: 'auto' },
-        left: { style: BorderStyle.NONE, size: 0, color: 'auto' },
-        right: { style: BorderStyle.NONE, size: 0, color: 'auto' }
-      };
-
       const createSectionHeading = (title: string): Paragraph => {
         return new Paragraph({
           children: [
@@ -437,7 +426,7 @@ export class ResumeService {
         });
       };
 
-      const children: (Paragraph | Table)[] = [];
+      const children: Paragraph[] = [];
 
       // 1. Header
       children.push(
@@ -495,62 +484,36 @@ export class ResumeService {
         })
       );
 
-      // 3. Work Experience
+      // 3. Work Experience (Table-free, native paragraphs and bullets)
       children.push(createSectionHeading('Work Experience'));
       for (const exp of experiences) {
-        const expHeaderTable = new Table({
-          width: { size: 100, type: WidthType.PERCENTAGE },
-          borders: noBorder,
-          rows: [
-            new TableRow({
-              children: [
-                new TableCell({
-                  width: { size: 70, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: [
-                    new Paragraph({
-                      children: [
-                        new TextRun({
-                          text: exp.role,
-                          bold: true,
-                          size: 20, // 10pt
-                          color: '1E293B',
-                          font: 'Calibri'
-                        }),
-                        new TextRun({
-                          text: `  ·  ${exp.company}`,
-                          bold: true,
-                          size: 19, // 9.5pt
-                          color: '1A56F0',
-                          font: 'Calibri'
-                        })
-                      ]
-                    })
-                  ]
-                }),
-                new TableCell({
-                  width: { size: 30, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: [
-                    new Paragraph({
-                      alignment: AlignmentType.RIGHT,
-                      children: [
-                        new TextRun({
-                          text: exp.period,
-                          bold: true,
-                          size: 18, // 9pt
-                          color: '64748B',
-                          font: 'Calibri'
-                        })
-                      ]
-                    })
-                  ]
-                })
-              ]
-            })
-          ]
-        });
-        children.push(expHeaderTable);
+        children.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: exp.role,
+                bold: true,
+                size: 20, // 10pt
+                color: '1E293B',
+                font: 'Calibri'
+              }),
+              new TextRun({
+                text: `  ·  ${exp.company}`,
+                bold: true,
+                size: 19, // 9.5pt
+                color: '1A56F0',
+                font: 'Calibri'
+              }),
+              new TextRun({
+                text: `   (${exp.period})`,
+                size: 18, // 9pt
+                color: '64748B',
+                font: 'Calibri'
+              })
+            ],
+            spacing: { before: 100, after: 30 }
+          })
+        );
 
         const bullets = this.getExperienceBullets(exp.description);
         for (const b of bullets) {
@@ -565,19 +528,19 @@ export class ResumeService {
                   font: 'Calibri'
                 })
               ],
-              spacing: { after: 40 }
+              spacing: { after: 30 }
             })
           );
         }
 
         children.push(
           new Paragraph({
-            spacing: { after: 80 }
+            spacing: { after: 60 }
           })
         );
       }
 
-      // 4. Core Competencies & Skills
+      // 4. Core Competencies & Skills (Table-free, native bullet lists)
       children.push(createSectionHeading('Core Competencies & Skills'));
       for (const cat of skillCats) {
         const unique = this.getUniqueSkills(cat.skills || []);
@@ -594,59 +557,26 @@ export class ResumeService {
                 font: 'Calibri'
               })
             ],
-            spacing: { before: 80, after: 40 }
+            spacing: { before: 80, after: 30 }
           })
         );
 
-        const half = Math.ceil(unique.length / 2);
-        const col1 = unique.slice(0, half);
-        const col2 = unique.slice(half);
-        const maxRows = Math.max(col1.length, col2.length);
-
-        const rows: TableRow[] = [];
-        for (let r = 0; r < maxRows; r++) {
-          const s1 = col1[r] || '';
-          const s2 = col2[r] || '';
-
-          rows.push(
-            new TableRow({
+        for (const skill of unique) {
+          children.push(
+            new Paragraph({
+              bullet: { level: 0 },
               children: [
-                new TableCell({
-                  width: { size: 50, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: s1 ? [
-                    new Paragraph({
-                      bullet: { level: 0 },
-                      children: [
-                        new TextRun({ text: s1, size: 18, color: '1E293B', font: 'Calibri' })
-                      ]
-                    })
-                  ] : [new Paragraph({})]
-                }),
-                new TableCell({
-                  width: { size: 50, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: s2 ? [
-                    new Paragraph({
-                      bullet: { level: 0 },
-                      children: [
-                        new TextRun({ text: s2, size: 18, color: '1E293B', font: 'Calibri' })
-                      ]
-                    })
-                  ] : [new Paragraph({})]
+                new TextRun({
+                  text: skill,
+                  size: 18, // 9pt
+                  color: '1E293B',
+                  font: 'Calibri'
                 })
-              ]
+              ],
+              spacing: { after: 20 }
             })
           );
         }
-
-        children.push(
-          new Table({
-            width: { size: 100, type: WidthType.PERCENTAGE },
-            borders: noBorder,
-            rows
-          })
-        );
       }
 
       // 5. Tools & Software
@@ -671,65 +601,38 @@ export class ResumeService {
                 font: 'Calibri'
               })
             ],
-            spacing: { after: 40 }
+            spacing: { after: 30 }
           })
         );
       }
 
-      // 6. Education & Languages
+      // 6. Education & Languages (Table-free)
       children.push(createSectionHeading('Education & Languages'));
       children.push(
-        new Table({
-          width: { size: 100, type: WidthType.PERCENTAGE },
-          borders: noBorder,
-          rows: [
-            new TableRow({
-              children: [
-                new TableCell({
-                  width: { size: 70, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: [
-                    new Paragraph({
-                      children: [
-                        new TextRun({
-                          text: "Master's Degree in Computer Science",
-                          bold: true,
-                          size: 19,
-                          color: '1E293B',
-                          font: 'Calibri'
-                        })
-                      ]
-                    })
-                  ]
-                }),
-                new TableCell({
-                  width: { size: 30, type: WidthType.PERCENTAGE },
-                  borders: noBorder,
-                  children: [
-                    new Paragraph({
-                      alignment: AlignmentType.RIGHT,
-                      children: [
-                        new TextRun({
-                          text: '2021 – 2023',
-                          bold: true,
-                          size: 18,
-                          color: '64748B',
-                          font: 'Calibri'
-                        })
-                      ]
-                    })
-                  ]
-                })
-              ]
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: "Master's Degree in Computer Science",
+              bold: true,
+              size: 19, // 9.5pt
+              color: '1E293B',
+              font: 'Calibri'
+            }),
+            new TextRun({
+              text: '   (2021 – 2023)',
+              size: 18, // 9pt
+              color: '64748B',
+              font: 'Calibri'
             })
-          ]
+          ],
+          spacing: { before: 40, after: 30 }
         }),
         new Paragraph({
           children: [
             new TextRun({ text: 'Languages: ', bold: true, size: 18, color: '1E293B', font: 'Calibri' }),
-            new TextRun({ text: 'English (B2)  •  Tamil (Native)', size: 18, color: '64748B', font: 'Calibri' })
+            new TextRun({ text: 'English (B2)   ·   Tamil (Native)', size: 18, color: '64748B', font: 'Calibri' })
           ],
-          spacing: { before: 60, after: 120 }
+          spacing: { after: 80 }
         })
       );
 
